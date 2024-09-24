@@ -1,0 +1,132 @@
+@startuml moba_diagram
+
+enum Element {
+    FIRE,
+    WATER,
+    GROUND,
+    AIR
+}
+
+interface Character {
+    - name: String
+    - level: int
+    - hitPoints: int
+    - mana: int
+    - attackMin: int
+    - attackMax: int
+    - defenseMin: int
+    - defenseMax: int
+    - movements: int
+    - element: Element
+    + move(direction: String)
+    + attack(enemy: Character)
+    + defend(damage: int)
+    + addAbility(ability: Ability)
+    + useAbility(abilityIndex: int, target: Character)
+}
+
+class ConcreteCharacter {
+    + move(direction: String)
+    + attack(enemy: Character)
+    + defend(damage: int)
+}
+
+class CharacterFactory {
+    + createCharacter(type: String): Character
+}
+
+abstract class CharacterDecorator {
+    - decoratedCharacter: Character
+    + move(direction: String)
+    + attack(enemy: Character)
+    + useAbility(enemy: Character)
+}
+
+class ElementalBoostDecorator {
+    + attack(enemy: Character)
+    + defend(damage: int)
+}
+
+interface Ability {
+    + execute(target: Character)
+    + getManaCost(): int
+    + getName(): String
+}
+
+class ConcreteAbility {
+    + execute(target: Character)
+    + getManaCost(): int
+    + getName(): String
+}
+
+class Tower {
+    - resistance: int
+    - team: String
+    + takeDamage(damage: int)
+    + attack(enemy: Character)
+    + isDestroyed(): boolean
+}
+
+abstract class Arena {
+    - type: Element
+    + applyElementalBoost(team1: List<Character>, team2: List<Character>)
+}
+
+class ConcreteElementArena {
+    + applyElementalBoost(team1: List<Character>, team2: List<Character>)
+}
+
+class ArenaFactory {
+    + createArena(type: Element): Arena
+}
+
+class Match {
+    - team1: List<Character>
+    - team2: List<Character>
+    - arena: Arena
+    + startMatch()
+    + isGameOver(): boolean
+}
+
+class Turn {
+    - currentCharacter: Character
+    + moveCharacter(direction: String)
+    + useAbility(enemy: Character)
+    + whichTeamStarts(): int
+    + endTurn()
+}
+
+class Player {
+    - name: String
+    - statistics: GameStatistics
+    + takeAction()
+}
+
+class GameStatistics {
+    - gamesPlayed: int
+    - gamesWon: int
+    - gamesLost: int
+    + updateStatistics(win: boolean)
+}
+
+Character <|-- CharacterDecorator
+Character o-- Ability : abilities
+CharacterDecorator <|-- ElementalBoostDecorator
+Character <|-- ConcreteCharacter
+CharacterFactory --> Character : creates
+
+Ability <|-- ConcreteAbility
+
+Arena <|-- ConcreteElementArena
+ArenaFactory --> Arena : creates
+
+Match o-- Tower : towers
+Match o-- Character : teams
+Match o-- Arena : arena
+Match o-- Player : players
+
+Turn o-- Character : currentCharacter
+
+Player o-- GameStatistics
+
+@enduml
