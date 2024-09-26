@@ -2,7 +2,7 @@ package controller;
 
 import models.*;
 import models.Character;
-import models.abilities.*;
+import models.skills.*;
 import view.CharacterSelection;
 
 import javax.swing.*;
@@ -54,45 +54,45 @@ public class CharacterSelectionController {
         Character tidalMonk = new Character("Monje de la Marea", 75, 110, 18, Element.WATER);
         Character shadowReaper = new Character("Segador de Sombras", 80, 50, 40, Element.AIR);
 
-        fireMage.addAbility(fireball);
-        fireMage.addAbility(lavaBurst);
-        fireMage.addAbility(flameAura);
-        fireMage.addAbility(infernalRevive);
+        fireMage.addSkill(fireball);
+        fireMage.addSkill(lavaBurst);
+        fireMage.addSkill(flameAura);
+        fireMage.addSkill(infernalRevive);
 
-        warrior.addAbility(rockSword);
-        warrior.addAbility(sandstormStrike);
-        warrior.addAbility(powerBoost);
-        warrior.addAbility(stoneSkin);
+        warrior.addSkill(rockSword);
+        warrior.addSkill(sandstormStrike);
+        warrior.addSkill(powerBoost);
+        warrior.addSkill(stoneSkin);
 
-        waterPriest.addAbility(waterWhip);
-        waterPriest.addAbility(tidalWave);
-        waterPriest.addAbility(healingLight);
-        waterPriest.addAbility(tidalFortress);
+        waterPriest.addSkill(waterWhip);
+        waterPriest.addSkill(tidalWave);
+        waterPriest.addSkill(healingLight);
+        waterPriest.addSkill(tidalFortress);
 
-        airAssassin.addAbility(airBlade);
-        airAssassin.addAbility(lightningBolt);
-        airAssassin.addAbility(rejuvenatingMist);
-        airAssassin.addAbility(windRush);
+        airAssassin.addSkill(airBlade);
+        airAssassin.addSkill(lightningBolt);
+        airAssassin.addSkill(rejuvenatingMist);
+        airAssassin.addSkill(windRush);
 
-        stoneGolem.addAbility(rockSword);
-        stoneGolem.addAbility(earthEmbrace);
-        stoneGolem.addAbility(stoneSkin);
+        stoneGolem.addSkill(rockSword);
+        stoneGolem.addSkill(earthEmbrace);
+        stoneGolem.addSkill(stoneSkin);
 
-        flamePhoenix.addAbility(fireball);
-        flamePhoenix.addAbility(meteorShower);
-        flamePhoenix.addAbility(flameAura);
+        flamePhoenix.addSkill(fireball);
+        flamePhoenix.addSkill(meteorShower);
+        flamePhoenix.addSkill(flameAura);
 
-        tempestRanger.addAbility(airBlade);
-        tempestRanger.addAbility(lightningBolt);
-        tempestRanger.addAbility(windRush);
+        tempestRanger.addSkill(airBlade);
+        tempestRanger.addSkill(lightningBolt);
+        tempestRanger.addSkill(windRush);
 
-        tidalMonk.addAbility(waterWhip);
-        tidalMonk.addAbility(tidalWave);
-        tidalMonk.addAbility(healingLight);
+        tidalMonk.addSkill(waterWhip);
+        tidalMonk.addSkill(tidalWave);
+        tidalMonk.addSkill(healingLight);
 
-        shadowReaper.addAbility(lightningBolt);
-        shadowReaper.addAbility(rejuvenatingMist);
-        shadowReaper.addAbility(windRush);
+        shadowReaper.addSkill(lightningBolt);
+        shadowReaper.addSkill(rejuvenatingMist);
+        shadowReaper.addSkill(windRush);
 
         // Añadir todos los personajes a la lista de disponibles
         availableCharacters.add(warrior);
@@ -123,6 +123,7 @@ public class CharacterSelectionController {
 
         listModel.addElement(character);
         team.addCharacter(character);
+        view.disableCharacterOption();
         checkConfirmButtonStatus();
     }
 

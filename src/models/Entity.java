@@ -5,11 +5,11 @@ public abstract class Entity {
     protected int damage;
 
     public void takeDamage(int damage) {
-        this.health -= damage;
+
     }
 
     public void attack(Entity entity, int damage) {
-        entity.takeDamage(damage);
+
     }
 
     public float getHealth() {

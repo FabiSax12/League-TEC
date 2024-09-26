@@ -93,4 +93,8 @@ public class CharacterSelection extends JFrame {
     public void enableConfirmButton(boolean enabled) {
         confirmButton.setEnabled(enabled);
     }
+
+    public void disableCharacterOption() {
+
+    }
 }

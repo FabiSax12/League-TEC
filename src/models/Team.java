@@ -14,11 +14,11 @@ public class Team {
     }
 
     public void addCharacter(Character character) {
-        this.characters.add(character);
+
     }
 
     public void addTower(Tower tower) {
-        this.towers.add(tower);
+
     }
 
     public ArrayList<Character> getCharacters() {

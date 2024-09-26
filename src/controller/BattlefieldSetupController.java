@@ -2,7 +2,6 @@ package controller;
 
 import models.Character;
 import models.Team;
-import models.Tower;
 import models.Element;
 import view.BattlefieldSetup;
 
@@ -45,11 +44,8 @@ public class BattlefieldSetupController {
                 view.updatePlaceButtonText("Colocar Personaje");
             }
         } else if (!placingTowers && selectedCharacter != null) {
-            // Colocar un personaje en el botón seleccionado
             button.setText(selectedCharacter.getName().substring(0, 1)); // Representación del personaje
             button.setEnabled(false);
-
-            // Deshabilitar o eliminar el personaje del ComboBox
             view.disableCharacterOption(selectedCharacter);
         }
     }

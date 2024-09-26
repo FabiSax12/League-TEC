@@ -3,32 +3,33 @@ package models;
 import java.util.ArrayList;
 
 public class Character extends Entity {
-    protected String name;
-    protected int level;
-    protected int mana;
-    protected int attackMax;
-    protected int defenseMax;
-    protected int movements;
-    protected Element element;
-    protected ArrayList<ASkill> abilities;
+    private final String name;
+    private int level;
+    private int mana;
+    private int damage;
+    private int defense;
+    private int movements;
+    private boolean dead;
+    private final Element element;
+    private ArrayList<ASkill> skills;
 
     public Character(String name, float health, int mana, int attack, Element element) {
         this.name = name;
         this.health = health;
         this.mana = mana;
-        this.attackMax = attack;
+        this.damage = attack;
         this.element = element;
         this.level = 1;
-        this.defenseMax = 100;
+        this.defense = 100;
         this.movements = 1;
-        this.abilities = new ArrayList<>();
+        this.skills = new ArrayList<>();
     }
 
     public void move() {
 
     }
 
-    public void useAbility() {
+    public void useSkill(ASkill skill) {
 
     }
 
@@ -36,9 +37,13 @@ public class Character extends Entity {
 
     }
 
-    public void addAbility(ASkill ability) {
-        this.abilities.add(ability);
+    public void addSkill(ASkill skill) {
+        this.skills.add(skill);
     }
+
+    public void removeSkill(ASkill skill) {}
+
+    public void levelUp() {}
 
     // Getters
     public String getName() {
@@ -57,12 +62,12 @@ public class Character extends Entity {
         return mana;
     }
 
-    public int getAttackMax() {
-        return attackMax;
+    public int getDamage() {
+        return damage;
     }
 
-    public int getDefenseMax() {
-        return defenseMax;
+    public int getDefense() {
+        return defense;
     }
 
     public int getMovements() {
@@ -72,6 +77,8 @@ public class Character extends Entity {
     public Element getElement() {
         return element;
     }
+
+    public boolean isDead() {return dead;}
 
     // Setters
     public void setHealth(float health) {
@@ -90,9 +97,11 @@ public class Character extends Entity {
         this.movements = movements;
     }
 
-    public void setAttackMax(int attackMax) {
-        this.attackMax = attackMax;
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
+
+    public void setDead(boolean dead) {this.dead = dead;}
 
     @Override
     public String toString() {
