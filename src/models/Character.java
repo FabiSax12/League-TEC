@@ -4,14 +4,15 @@ import java.util.ArrayList;
 
 public class Character extends Entity {
     private final String name;
+    private String spritePath;
     private int level;
     private int mana;
     private int damage;
-    private int defense;
+    private final int defense;
     private int movements;
     private boolean dead;
     private final Element element;
-    private ArrayList<ASkill> skills;
+    private final ArrayList<ASkill> skills;
 
     public Character(String name, float health, int mana, int attack, Element element) {
         this.name = name;
@@ -23,6 +24,7 @@ public class Character extends Entity {
         this.defense = 100;
         this.movements = 1;
         this.skills = new ArrayList<>();
+        this.spritePath = "/assets/sprite.png";
     }
 
     public void move() {
@@ -48,6 +50,10 @@ public class Character extends Entity {
     // Getters
     public String getName() {
         return name;
+    }
+
+    public String getSpritePath() {
+        return spritePath;
     }
 
     public float getHealth() {
@@ -76,6 +82,10 @@ public class Character extends Entity {
 
     public Element getElement() {
         return element;
+    }
+
+    public ASkill[] getSkills() {
+        return skills.toArray(new ASkill[skills.size()]);
     }
 
     public boolean isDead() {return dead;}

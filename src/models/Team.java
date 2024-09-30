@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 public class Team {
     private final String name;
+    private Player player;
     private final ArrayList<Character> characters;
     private final ArrayList<Tower> towers;
 
-    public Team(String name) {
-        this.name = name;
+    public Team(Player player) {
+        this.name = player.getName();
+        this.player = player;
         this.characters = new ArrayList<>();
         this.towers = new ArrayList<>();
     }

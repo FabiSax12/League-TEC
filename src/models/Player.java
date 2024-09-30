@@ -34,4 +34,9 @@ public class Player {
     public void setGames(ArrayList<Game> games) {
         this.games = games;
     }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }
