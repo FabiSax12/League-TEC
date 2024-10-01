@@ -32,7 +32,7 @@ public class CharacterSelectionController {
         }
 
         if (listModel.size() >= 3) {
-            JOptionPane.showMessageDialog(view, team.getName() + " ya ha seleccionado 5 personajes.");
+            JOptionPane.showMessageDialog(view, team.getName() + " ya ha seleccionado 3 personajes.");
             return;
         }
 

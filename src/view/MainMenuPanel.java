@@ -15,7 +15,7 @@ public class MainMenuPanel extends JPanel {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(4, 1, 10, 10));
+        buttonPanel.setLayout(new GridLayout(4, 1, 10, 30));
 
         JButton btnCreateGame = new Button("Crear Partida");
         JButton btnStatistics = new Button("Ver Estadísticas");
