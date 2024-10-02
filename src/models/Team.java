@@ -19,8 +19,8 @@ public class Team {
         this.characters.add(character);
     }
 
-    public void addTower(Tower tower) {
-        this.towers.add(tower);
+    public void addTower() {
+        this.towers.add(new Tower());
     }
 
     public ArrayList<Character> getCharacters() {

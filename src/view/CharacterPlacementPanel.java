@@ -1,6 +1,7 @@
 package view;
 
 import models.Character;
+import models.Entity;
 import models.Team;
 import models.Tower;
 import view.components.Button;
@@ -14,9 +15,9 @@ public class CharacterPlacementPanel extends JPanel {
     private final JButton[][] gridButtons;
     private final Team team1;
     private final Team team2;
-    private final DefaultListModel<Character> team1Characters;
-    private final DefaultListModel<Character> team2Characters;
-    private final JList<Character> selectionList;
+    private final DefaultListModel<Entity> team1Characters;
+    private final DefaultListModel<Entity> team2Characters;
+    private final JList<Entity> selectionList;
     private int team1TowersPlaced = 0;
     private int team2TowersPlaced = 0;
     private final JLabel statusLabel;
@@ -28,9 +29,18 @@ public class CharacterPlacementPanel extends JPanel {
         this.team1Characters = new DefaultListModel<>();
         this.team2Characters = new DefaultListModel<>();
         ArrayList<Character> tempList = team1.getCharacters();
-        for (Character c:tempList){team1Characters.addElement(c);}
+        for (Entity c:tempList){team1Characters.addElement(c);}
         tempList = team2.getCharacters();
-        for (Character c:tempList){team2Characters.addElement(c);}
+        for (Entity c:tempList){team2Characters.addElement(c);}
+
+        ArrayList<Tower> tempTList = team1.getTowers();
+        System.out.println("El team1 uno tiene " + tempTList.size() + " Torres");
+        for (Entity c:tempTList){team1Characters.addElement(c);}
+//        tempTList = team2.getTowers();
+//        for (Entity c:tempTList){team2Characters.addElement(c);}
+//        System.out.println("El team2 uno tiene " + tempTList.size() + " Torres");
+
+
 
 
         selectionList = new JList<>(team1Characters);
@@ -110,7 +120,6 @@ public class CharacterPlacementPanel extends JPanel {
 
     private void placeCharacter(int row, int col, JButton button) {
         if (row < 5 && team1TowersPlaced < 1) {
-            team1.addTower(new Tower());
             button.setBackground(Color.BLUE);
             button.setEnabled(false);
             team1TowersPlaced++;
@@ -118,7 +127,6 @@ public class CharacterPlacementPanel extends JPanel {
         }
 
         else if (row >= 5 && team2TowersPlaced < 1) {
-            team2.addTower(new Tower());
             button.setBackground(Color.RED);
             button.setEnabled(false);
             team2TowersPlaced++;
