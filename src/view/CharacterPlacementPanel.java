@@ -20,8 +20,10 @@ public class CharacterPlacementPanel extends JPanel {
     private final JList<Entity> selectionList;
     private int team1TowersPlaced = 0;
     private int team2TowersPlaced = 0;
-    private final JLabel statusLabel;
+    private JLabel statusLabel;
     private final JButton confirmButton;
+    private boolean firstPlayerTime = true;
+    private JLabel playerLabel;
 
     public CharacterPlacementPanel(MainGameWindow mainWindow, Team team1, Team team2) {
         this.team1 = team1;
@@ -36,11 +38,9 @@ public class CharacterPlacementPanel extends JPanel {
         ArrayList<Tower> tempTList = team1.getTowers();
         System.out.println("El team1 uno tiene " + tempTList.size() + " Torres");
         for (Entity c:tempTList){team1Characters.addElement(c);}
-//        tempTList = team2.getTowers();
-//        for (Entity c:tempTList){team2Characters.addElement(c);}
-//        System.out.println("El team2 uno tiene " + tempTList.size() + " Torres");
-
-
+        tempTList = team2.getTowers();
+        for (Entity c:tempTList){team2Characters.addElement(c);}
+        System.out.println("El team2 uno tiene " + tempTList.size() + " Torres");
 
 
         selectionList = new JList<>(team1Characters);
@@ -51,7 +51,7 @@ public class CharacterPlacementPanel extends JPanel {
 
         setLayout(new BorderLayout());
         JLabel titleLabel = new JLabel("Coloca tus Personajes", JLabel.CENTER);
-        JLabel playerLabel = new JLabel(team1.getName()+" coloca tus personajes", JLabel.CENTER);
+        playerLabel = new JLabel(team1.getName()+" coloca tus personajes", JLabel.CENTER);
         titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
         playerLabel.setFont(new Font("Serif", Font.BOLD, 12));
         JPanel labelsPanel = new JPanel(new BorderLayout());
@@ -119,22 +119,48 @@ public class CharacterPlacementPanel extends JPanel {
     }
 
     private void placeCharacter(int row, int col, JButton button) {
-        if (row < 5 && team1TowersPlaced < 1) {
-            button.setBackground(Color.BLUE);
-            button.setEnabled(false);
-            team1TowersPlaced++;
-            statusLabel.setText("Jugador 2 coloca las torres");
-        }
+        if(selectionList.getSelectedValue() == null){
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Debes seleccionar un personaje para agregarlo.",
+                    "Erro de selección",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }else{
+            if (firstPlayerTime) {
+                button.setBackground(Color.BLUE);
+                button.setEnabled(false);
+                int selection = selectionList.getSelectedIndex();
+                team1Characters.remove(selection);
+                if (team1Characters.isEmpty()){changePlayer();}
+            }else{
+                button.setBackground(Color.RED);
+                button.setEnabled(false);
+                int selection = selectionList.getSelectedIndex();
+                team2Characters.remove(selection);
+                if (team1Characters.isEmpty()){
+                    confirmButton.setEnabled(true);
+                }
+            }
 
-        else if (row >= 5 && team2TowersPlaced < 1) {
-            button.setBackground(Color.RED);
-            button.setEnabled(false);
-            team2TowersPlaced++;
-            statusLabel.setText("Ambos jugadores han colocado las torres.");
-        }
-
-        if (team1TowersPlaced >= 1 && team2TowersPlaced >= 1) {
-            confirmButton.setEnabled(true);
+//            else if (row >= 5 && team2TowersPlaced < 1) {
+//                button.setBackground(Color.RED);
+//                button.setEnabled(false);
+//                team2TowersPlaced++;
+//                statusLabel.setText("Ambos jugadores han colocado las torres.");
+//            }
+//
+//            if (team1TowersPlaced >= 1 && team2TowersPlaced >= 1) {
+//                confirmButton.setEnabled(true);
+//            }
         }
     }
+    private void changePlayer() {
+        firstPlayerTime = false;
+        SwingUtilities.invokeLater(() -> {// Asegurar que la actualización de la interfaz ocurra en el Event Dispatch Thread
+            playerLabel.setText(team2.getName()+" coloca tus personajes");
+            selectionList.setModel(team2Characters);
+        });
+    }
+
 }
