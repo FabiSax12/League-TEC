@@ -1,6 +1,6 @@
 package view;
 
-import view.components.Button;
+import view.components.ButtonComponent;
 import view.components.CustomColors;
 
 import javax.swing.*;
@@ -12,16 +12,16 @@ public class MainMenuPanel extends JPanel {
         setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel("League TEC", JLabel.CENTER);
-        titleLabel.setFont(new Font("Serif", Font.BOLD, 36));
+        titleLabel.setFont(new Font("Consolas", Font.BOLD, 36));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(4, 1, 10, 10));
 
-        JButton btnCreateGame = new Button("Crear Partida", CustomColors.BLUE);
-        JButton btnStatistics = new Button("Ver Estadísticas", CustomColors.BLUE);
-        JButton btnGallery = new Button("Galería de Personajes", CustomColors.BLUE);
-        JButton btnClose = new Button("Salir", CustomColors.RED);
+        JButton btnCreateGame = new ButtonComponent("Crear Partida", CustomColors.BLUE);
+        JButton btnStatistics = new ButtonComponent("Estadísticas", CustomColors.BLUE);
+        JButton btnGallery = new ButtonComponent("Galería de Personajes", CustomColors.BLUE);
+        JButton btnClose = new ButtonComponent("Salir", CustomColors.RED);
 
         btnCreateGame.addActionListener(e -> mainWindow.showPanel("CreateGame"));
         btnStatistics.addActionListener(e -> mainWindow.showPanel("Statistics"));

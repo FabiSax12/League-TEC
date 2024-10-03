@@ -1,5 +1,39 @@
 {
-  "players": [],
-  "games": [],
+  "players": [
+    {
+      "id": 1,
+      "name": "Fabian",
+      "statistics": {
+        "playedGames": 2,
+        "wins": 1,
+        "loses": 1,
+        "games": [1, 2]
+      }
+    },
+    {
+      "id": 2,
+      "name": "Laura",
+      "statistics": {
+        "playedGames": 2,
+        "wins": 1,
+        "loses": 1,
+        "games": [1, 2]
+      }
+    }
+  ],
+  "games": [
+    {
+      "id": 1,
+      "winner": "Fabian",
+      "players": [1, 2],
+      (...etc)
+    },
+    {
+      "id": 2,
+      "winner": "Laura",
+      "players": [1, 2],
+      (...etc)
+    }
+  ],
   "characters": []
 }

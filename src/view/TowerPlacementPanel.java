@@ -2,7 +2,7 @@ package view;
 
 import models.Team;
 import models.Tower;
-import view.components.Button;
+import view.components.ButtonComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,7 @@ public class TowerPlacementPanel extends JPanel {
         setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel("Coloca tus torres", JLabel.CENTER);
-        titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
+        titleLabel.setFont(new Font("Consolas", Font.BOLD, 24));
         add(titleLabel, BorderLayout.NORTH);
 
         JPanel gridPanel = new JPanel(new GridLayout(10, 10, 5, 5));
@@ -49,7 +49,7 @@ public class TowerPlacementPanel extends JPanel {
         statusLabel = new JLabel("Jugador 1 coloca las torres", JLabel.CENTER);
         add(statusLabel, BorderLayout.SOUTH);
 
-        confirmButton = new Button("Confirmar");
+        confirmButton = new ButtonComponent("Confirmar");
         confirmButton.setEnabled(false);
         confirmButton.addActionListener(e -> {
             if (team1TowersPlaced >= 1 && team2TowersPlaced >= 1) {

@@ -2,7 +2,7 @@ package view;
 
 import models.Character;
 import models.ASkill;
-import view.components.Button;
+import view.components.ButtonComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ public class CharacterDetailPanel extends JPanel {
         setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel(character.getName(), JLabel.CENTER);
-        titleLabel.setFont(new Font("Serif", Font.BOLD, 28));
+        titleLabel.setFont(new Font("Consolas", Font.BOLD, 28));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         add(titleLabel, BorderLayout.NORTH);
 
@@ -48,7 +48,7 @@ public class CharacterDetailPanel extends JPanel {
 
         add(skillsPanel, BorderLayout.SOUTH);
 
-        JButton btnBack = new Button("Volver a la galería");
+        JButton btnBack = new ButtonComponent("Volver a la galería");
         btnBack.addActionListener(e -> mainWindow.showPanel("Gallery"));
 
         JPanel backButtonPanel = new JPanel();
@@ -62,13 +62,13 @@ public class CharacterDetailPanel extends JPanel {
         skillsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JLabel skillsLabel = new JLabel("Habilidades:", JLabel.CENTER);
-        skillsLabel.setFont(new Font("Serif", Font.BOLD, 22));
+        skillsLabel.setFont(new Font("Consolas", Font.BOLD, 22));
         skillsPanel.add(skillsLabel, BorderLayout.NORTH);
 
         JPanel skillListPanel = new JPanel(new GridLayout(0, 1, 5, 5));
         for (ASkill skill : character.getSkills()) {
             JLabel skillLabel = new JLabel("- " + skill.getName() + " (Costo de maná: " + skill.getManaCost() + ")");
-            skillLabel.setFont(new Font("Serif", Font.PLAIN, 16));
+            skillLabel.setFont(new Font("Consolas", Font.PLAIN, 16));
             skillListPanel.add(skillLabel);
         }
         skillsPanel.add(skillListPanel, BorderLayout.CENTER);
@@ -79,12 +79,12 @@ public class CharacterDetailPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = row;
         JLabel nameLabel = new JLabel(label);
-        nameLabel.setFont(new Font("Serif", Font.BOLD, 18));
+        nameLabel.setFont(new Font("Consolas", Font.BOLD, 18));
         panel.add(nameLabel, gbc);
 
         gbc.gridx = 1;
         JLabel valueLabel = new JLabel(value);
-        valueLabel.setFont(new Font("Serif", Font.PLAIN, 18));
+        valueLabel.setFont(new Font("Consolas", Font.PLAIN, 18));
         panel.add(valueLabel, gbc);
     }
 }

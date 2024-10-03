@@ -2,17 +2,21 @@ package view.components;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class Button extends JButton{
-    public Button(String text) {
+public class ButtonComponent extends JButton{
+    public ButtonComponent(String text) {
         setText(text);
-        setFont(new Font("Arial", Font.PLAIN, 16));
+        setFont(new Font("Consolas", Font.PLAIN, 16));
         setFocusPainted(false);
         setBackground(new Color(220, 220, 220));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mouseUI();
     }
 
-    public Button(String text, CustomColors color) {
+    public ButtonComponent(String text, CustomColors color) {
         setText(text);
         setFont(new Font("Consolas", Font.PLAIN, 16));
         setFocusPainted(false);
@@ -34,5 +38,16 @@ public class Button extends JButton{
                 break;
         }
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mouseUI();
+    }
+
+    private void mouseUI() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+        });
     }
 }
