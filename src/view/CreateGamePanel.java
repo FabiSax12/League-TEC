@@ -2,6 +2,7 @@ package view;
 
 import models.Player;
 import view.components.Button;
+import view.components.CustomColors;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,8 +63,8 @@ public class CreateGamePanel extends JPanel {
         selectPlayersPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         add(selectPlayersPanel, BorderLayout.CENTER);
 
-        JButton btnBack = new Button("Volver al Menú");
-        JButton btnCreateGame = new Button("Crear Game");
+        JButton btnBack = new Button("Volver al Menú", CustomColors.RED);
+        JButton btnCreateGame = new Button("Continuar", CustomColors.GREEN);
         btnBack.addActionListener(e -> mainWindow.showPanel("Menu"));
         btnCreateGame.addActionListener(e -> mainWindow.startGameWindow(
                 player1ComboBox.getItemAt(player1ComboBox.getSelectedIndex()),

@@ -1,6 +1,7 @@
 package view;
 
 import view.components.Button;
+import view.components.CustomColors;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,10 +18,10 @@ public class MainMenuPanel extends JPanel {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(4, 1, 10, 10));
 
-        JButton btnCreateGame = new Button("Crear Partida");
-        JButton btnStatistics = new Button("Ver Estadísticas");
-        JButton btnGallery = new Button("Galería de Personajes");
-        JButton btnClose = new Button("Salir");
+        JButton btnCreateGame = new Button("Crear Partida", CustomColors.BLUE);
+        JButton btnStatistics = new Button("Ver Estadísticas", CustomColors.BLUE);
+        JButton btnGallery = new Button("Galería de Personajes", CustomColors.BLUE);
+        JButton btnClose = new Button("Salir", CustomColors.RED);
 
         btnCreateGame.addActionListener(e -> mainWindow.showPanel("CreateGame"));
         btnStatistics.addActionListener(e -> mainWindow.showPanel("Statistics"));

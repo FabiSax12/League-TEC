@@ -4,6 +4,7 @@ import controller.CharacterSelectionController;
 import models.*;
 import models.Character;
 import view.components.Button;
+import view.components.CustomColors;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,7 +56,7 @@ public class CharacterSelection extends JPanel {
         mainPanel.add(selectionPanel);
         mainPanel.add(player2Panel);
 
-        confirmButton = new Button("Confirmar Selección");
+        confirmButton = new Button("Confirmar Selección", CustomColors.GREEN);
         confirmButton.setEnabled(false);
 
         add(mainPanel, BorderLayout.CENTER);
