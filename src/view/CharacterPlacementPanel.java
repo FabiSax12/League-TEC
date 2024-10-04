@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 public class CharacterPlacementPanel extends JPanel {
     private final MatrixButton[][] gridButtons;
@@ -20,9 +19,6 @@ public class CharacterPlacementPanel extends JPanel {
     private final DefaultListModel<Entity> team1Characters;
     private final DefaultListModel<Entity> team2Characters;
     private final JList<Entity> selectionList;
-    private int team1TowersPlaced = 0;
-    private int team2TowersPlaced = 0;
-    private JLabel statusLabel;
     private final JButton confirmButton;
     private boolean firstPlayerTime = true;
     private JLabel playerLabel;
@@ -82,10 +78,8 @@ public class CharacterPlacementPanel extends JPanel {
                 button.setBackground(Color.LIGHT_GRAY);
                 button.identifier = identifierCounter;
                 identifierCounter++;
-                int finalRow = row;
-                int finalCol = col;
 
-                button.addActionListener(e -> placeCharacter(finalRow, finalCol, button));
+                button.addActionListener(e -> placeCharacter(button));
 
                 gridButtons[row][col] = button;
                 gridCharactersPanel.add(button);
@@ -103,19 +97,9 @@ public class CharacterPlacementPanel extends JPanel {
 
         add(generalPanel, BorderLayout.CENTER);
 
-        statusLabel = new JLabel("Jugador 1 coloca las torres", JLabel.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
-
         confirmButton = new Button("Confirmar");
         confirmButton.setEnabled(false);
-        confirmButton.addActionListener(e -> {
-            if (team1TowersPlaced >= 1 && team2TowersPlaced >= 1) {
-                //mainWindow.startGame(team1, team2);
-                System.out.println("Iniciar partida");
-            } else {
-                JOptionPane.showMessageDialog(this, "Cada jugador debe colocar al menos 1 torre.", "Error", JOptionPane.WARNING_MESSAGE);
-            }
-        });
+        confirmButton.addActionListener(e -> mainWindow.startGame(team1, team2));
 
         JPanel controlPanel = new JPanel();
         controlPanel.add(confirmButton);
@@ -124,7 +108,7 @@ public class CharacterPlacementPanel extends JPanel {
         setVisible(true);
     }
 
-    private void placeCharacter(int row, int col, MatrixButton button) {
+    private void placeCharacter(MatrixButton button) {
         if(selectionList.getSelectedValue() == null){
             JOptionPane.showMessageDialog(
                     this,
@@ -148,7 +132,7 @@ public class CharacterPlacementPanel extends JPanel {
                 team2Characters.remove(selection);
                 if (team2Characters.isEmpty()){
                     confirmButton.setEnabled(true);
-                    desableMatrixButtons();
+                    disableMatrixButtons();
                 }
             }
         }
@@ -160,7 +144,7 @@ public class CharacterPlacementPanel extends JPanel {
             selectionList.setModel(team2Characters);
         });
     }
-    private void desableMatrixButtons(){
+    private void disableMatrixButtons(){
         for(MatrixButton[] buttonRow: gridButtons){for(MatrixButton button: buttonRow){button.setEnabled(false);}}
     }
     private boolean validatePlayerArea(MatrixButton button){
