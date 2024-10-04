@@ -3,7 +3,9 @@ package view;
 import controller.CharacterSelectionController;
 import models.*;
 import models.Character;
-import view.components.Button;
+import view.components.ButtonComponent;
+import view.components.CustomColors;
+import view.components.ListComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,21 +32,21 @@ public class CharacterSelection extends JPanel {
         List<Character> availableCharacters = controller.getAvailableCharacters();
         availableCharacters.forEach(availableListModel::addElement);
 
-        selectionList = new JList<>(availableListModel);
+        selectionList = new ListComponent<>(availableListModel);
         selectionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JPanel player1Panel = new JPanel(new BorderLayout());
         player1Panel.setBorder(BorderFactory.createTitledBorder(team1.getName()));
-        JList<Character> player1List = new JList<>(listModel1);
+        JList<Character> player1List = new ListComponent<>(listModel1);
         player1Panel.add(new JScrollPane(player1List), BorderLayout.CENTER);
-        JButton addButton1 = new Button("Añadir a " + team1.getName());
+        JButton addButton1 = new ButtonComponent("Añadir a " + team1.getName());
         player1Panel.add(addButton1, BorderLayout.SOUTH);
 
         JPanel player2Panel = new JPanel(new BorderLayout());
         player2Panel.setBorder(BorderFactory.createTitledBorder(team2.getName()));
-        JList<Character> player2List = new JList<>(listModel2);
+        JList<Character> player2List = new ListComponent<>(listModel2);
         player2Panel.add(new JScrollPane(player2List), BorderLayout.CENTER);
-        JButton addButton2 = new Button("Añadir a " + team2.getName());
+        JButton addButton2 = new ButtonComponent("Añadir a " + team2.getName());
         player2Panel.add(addButton2, BorderLayout.SOUTH);
 
         JPanel selectionPanel = new JPanel(new BorderLayout());
@@ -55,7 +57,7 @@ public class CharacterSelection extends JPanel {
         mainPanel.add(selectionPanel);
         mainPanel.add(player2Panel);
 
-        confirmButton = new Button("Confirmar Selección");
+        confirmButton = new ButtonComponent("Confirmar Selección", CustomColors.GREEN);
         confirmButton.setEnabled(false);
 
         add(mainPanel, BorderLayout.CENTER);

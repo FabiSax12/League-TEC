@@ -1,5 +1,7 @@
 package models;
 
+import org.json.JSONObject;
+
 public abstract class ASkill {
     protected String name;
     protected int manaCost;
@@ -13,6 +15,14 @@ public abstract class ASkill {
 
     // Método abstracto que se implementará en cada tipo de habilidad
     public abstract void use(Character user, Character target);
+
+    public JSONObject toJson() {
+        JSONObject jsonSkill = new JSONObject();
+        jsonSkill.put("name", this.name);
+        jsonSkill.put("manaCost", this.manaCost);
+        jsonSkill.put("element", this.element.toString());
+        return jsonSkill;
+    }
 
     // Getters y setters
     public String getName() {
