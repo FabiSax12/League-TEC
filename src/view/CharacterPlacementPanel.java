@@ -7,7 +7,7 @@ import view.components.ButtonComponent;
 import javax.swing.*;
 import java.awt.*;
 
-public class TowerPlacementPanel extends JPanel {
+public class CharacterPlacementPanel extends JPanel {
     private final JButton[][] gridButtons;
     private final Team team1;
     private final Team team2;
@@ -16,7 +16,7 @@ public class TowerPlacementPanel extends JPanel {
     private final JLabel statusLabel;
     private final JButton confirmButton;
 
-    public TowerPlacementPanel(MainGameWindow mainWindow, Team team1, Team team2) {
+    public CharacterPlacementPanel(MainGameWindow mainWindow, Team team1, Team team2) {
         this.team1 = team1;
         this.team2 = team2;
 

@@ -1,6 +1,5 @@
 package view;
 
-import controller.CharacterSelectionController;
 import models.*;
 import models.Character;
 
@@ -55,7 +54,7 @@ public class MainGameWindow extends JFrame {
     }
 
     public void startGame(Team team1, Team team2) {
-        mainPanel.add(new TowerPlacementPanel(this, team1, team2), "TowerPlacement");
+        mainPanel.add(new CharacterPlacementPanel(this, team1, team2), "TowerPlacement");
         cardLayout.show(mainPanel, "TowerPlacement");
     }
 }
