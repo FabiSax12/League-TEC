@@ -1,6 +1,5 @@
 package view;
 
-import controller.CharacterSelectionController;
 import models.*;
 import models.Character;
 
@@ -48,14 +47,13 @@ public class MainGameWindow extends JFrame {
         Team team1 = new Team(player1);
         Team team2 = new Team(player2);
 
-        Match game = new Match(ArenaFactory.create(), team1, team2);
         JPanel selectCharacters = new CharacterSelection(this, team1, team2);
         mainPanel.add(selectCharacters, "SelectCharacters");
         cardLayout.show(mainPanel, "SelectCharacters");
     }
 
     public void startGame(Team team1, Team team2) {
-        mainPanel.add(new TowerPlacementPanel(this, team1, team2), "TowerPlacement");
-        cardLayout.show(mainPanel, "TowerPlacement");
+        mainPanel.add(new CharacterPlacementPanel(this, team1, team2), "CharacterPlacementPanel");
+        cardLayout.show(mainPanel, "CharacterPlacementPanel");
     }
 }

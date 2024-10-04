@@ -13,8 +13,8 @@ public class Match {
         this.team2 = team2;
 
         for (int i = 0; i < 3; i++) {
-            this.team1.addTower(new Tower());
-            this.team2.addTower(new Tower());
+            this.team1.addTower();
+            this.team2.addTower();
         }
     }
 
