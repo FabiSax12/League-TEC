@@ -9,4 +9,8 @@ public class Tower extends Entity {
     public void attack(Character target) {
 
     }
+    @Override
+    public String toString() {
+        return "Torre";
+    }
 }

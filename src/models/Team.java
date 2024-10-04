@@ -16,11 +16,11 @@ public class Team {
     }
 
     public void addCharacter(Character character) {
-
+        this.characters.add(character);
     }
 
-    public void addTower(Tower tower) {
-
+    public void addTower() {
+        this.towers.add(new Tower());
     }
 
     public ArrayList<Character> getCharacters() {
