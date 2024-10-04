@@ -5,6 +5,8 @@ import models.Entity;
 import models.Team;
 import models.Tower;
 import view.components.Button;
+import view.components.MatrixButton;
+
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -12,7 +14,7 @@ import java.awt.*;
 import java.util.List;
 
 public class CharacterPlacementPanel extends JPanel {
-    private final JButton[][] gridButtons;
+    private final MatrixButton[][] gridButtons;
     private final Team team1;
     private final Team team2;
     private final DefaultListModel<Entity> team1Characters;
@@ -42,6 +44,7 @@ public class CharacterPlacementPanel extends JPanel {
         for (Entity c:tempTList){team2Characters.addElement(c);}
         System.out.println("El team2 uno tiene " + tempTList.size() + " Torres");
 
+        mainWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         selectionList = new JList<>(team1Characters);
         selectionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -71,11 +74,14 @@ public class CharacterPlacementPanel extends JPanel {
         JPanel gridCharactersPanel = new JPanel(new GridLayout(10, 10, 5, 5));
         gridCharactersPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        gridButtons = new JButton[10][10];
+        gridButtons = new MatrixButton[10][10];
+        int identifierCounter = 0;
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
-                JButton button = new JButton();
+                MatrixButton button = new MatrixButton();
                 button.setBackground(Color.LIGHT_GRAY);
+                button.identifier = identifierCounter;
+                identifierCounter++;
                 int finalRow = row;
                 int finalCol = col;
 
@@ -118,41 +124,33 @@ public class CharacterPlacementPanel extends JPanel {
         setVisible(true);
     }
 
-    private void placeCharacter(int row, int col, JButton button) {
+    private void placeCharacter(int row, int col, MatrixButton button) {
         if(selectionList.getSelectedValue() == null){
             JOptionPane.showMessageDialog(
                     this,
                     "Debes seleccionar un personaje para agregarlo.",
-                    "Erro de selección",
+                    "Error de selección",
                     JOptionPane.WARNING_MESSAGE
             );
         }else{
-            if (firstPlayerTime) {
+            if (firstPlayerTime && validatePlayerArea(button)) {
                 button.setBackground(Color.BLUE);
                 button.setEnabled(false);
+                button.setText(String.valueOf(button.getIdentifier()));
                 int selection = selectionList.getSelectedIndex();
                 team1Characters.remove(selection);
                 if (team1Characters.isEmpty()){changePlayer();}
-            }else{
+            }else if (validatePlayerArea(button)){
                 button.setBackground(Color.RED);
                 button.setEnabled(false);
+                button.setText(String.valueOf(button.getIdentifier()));
                 int selection = selectionList.getSelectedIndex();
                 team2Characters.remove(selection);
-                if (team1Characters.isEmpty()){
+                if (team2Characters.isEmpty()){
                     confirmButton.setEnabled(true);
+                    desableMatrixButtons();
                 }
             }
-
-//            else if (row >= 5 && team2TowersPlaced < 1) {
-//                button.setBackground(Color.RED);
-//                button.setEnabled(false);
-//                team2TowersPlaced++;
-//                statusLabel.setText("Ambos jugadores han colocado las torres.");
-//            }
-//
-//            if (team1TowersPlaced >= 1 && team2TowersPlaced >= 1) {
-//                confirmButton.setEnabled(true);
-//            }
         }
     }
     private void changePlayer() {
@@ -162,5 +160,15 @@ public class CharacterPlacementPanel extends JPanel {
             selectionList.setModel(team2Characters);
         });
     }
-
+    private void desableMatrixButtons(){
+        for(MatrixButton[] buttonRow: gridButtons){for(MatrixButton button: buttonRow){button.setEnabled(false);}}
+    }
+    private boolean validatePlayerArea(MatrixButton button){
+        int buttonID=button.getIdentifier();
+        if (firstPlayerTime){
+            return (50 - buttonID) >= 1;
+        }else{
+            return (50 - buttonID) <= 0;
+        }
+    }
 }
