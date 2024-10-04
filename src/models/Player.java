@@ -3,12 +3,21 @@ package models;
 import java.util.ArrayList;
 
 public class Player {
+    private int id;
     private String name;
     private Statistics statistics;
     private ArrayList<Game> games;
 
     public Player(String name) {
         this.name = name;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

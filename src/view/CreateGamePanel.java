@@ -1,5 +1,6 @@
 package view;
 
+import database.DB;
 import models.Player;
 import view.components.ButtonComponent;
 import view.components.ComboBoxComponent;
@@ -7,20 +8,17 @@ import view.components.CustomColors;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Predicate;
 
 public class CreateGamePanel extends JPanel {
-    private Player[] players = {
-            new Player("User 1"),
-            new Player("User 2"),
-            new Player("User 3"),
-    };
-
-    private final JComboBox<Player> player1ComboBox;
-    private final JComboBox<Player> player2ComboBox;
+    private final ArrayList<String> players;
+    private final JComboBox<String> player1ComboBox;
+    private final JComboBox<String> player2ComboBox;
 
     public CreateGamePanel(MainGameWindow mainWindow) {
+        players = DB.getPlayerNames();
+
         setLayout(new BorderLayout());
 
         JLabel label = new JLabel("Selecciona Jugadores para la Partida", JLabel.CENTER);
@@ -40,7 +38,7 @@ public class CreateGamePanel extends JPanel {
         gbc.gridy = 0;
         selectPlayersPanel.add(player1Label, gbc);
 
-        player1ComboBox = new ComboBoxComponent<>(players);
+        player1ComboBox = new ComboBoxComponent<>(players.toArray(new String[0]));
         gbc.gridx = 1;
         selectPlayersPanel.add(player1ComboBox, gbc);
 
@@ -51,7 +49,7 @@ public class CreateGamePanel extends JPanel {
         gbc.gridy = 1;
         selectPlayersPanel.add(player2Label, gbc);
 
-        player2ComboBox = new ComboBoxComponent<>(players);
+        player2ComboBox = new ComboBoxComponent<String>(players.toArray(new String[0]));
         gbc.gridx = 1;
         selectPlayersPanel.add(player2ComboBox, gbc);
 
@@ -72,8 +70,8 @@ public class CreateGamePanel extends JPanel {
         JButton btnCreateGame = new ButtonComponent("Continuar", CustomColors.GREEN);
         btnBack.addActionListener(e -> mainWindow.showPanel("Menu"));
         btnCreateGame.addActionListener(e -> {
-            Player p1 = player1ComboBox.getItemAt(player1ComboBox.getSelectedIndex());
-            Player p2 = player2ComboBox.getItemAt(player2ComboBox.getSelectedIndex());
+            Player p1 = DB.getPlayerByName(player1ComboBox.getItemAt(player1ComboBox.getSelectedIndex()));
+            Player p2 = DB.getPlayerByName(player2ComboBox.getItemAt(player2ComboBox.getSelectedIndex()));
 
             if (p1 == p2) {
                 JOptionPane.showMessageDialog(mainWindow, "Los jugadores deben ser diferentes");
@@ -93,12 +91,7 @@ public class CreateGamePanel extends JPanel {
     private void createNewProfile() {
         String newPlayerName = JOptionPane.showInputDialog(this, "Ingrese el nombre del nuevo jugador:", "Crear Perfil", JOptionPane.PLAIN_MESSAGE);
 
-        if (Arrays.stream(players).anyMatch(new Predicate<Player>() {
-            @Override
-            public boolean test(Player player) {
-                return player.getName() == newPlayerName;
-            }
-        })) {
+        if (players.contains(newPlayerName)) {
             JOptionPane.showMessageDialog(
                     this,
                     "El nombre del nuevo jugador ya existe",
@@ -106,10 +99,9 @@ public class CreateGamePanel extends JPanel {
                     JOptionPane.ERROR_MESSAGE
             );
         } else if (newPlayerName != null && !newPlayerName.trim().isEmpty()) {
-            Player newPlayer = new Player(newPlayerName);
-
-            player1ComboBox.addItem(newPlayer);
-            player2ComboBox.addItem(newPlayer);
+            DB.addProfile(newPlayerName);
+            player1ComboBox.addItem(newPlayerName);
+            player2ComboBox.addItem(newPlayerName);
 
             JOptionPane.showMessageDialog(
                     this,

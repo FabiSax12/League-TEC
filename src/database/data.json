@@ -1,39 +1,39 @@
 {
-  "players": [
-    {
-      "id": 1,
-      "name": "Fabian",
-      "statistics": {
-        "playedGames": 2,
-        "wins": 1,
-        "loses": 1,
-        "games": [1, 2]
-      }
-    },
-    {
-      "id": 2,
-      "name": "Laura",
-      "statistics": {
-        "playedGames": 2,
-        "wins": 1,
-        "loses": 1,
-        "games": [1, 2]
-      }
-    }
-  ],
-  "games": [
-    {
-      "id": 1,
-      "winner": "Fabian",
-      "players": [1, 2],
-      (...etc)
-    },
-    {
-      "id": 2,
-      "winner": "Laura",
-      "players": [1, 2],
-      (...etc)
-    }
-  ],
-  "characters": []
+    "characters": [],
+    "players": [
+        {
+            "name": "Fabian",
+            "id": 1,
+            "statistics": {
+                "wins": 0,
+                "playedGames": 0,
+                "loses": 0,
+                "deadCharacters": 0,
+                "destroyedTowers": 0
+            }
+        },
+        {
+            "name": "Sebastian",
+            "id": 2,
+            "statistics": {
+                "wins": 0,
+                "playedGames": 0,
+                "loses": 0,
+                "deadCharacters": 0,
+                "destroyedTowers": 0
+            }
+        },
+        {
+            "name": "David",
+            "id": 3,
+            "statistics": {
+                "wins": 0,
+                "playedGames": 0,
+                "loses": 0,
+                "deadCharacters": 0,
+                "destroyedTowers": 0
+            }
+        }
+    ],
+    "games": []
 }
