@@ -60,7 +60,7 @@ public class MainGameWindow extends JFrame {
     }
 
     public void startGameArena(Team team1, Team team2, MatrixButton[][] matrixButton) {
-        mainPanel.add(new CharacterPlacementPanel(this, team1, team2), "CharacterPlacementPanel");
-        cardLayout.show(mainPanel, "CharacterPlacementPanel");
+        mainPanel.add(new MainGameArena(this, team1, team2,matrixButton), "MainGameArena");
+        cardLayout.show(mainPanel, "MainGameArena");
     }
 }
