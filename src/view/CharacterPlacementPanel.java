@@ -99,7 +99,7 @@ public class CharacterPlacementPanel extends JPanel {
 
         confirmButton = new Button("Confirmar");
         confirmButton.setEnabled(false);
-        confirmButton.addActionListener(e -> mainWindow.startGame(team1, team2));
+        confirmButton.addActionListener(e -> mainWindow.startGameArena(team1, team2,gridButtons));
 
         JPanel controlPanel = new JPanel();
         controlPanel.add(confirmButton);
