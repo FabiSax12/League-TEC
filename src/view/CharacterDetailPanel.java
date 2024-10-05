@@ -6,6 +6,7 @@ import view.components.ButtonComponent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Objects;
 
 public class CharacterDetailPanel extends JPanel {
@@ -26,7 +27,9 @@ public class CharacterDetailPanel extends JPanel {
         gbc.weightx = 1;
 
         ImageIcon characterIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource(character.getSpritePath())));
-        JLabel imageLabel = new JLabel(new ImageIcon(characterIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH)));
+        Image originalImage = characterIcon.getImage();
+        Image scaledImage = getScaledImage(originalImage, 200, 200);
+        JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
         gbc.gridwidth = 2;
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -86,5 +89,19 @@ public class CharacterDetailPanel extends JPanel {
         JLabel valueLabel = new JLabel(value);
         valueLabel.setFont(new Font("Consolas", Font.PLAIN, 18));
         panel.add(valueLabel, gbc);
+    }
+
+    private Image getScaledImage(Image srcImg, int w, int h) {
+        BufferedImage scaledImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = scaledImage.createGraphics();
+
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2d.drawImage(srcImg, 0, 0, w, h, null);
+        g2d.dispose();
+
+        return scaledImage;
     }
 }

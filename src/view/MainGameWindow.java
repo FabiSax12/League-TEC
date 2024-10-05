@@ -5,12 +5,13 @@ import models.Character;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class MainGameWindow extends JFrame {
     private final CardLayout cardLayout;
     private final JPanel mainPanel;
 
-    public MainGameWindow() {
+    public MainGameWindow() throws IOException {
         setTitle("League TEC - Menú Principal");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);

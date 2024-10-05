@@ -4,7 +4,7 @@ import models.Character;
 import models.Entity;
 import models.Team;
 import models.Tower;
-import view.components.Button;
+import view.components.ButtonComponent;
 import view.components.MatrixButton;
 
 import java.util.ArrayList;
@@ -106,7 +106,7 @@ public class CharacterPlacementPanel extends JPanel {
         statusLabel = new JLabel("Jugador 1 coloca las torres", JLabel.CENTER);
         add(statusLabel, BorderLayout.SOUTH);
 
-        confirmButton = new Button("Confirmar");
+        confirmButton = new ButtonComponent("Confirmar");
         confirmButton.setEnabled(false);
         confirmButton.addActionListener(e -> {
             if (team1TowersPlaced >= 1 && team2TowersPlaced >= 1) {

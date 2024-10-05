@@ -17,7 +17,7 @@ public class Character extends Entity {
     private final Element element;
     private final ArrayList<ASkill> skills;
 
-    public Character(String name, float health, int mana, int attack, Element element) {
+    public Character(String name, float health, int mana, int attack, Element element, String spritePath) {
         this.name = name;
         this.health = health;
         this.mana = mana;
@@ -27,7 +27,7 @@ public class Character extends Entity {
         this.defense = 100;
         this.movements = 1;
         this.skills = new ArrayList<>();
-        this.spritePath = "/assets/sprite.png";
+        this.spritePath = spritePath;
     }
 
     public JSONObject toJson() {
@@ -67,8 +67,6 @@ public class Character extends Entity {
     public void addSkill(ASkill skill) {
         this.skills.add(skill);
     }
-
-    public void removeSkill(ASkill skill) {}
 
     public void levelUp() {}
 
