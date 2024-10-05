@@ -1,131 +1,263 @@
 package database;
 
-import models.Element;
+import models.Character;
 import models.Game;
 import models.Player;
 import models.Statistics;
-import models.Character;
+import models.Element;
 import models.skills.AttackSkill;
 import models.skills.BuffSkill;
 import models.skills.HealSkill;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class DB {
     private static final String filePath = System.getProperty("user.dir") + "\\src\\database\\data.json";
-    private static ArrayList<Player> players = new ArrayList<>();
-    private static ArrayList<Game> games = new ArrayList<>();
-    private static ArrayList<Character> characters = new ArrayList<>();
+    private static final ArrayList<Player> players = new ArrayList<>();
+    private static final ArrayList<Game> games = new ArrayList<>();
+    private static final ArrayList<Character> characters = new ArrayList<>();
+    private static int nextPlayerId = 1;
 
     public static void loadData() {
-        players = new ArrayList<>();
-        games = new ArrayList<>();
-        characters = new ArrayList<>();
+        players.clear();
+        games.clear();
+        characters.clear();
 
-        players.add(new Player("User 1"));
-        players.add(new Player("User 2"));
-        players.add(new Player("User 3"));
-        players.get(0).setStatistics(new Statistics(10, 6, 4, 20, 5));
-        players.get(1).setStatistics(new Statistics(8, 4, 4, 15, 3));
-        players.get(2).setStatistics(new Statistics(12, 8, 4, 25, 6));
+        try {
+            File file = new File(filePath);
 
-        AttackSkill fireball = new AttackSkill("Bola de Fuego", 50, 20, Element.FIRE);
-        AttackSkill rockSword = new AttackSkill("Espadazo de Piedra", 45, 15, Element.GROUND);
-        AttackSkill waterWhip = new AttackSkill("Látigo de Agua", 40, 12, Element.WATER);
-        AttackSkill airBlade = new AttackSkill("Hoja de Viento", 35, 10, Element.AIR);
-        AttackSkill lavaBurst = new AttackSkill("Explosión de Lava", 60, 25, Element.FIRE);
-        AttackSkill sandstormStrike = new AttackSkill("Golpe de Tormenta de Arena", 55, 20, Element.GROUND);
-        AttackSkill tidalWave = new AttackSkill("Ola Gigante", 70, 30, Element.WATER);
-        AttackSkill lightningBolt = new AttackSkill("Rayo Fulminante", 65, 22, Element.AIR);
-        AttackSkill meteorShower = new AttackSkill("Lluvia de Meteoros", 80, 35, Element.FIRE);
+            if (file.exists()) {
+                InputStream inputStream = new FileInputStream(file);
+                String jsonText = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+                JSONObject data = new JSONObject(jsonText);
 
-        HealSkill healingLight = new HealSkill("Luz Sanadora", 30, 15, Element.WATER);
-        HealSkill rejuvenatingMist = new HealSkill("Niebla Rejuvenecedora", 40, 18, Element.AIR);
-        HealSkill earthEmbrace = new HealSkill("Abrazo de la Tierra", 50, 20, Element.GROUND);
-        HealSkill infernalRevive = new HealSkill("Renacer Infernal", 45, 25, Element.FIRE);
-
-        BuffSkill powerBoost = new BuffSkill("Sobrecarga de Arena", "ataque", 1.5, 10, Element.GROUND);
-        BuffSkill flameAura = new BuffSkill("Aura Ígnea", "ataque", 1.3, 15, Element.FIRE);
-        BuffSkill tidalFortress = new BuffSkill("Fortaleza de Marea", "vida", 1.4, 12, Element.WATER);
-        BuffSkill windRush = new BuffSkill("Impulso del Viento", "velocidad", 1.5, 10, Element.AIR);
-        BuffSkill stoneSkin = new BuffSkill("Piel de Piedra", "defensa", 1.6, 18, Element.GROUND);
-
-        models.Character warrior = new models.Character("Guerrero de Tierra", 100, 50, 20, Element.GROUND);
-        models.Character fireMage = new models.Character("Mago de Fuego", 80, 100, 25, Element.FIRE);
-        models.Character waterPriest = new models.Character("Sacerdote del Agua", 70, 120, 15, Element.WATER);
-        models.Character airAssassin = new models.Character("Asesino del Aire", 85, 60, 30, Element.AIR);
-        models.Character stoneGolem = new models.Character("Gólem de Roca", 120, 40, 10, Element.GROUND);
-        models.Character flamePhoenix = new models.Character("Fénix de Llamas", 90, 80, 35, Element.FIRE);
-        models.Character tempestRanger = new models.Character("Guardabosques de la Tormenta", 95, 70, 22, Element.AIR);
-        models.Character tidalMonk = new models.Character("Monje de la Marea", 75, 110, 18, Element.WATER);
-        models.Character shadowReaper = new models.Character("Segador de Sombras", 80, 50, 40, Element.AIR);
-
-        fireMage.addSkill(fireball);
-        fireMage.addSkill(lavaBurst);
-        fireMage.addSkill(flameAura);
-        fireMage.addSkill(infernalRevive);
-
-        warrior.addSkill(rockSword);
-        warrior.addSkill(sandstormStrike);
-        warrior.addSkill(powerBoost);
-        warrior.addSkill(stoneSkin);
-
-        waterPriest.addSkill(waterWhip);
-        waterPriest.addSkill(tidalWave);
-        waterPriest.addSkill(healingLight);
-        waterPriest.addSkill(tidalFortress);
-
-        airAssassin.addSkill(airBlade);
-        airAssassin.addSkill(lightningBolt);
-        airAssassin.addSkill(rejuvenatingMist);
-        airAssassin.addSkill(windRush);
-
-        stoneGolem.addSkill(rockSword);
-        stoneGolem.addSkill(earthEmbrace);
-        stoneGolem.addSkill(stoneSkin);
-
-        flamePhoenix.addSkill(fireball);
-        flamePhoenix.addSkill(meteorShower);
-        flamePhoenix.addSkill(flameAura);
-
-        tempestRanger.addSkill(airBlade);
-        tempestRanger.addSkill(lightningBolt);
-        tempestRanger.addSkill(windRush);
-
-        tidalMonk.addSkill(waterWhip);
-        tidalMonk.addSkill(tidalWave);
-        tidalMonk.addSkill(healingLight);
-
-        shadowReaper.addSkill(lightningBolt);
-        shadowReaper.addSkill(rejuvenatingMist);
-        shadowReaper.addSkill(windRush);
-
-        // Añadir todos los personajes a la lista de disponibles
-        characters.add(warrior);
-        characters.add(fireMage);
-        characters.add(waterPriest);
-        characters.add(airAssassin);
-        characters.add(stoneGolem);
-        characters.add(flamePhoenix);
-        characters.add(tempestRanger);
-        characters.add(tidalMonk);
-        characters.add(shadowReaper);
+                parsePlayers(data);
+                parseGames(data);
+                parseCharacters(data);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void saveData(String data) {}
+    private static void parsePlayers(JSONObject data) {
+        JSONArray jsonPlayers = data.getJSONArray("players");
+        for (int i = 0; i < jsonPlayers.length(); i++) {
+            JSONObject jsonPlayer = jsonPlayers.getJSONObject(i);
+            Player player = new Player(jsonPlayer.getString("name"));
+            player.setId(jsonPlayer.getInt("id"));
+            JSONObject stats = jsonPlayer.getJSONObject("statistics");
+            player.setStatistics(new Statistics(
+                    stats.getInt("playedGames"),
+                    stats.getInt("wins"),
+                    stats.getInt("loses"),
+                    stats.getInt("deadCharacters"),
+                    stats.getInt("destroyedTowers")
+            ));
+            players.add(player);
+            nextPlayerId = Math.max(nextPlayerId, player.getId() + 1);
+        }
+    }
+
+    private static void parseGames(JSONObject data) {
+        JSONArray jsonGames = data.getJSONArray("games");
+        for (int i = 0; i < jsonGames.length(); i++) {
+            JSONObject jsonGame = jsonGames.getJSONObject(i);
+            Game game = new Game(UUID.randomUUID(), null, null, null, new Statistics(0,0,0,0,0));
+            game.setId(UUID.fromString(jsonGame.getString("id")));
+            Player winner = getPlayerByName(jsonGame.getString("winner"));
+            game.setWinner(winner);
+
+            ArrayList<Player> playersInGame = new ArrayList<>();
+            JSONArray jsonPlayersInGame = jsonGame.getJSONArray("players");
+            for (int j = 0; j < jsonPlayersInGame.length(); j++) {
+                Player playerInGame = getPlayerById(jsonPlayersInGame.getInt(j));
+                if (playerInGame != null) {
+                    playersInGame.add(playerInGame);
+                }
+            }
+            game.setPlayers(playersInGame);
+            games.add(game);
+        }
+    }
+
+    private static void parseCharacters(JSONObject data) {
+        JSONArray jsonCharacters = data.getJSONArray("characters");
+        for (int i = 0; i < jsonCharacters.length(); i++) {
+            JSONObject jsonCharacter = jsonCharacters.getJSONObject(i);
+            Element element = Element.valueOf(jsonCharacter.getString("element").toUpperCase());
+
+            Character character = new Character(
+                    jsonCharacter.getString("name"),
+                    jsonCharacter.getInt("health"),
+                    jsonCharacter.getInt("mana"),
+                    jsonCharacter.getInt("attack"),
+                    element,
+                    jsonCharacter.getString("sprite")
+            );
+
+            character.setLevel(jsonCharacter.optInt("level", 1));
+            character.setMovements(jsonCharacter.optInt("movements", 1));
+
+            parseSkills(jsonCharacter, character);
+
+            characters.add(character);
+        }
+    }
+
+    private static void parseSkills(JSONObject jsonCharacter, Character character) {
+        JSONArray skills = jsonCharacter.getJSONArray("skills");
+        for (int j = 0; j < skills.length(); j++) {
+            JSONObject skill = skills.getJSONObject(j);
+            String name = skill.getString("name");
+            int mana = skill.getInt("mana");
+            Element skillElement = Element.valueOf(skill.getString("element").toUpperCase());
+            String type = skill.getString("type");
+
+            switch (type) {
+                case "attack" -> {
+                    int damage = skill.getInt("damage");
+                    character.addSkill(new AttackSkill(name, damage, mana, skillElement));
+                }
+                case "buff" -> {
+                    String stat = skill.getString("stat");
+                    double boost = skill.getDouble("boost");
+                    character.addSkill(new BuffSkill(name, stat, boost, mana, skillElement));
+                }
+                case "heal" -> {
+                    int heal = skill.getInt("heal");
+                    character.addSkill(new HealSkill(name, heal, mana, skillElement));
+                }
+            }
+        }
+    }
+
+    public static void saveData() {
+        try {
+            JSONObject data = new JSONObject();
+
+            savePlayers(data);
+            saveGames(data);
+            saveCharacters(data);
+
+            FileWriter fileWriter = new FileWriter(filePath);
+            fileWriter.write(data.toString(4));
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void savePlayers(JSONObject data) {
+        JSONArray jsonPlayers = new JSONArray();
+
+        for (Player player : players) {
+            JSONObject jsonPlayer = new JSONObject();
+            jsonPlayer.put("id", player.getId());
+            jsonPlayer.put("name", player.getName());
+
+            JSONObject stats = new JSONObject();
+            Statistics playerStats = player.getStatistics();
+
+            stats.put("playedGames", playerStats.getPlayedGames());
+            stats.put("wins", playerStats.getWins());
+            stats.put("loses", playerStats.getLosses());
+            stats.put("deadCharacters", playerStats.getDeadCharacters());
+            stats.put("destroyedTowers", playerStats.getDestroyedTowers());
+
+            jsonPlayer.put("statistics", stats);
+            jsonPlayers.put(jsonPlayer);
+        }
+
+        data.put("players", jsonPlayers);
+    }
+
+    public static void saveGames(JSONObject data) {
+        JSONArray jsonGames = new JSONArray();
+        for (Game game : games) {
+            JSONObject jsonGame = new JSONObject();
+            jsonGame.put("id", game.getId());
+            jsonGame.put("winner", game.getWinner().getName());
+
+            JSONArray jsonPlayersInGame = new JSONArray();
+            for (Player player : game.getPlayers()) {
+                jsonPlayersInGame.put(player.getId());
+            }
+            jsonGame.put("players", jsonPlayersInGame);
+            jsonGames.put(jsonGame);
+        }
+        data.put("games", jsonGames);
+    }
+
+    public static void saveCharacters(JSONObject data) {
+        JSONArray jsonCharacters = new JSONArray();
+        for (Character character : characters) {
+            JSONObject jsonCharacter = character.toJson();
+            jsonCharacters.put(jsonCharacter);
+        }
+        data.put("characters", jsonCharacters);
+    }
+
+    public static void addProfile(String name) {
+        Player newPlayer = new Player(name);
+        newPlayer.setId(nextPlayerId++);
+        newPlayer.setStatistics(new Statistics(0, 0, 0, 0, 0));
+        players.add(newPlayer);
+        saveData();
+    }
+
+    public static ArrayList<String> getPlayerNames() {
+        ArrayList<String> names = new ArrayList<>();
+        for (Player player : players) {
+            names.add(player.getName());
+        }
+        return names;
+    }
 
     public static ArrayList<Player> getPlayers() {
-        loadData();
-        return players;
+        return new ArrayList<>(players);
     }
 
-    public static ArrayList<Game> getGames() {
-        loadData();
-        return games;
+    public static Statistics getPlayerStatisticsByName(String name) {
+        Player player = getPlayerByName(name);
+        if (player != null) {
+            return player.getStatistics();
+        }
+        return null;
     }
 
-    public static ArrayList<Character> getCharacters() {
-        loadData();
-        return characters;
+    public static void updatePlayerStatisticsByName(String name, Statistics newStats) {
+        Player player = getPlayerByName(name);
+        if (player != null) {
+            player.setStatistics(newStats);
+            saveData();
+        } else {
+            System.out.println("Jugador no encontrado.");
+        }
+    }
+
+    public static Player getPlayerByName(String name) {
+        for (Player player : players) {
+            if (player.getName().equalsIgnoreCase(name)) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public static Player getPlayerById(int id) {
+        for (Player player : players) if (player.getId() == id) return player;
+        return null;
+    }
+
+    public static List<Character> getCharacters() {
+        return new ArrayList<>(characters);
     }
 }

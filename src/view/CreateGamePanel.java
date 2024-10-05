@@ -1,26 +1,28 @@
 package view;
 
+import database.DB;
 import models.Player;
-import view.components.Button;
+import view.components.ButtonComponent;
+import view.components.ComboBoxComponent;
+import view.components.CustomColors;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CreateGamePanel extends JPanel {
-    private Player[] players = {
-            new Player("User 1"),
-            new Player("User 2"),
-            new Player("User 3"),
-    };
-
-    private final JComboBox<Player> player1ComboBox;
-    private final JComboBox<Player> player2ComboBox;
+    private final ArrayList<String> players;
+    private final JComboBox<String> player1ComboBox;
+    private final JComboBox<String> player2ComboBox;
 
     public CreateGamePanel(MainGameWindow mainWindow) {
+        players = DB.getPlayerNames();
+
         setLayout(new BorderLayout());
 
         JLabel label = new JLabel("Selecciona Jugadores para la Partida", JLabel.CENTER);
-        label.setFont(new Font("Serif", Font.BOLD, 24));
+        label.setFont(new Font("Consolas", Font.BOLD, 24));
         label.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         add(label, BorderLayout.NORTH);
 
@@ -29,29 +31,30 @@ public class CreateGamePanel extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        // Jugador 1
         JLabel player1Label = new JLabel("Jugador 1: ");
-        player1Label.setFont(new Font("Serif", Font.PLAIN, 18));
+        player1Label.setFont(new Font("Consolas", Font.PLAIN, 18));
         gbc.gridx = 0;
         gbc.gridy = 0;
         selectPlayersPanel.add(player1Label, gbc);
 
-        player1ComboBox = new JComboBox<>(players);
+        player1ComboBox = new ComboBoxComponent<>(players.toArray(new String[0]));
         gbc.gridx = 1;
         selectPlayersPanel.add(player1ComboBox, gbc);
 
+        // Jugador 2
         JLabel player2Label = new JLabel("Jugador 2: ");
-        player2Label.setFont(new Font("Serif", Font.PLAIN, 18));
+        player2Label.setFont(new Font("Consolas", Font.PLAIN, 18));
         gbc.gridx = 0;
         gbc.gridy = 1;
         selectPlayersPanel.add(player2Label, gbc);
 
-        player2ComboBox = new JComboBox<>(players);
+        player2ComboBox = new ComboBoxComponent<String>(players.toArray(new String[0]));
         gbc.gridx = 1;
         selectPlayersPanel.add(player2ComboBox, gbc);
-        player2ComboBox.setSelectedIndex(1);
 
-        JButton createProfileButton = new Button("Crear Perfil");
-        createProfileButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        JButton createProfileButton = new ButtonComponent("Crear Perfil");
+        createProfileButton.setFont(new Font("Consolas", Font.PLAIN, 16));
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.EAST;
@@ -62,13 +65,21 @@ public class CreateGamePanel extends JPanel {
         selectPlayersPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         add(selectPlayersPanel, BorderLayout.CENTER);
 
-        JButton btnBack = new Button("Volver al Menú");
-        JButton btnCreateGame = new Button("Crear Game");
+        // Botón para volver al menú y continuar
+        JButton btnBack = new ButtonComponent("Volver al Menú", CustomColors.RED);
+        JButton btnCreateGame = new ButtonComponent("Continuar", CustomColors.GREEN);
         btnBack.addActionListener(e -> mainWindow.showPanel("Menu"));
-        btnCreateGame.addActionListener(e -> mainWindow.startGameWindow(
-                player1ComboBox.getItemAt(player1ComboBox.getSelectedIndex()),
-                player2ComboBox.getItemAt(player2ComboBox.getSelectedIndex())
-        ));
+        btnCreateGame.addActionListener(e -> {
+            Player p1 = DB.getPlayerByName(player1ComboBox.getItemAt(player1ComboBox.getSelectedIndex()));
+            Player p2 = DB.getPlayerByName(player2ComboBox.getItemAt(player2ComboBox.getSelectedIndex()));
+
+            if (p1 == p2) {
+                JOptionPane.showMessageDialog(mainWindow, "Los jugadores deben ser diferentes");
+                return;
+            }
+
+            mainWindow.startGameWindow(p1, p2);
+        });
 
         JPanel btnsPanel = new JPanel();
         btnsPanel.add(btnBack);
@@ -80,16 +91,31 @@ public class CreateGamePanel extends JPanel {
     private void createNewProfile() {
         String newPlayerName = JOptionPane.showInputDialog(this, "Ingrese el nombre del nuevo jugador:", "Crear Perfil", JOptionPane.PLAIN_MESSAGE);
 
-        if (newPlayerName != null && !newPlayerName.trim().isEmpty()) {
-            Player newPlayer = new Player(newPlayerName);
+        if (players.contains(newPlayerName)) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "El nombre del nuevo jugador ya existe",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        } else if (newPlayerName != null && !newPlayerName.trim().isEmpty()) {
+            DB.addProfile(newPlayerName);
+            player1ComboBox.addItem(newPlayerName);
+            player2ComboBox.addItem(newPlayerName);
 
-            player1ComboBox.addItem(newPlayer);
-            player2ComboBox.addItem(newPlayer);
-
-            JOptionPane.showMessageDialog(this, "Nuevo perfil creado: " + newPlayerName, "Perfil Creado", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Nuevo perfil creado: " + newPlayerName,
+                    "Perfil Creado",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
         } else {
-            JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "El nombre no puede estar vacío.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 }
-

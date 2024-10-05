@@ -4,13 +4,14 @@ import models.Character;
 import models.Entity;
 import models.Team;
 import models.Tower;
-import view.components.Button;
+import view.components.ButtonComponent;
 import view.components.MatrixButton;
 
 import java.util.ArrayList;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class CharacterPlacementPanel extends JPanel {
     private final MatrixButton[][] gridButtons;
@@ -97,7 +98,7 @@ public class CharacterPlacementPanel extends JPanel {
 
         add(generalPanel, BorderLayout.CENTER);
 
-        confirmButton = new Button("Confirmar");
+        confirmButton = new ButtonComponent("Confirmar");
         confirmButton.setEnabled(false);
         confirmButton.addActionListener(e -> mainWindow.startGameArena(team1, team2,gridButtons));
 

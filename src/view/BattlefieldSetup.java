@@ -4,7 +4,7 @@ import controller.BattlefieldSetupController;
 import models.Character;
 import models.Element;
 import models.Team;
-import view.components.Button;
+import view.components.ButtonComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +32,7 @@ public class BattlefieldSetup extends JFrame {
         setLayout(new BorderLayout());
 
         battlefieldPanel = new JPanel(new GridLayout(gridSize, gridSize));
-        gridButtons = new Button[gridSize][gridSize];
+        gridButtons = new ButtonComponent[gridSize][gridSize];
         initializeBattlefield();
 
         characterComboBox = new JComboBox<>();
@@ -41,7 +41,7 @@ public class BattlefieldSetup extends JFrame {
         turnLabel = new JLabel("Turno de: " + team1.getName());
         turnLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        placeButton = new Button("Colocar Torreta");
+        placeButton = new ButtonComponent("Colocar Torreta");
         placeButton.addActionListener(e -> controller.handlePlaceButtonAction());
 
         add(turnLabel, BorderLayout.NORTH);

@@ -1,5 +1,349 @@
 {
-  "players": [],
-  "games": [],
-  "characters": []
+    "players": [
+        {
+            "name": "Fabian",
+            "id": 1,
+            "statistics": {
+                "wins": 0,
+                "playedGames": 0,
+                "loses": 0,
+                "deadCharacters": 0,
+                "destroyedTowers": 0
+            }
+        },
+        {
+            "name": "Sebastian",
+            "id": 2,
+            "statistics": {
+                "wins": 0,
+                "playedGames": 0,
+                "loses": 0,
+                "deadCharacters": 0,
+                "destroyedTowers": 0
+            }
+        },
+        {
+            "name": "David",
+            "id": 3,
+            "statistics": {
+                "wins": 0,
+                "playedGames": 0,
+                "loses": 0,
+                "deadCharacters": 0,
+                "destroyedTowers": 0
+            }
+        }
+    ],
+    "games": [],
+    "characters": [
+        {
+            "name": "Guerrero de Tierra",
+            "health": 1000,
+            "mana": 70,
+            "attack": 40,
+            "element": "GROUND",
+            "sprite": "/assets/guerrero_de_tierra.jpg",
+            "skills": [
+                {
+                    "name": "Espadazo de Piedra",
+                    "mana": 20,
+                    "element": "GROUND",
+                    "type": "attack",
+                    "damage": 110
+                },
+                {
+                    "name": "Golpe de Tormenta de Arena",
+                    "mana": 25,
+                    "element": "GROUND",
+                    "type": "attack",
+                    "damage": 150
+                },
+                {
+                    "name": "Sobrecarga de Arena",
+                    "mana": 20,
+                    "element": "GROUND",
+                    "type": "buff",
+                    "stat": "attack",
+                    "boost": 1.4
+                },
+                {
+                    "name": "Piel de Piedra",
+                    "mana": 25,
+                    "element": "GROUND",
+                    "type": "buff",
+                    "stat": "defense",
+                    "boost": 1.5
+                }
+            ]
+        },
+        {
+            "name": "Mago de Fuego",
+            "health": 750,
+            "mana": 120,
+            "attack": 80,
+            "element": "FIRE",
+            "sprite": "/assets/mago_de_fuego.jpg",
+            "skills": [
+                {
+                    "name": "Bola de Fuego",
+                    "mana": 25,
+                    "element": "FIRE",
+                    "type": "attack",
+                    "damage": 300
+                },
+                {
+                    "name": "Explosión de Lava",
+                    "mana": 40,
+                    "element": "FIRE",
+                    "type": "attack",
+                    "damage": 450
+                },
+                {
+                    "name": "Aura Ígnea",
+                    "mana": 20,
+                    "element": "FIRE",
+                    "type": "buff",
+                    "stat": "attack",
+                    "boost": 1.3
+                },
+                {
+                    "name": "Renacer Infernal",
+                    "mana": 35,
+                    "element": "FIRE",
+                    "type": "heal",
+                    "heal": 150
+                }
+            ]
+        },
+        {
+            "name": "Sacerdote del Agua",
+            "health": 800,
+            "mana": 150,
+            "attack": 30,
+            "element": "WATER",
+            "sprite": "/assets/sacerdote_del_agua.jpg",
+            "skills": [
+                {
+                    "name": "Látigo de Agua",
+                    "mana": 15,
+                    "element": "WATER",
+                    "type": "attack",
+                    "damage": 180
+                },
+                {
+                    "name": "Ola Gigante",
+                    "mana": 30,
+                    "element": "WATER",
+                    "type": "attack",
+                    "damage": 300
+                },
+                {
+                    "name": "Luz Sanadora",
+                    "mana": 20,
+                    "element": "WATER",
+                    "type": "heal",
+                    "heal": 200
+                },
+                {
+                    "name": "Fortaleza de Marea",
+                    "mana": 25,
+                    "element": "WATER",
+                    "type": "buff",
+                    "stat": "health",
+                    "boost": 1.25
+                }
+            ]
+        },
+        {
+            "name": "Asesino del Aire",
+            "health": 850,
+            "mana": 80,
+            "attack": 100,
+            "element": "AIR",
+            "sprite": "/assets/asesino_del_aire.jpg",
+            "skills": [
+                {
+                    "name": "Hoja de Viento",
+                    "mana": 20,
+                    "element": "AIR",
+                    "type": "attack",
+                    "damage": 250
+                },
+                {
+                    "name": "Rayo Fulminante",
+                    "mana": 35,
+                    "element": "AIR",
+                    "type": "attack",
+                    "damage": 400
+                },
+                {
+                    "name": "Impulso del Viento",
+                    "mana": 15,
+                    "element": "AIR",
+                    "type": "buff",
+                    "stat": "speed",
+                    "boost": 1.5
+                }
+            ]
+        },
+        {
+            "name": "Gólem de Roca",
+            "health": 1200,
+            "mana": 60,
+            "attack": 30,
+            "element": "GROUND",
+            "sprite": "/assets/golem_de_roca.jpg",
+            "skills": [
+                {
+                    "name": "Espadazo de Piedra",
+                    "mana": 20,
+                    "element": "GROUND",
+                    "type": "attack",
+                    "damage": 120
+                },
+                {
+                    "name": "Abrazo de la Tierra",
+                    "mana": 30,
+                    "element": "GROUND",
+                    "type": "heal",
+                    "heal": 100
+                },
+                {
+                    "name": "Piel de Piedra",
+                    "mana": 25,
+                    "element": "GROUND",
+                    "type": "buff",
+                    "stat": "defense",
+                    "boost": 1.5
+                }
+            ]
+        },
+        {
+            "name": "Fénix de Llamas",
+            "health": 900,
+            "mana": 100,
+            "attack": 90,
+            "element": "FIRE",
+            "sprite": "/assets/fenix_de_llamas.jpg",
+            "skills": [
+                {
+                    "name": "Bola de Fuego",
+                    "mana": 25,
+                    "element": "FIRE",
+                    "type": "attack",
+                    "damage": 300
+                },
+                {
+                    "name": "Lluvia de Meteoros",
+                    "mana": 40,
+                    "element": "FIRE",
+                    "type": "attack",
+                    "damage": 500
+                },
+                {
+                    "name": "Aura Ígnea",
+                    "mana": 20,
+                    "element": "FIRE",
+                    "type": "buff",
+                    "stat": "attack",
+                    "boost": 1.3
+                }
+            ]
+        },
+        {
+            "name": "Guardabosques de la Tormenta",
+            "health": 900,
+            "mana": 90,
+            "attack": 75,
+            "element": "AIR",
+            "sprite": "/assets/guardabosques_de_la_tormenta.jpg",
+            "skills": [
+                {
+                    "name": "Hoja de Viento",
+                    "mana": 20,
+                    "element": "AIR",
+                    "type": "attack",
+                    "damage": 250
+                },
+                {
+                    "name": "Rayo Fulminante",
+                    "mana": 30,
+                    "element": "AIR",
+                    "type": "attack",
+                    "damage": 350
+                },
+                {
+                    "name": "Impulso del Viento",
+                    "mana": 15,
+                    "element": "AIR",
+                    "type": "buff",
+                    "stat": "speed",
+                    "boost": 1.5
+                }
+            ]
+        },
+        {
+            "name": "Monje de la Marea",
+            "health": 850,
+            "mana": 130,
+            "attack": 35,
+            "element": "WATER",
+            "sprite": "/assets/monje_de_la_marea.jpg",
+            "skills": [
+                {
+                    "name": "Látigo de Agua",
+                    "mana": 15,
+                    "element": "WATER",
+                    "type": "attack",
+                    "damage": 180
+                },
+                {
+                    "name": "Ola Gigante",
+                    "mana": 30,
+                    "element": "WATER",
+                    "type": "attack",
+                    "damage": 300
+                },
+                {
+                    "name": "Luz Sanadora",
+                    "mana": 20,
+                    "element": "WATER",
+                    "type": "heal",
+                    "heal": 200
+                }
+            ]
+        },
+        {
+            "name": "Segador de Sombras",
+            "health": 800,
+            "mana": 100,
+            "attack": 110,
+            "element": "AIR",
+            "sprite": "/assets/segador_de_sombras.jpg",
+            "skills": [
+                {
+                    "name": "Rayo Fulminante",
+                    "mana": 35,
+                    "element": "AIR",
+                    "type": "attack",
+                    "damage": 400
+                },
+                {
+                    "name": "Niebla Rejuvenecedora",
+                    "mana": 20,
+                    "element": "AIR",
+                    "type": "heal",
+                    "heal": 150
+                },
+                {
+                    "name": "Impulso del Viento",
+                    "mana": 15,
+                    "element": "AIR",
+                    "type": "buff",
+                    "stat": "speed",
+                    "boost": 1.5
+                }
+            ]
+        }
+    ]
 }

@@ -12,7 +12,7 @@ public class Statistics {
         this.playedGames = playedGames;
         this.wins = wins;
         this.losses = losses;
-        this.winPercentage = wins / losses;
+        this.winPercentage = playedGames > 0 ? (double) wins / playedGames * 100 : 0;
         this.deadCharacters = deadCharacters;
         this.destroyedTowers = destroyedTowers;
     }

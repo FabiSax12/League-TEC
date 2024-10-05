@@ -1,5 +1,7 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Game {
@@ -39,6 +41,20 @@ public class Game {
 
     public void setPlayer2(Player player2) {
         this.player2 = player2;
+    }
+
+    public List<Player> getPlayers() {
+        ArrayList<Player> players = new ArrayList<>();
+        if (player1 != null) players.add(player1);
+        if (player2 != null) players.add(player2);
+        return players;
+    }
+
+    public void setPlayers(ArrayList<Player> players) {
+        if (players.size() >= 2) {
+            this.player1 = players.get(0);
+            this.player2 = players.get(1);
+        }
     }
 
     public Player getWinner() {

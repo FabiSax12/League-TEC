@@ -1,5 +1,8 @@
 package models;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Character extends Entity {
@@ -14,7 +17,7 @@ public class Character extends Entity {
     private final Element element;
     private final ArrayList<ASkill> skills;
 
-    public Character(String name, float health, int mana, int attack, Element element) {
+    public Character(String name, float health, int mana, int attack, Element element, String spritePath) {
         this.name = name;
         this.health = health;
         this.mana = mana;
@@ -24,7 +27,29 @@ public class Character extends Entity {
         this.defense = 100;
         this.movements = 1;
         this.skills = new ArrayList<>();
-        this.spritePath = "/assets/sprite.png";
+        this.spritePath = spritePath;
+    }
+
+    public JSONObject toJson() {
+        JSONObject jsonCharacter = new JSONObject();
+        jsonCharacter.put("name", this.getName());
+        jsonCharacter.put("health", this.getHealth());
+        jsonCharacter.put("mana", this.getMana());
+        jsonCharacter.put("attack", this.getDamage());
+        jsonCharacter.put("element", this.getElement().toString());
+        jsonCharacter.put("level", this.getLevel());
+        jsonCharacter.put("defense", this.getDefense());
+        jsonCharacter.put("movements", this.getMovements());
+        jsonCharacter.put("skills", this.getSkillsAsJson());
+        return jsonCharacter;
+    }
+
+    private JSONArray getSkillsAsJson() {
+        JSONArray jsonSkills = new JSONArray();
+        for (ASkill skill : skills) {
+            jsonSkills.put(skill.toJson());
+        }
+        return jsonSkills;
     }
 
     public void move() {
@@ -42,8 +67,6 @@ public class Character extends Entity {
     public void addSkill(ASkill skill) {
         this.skills.add(skill);
     }
-
-    public void removeSkill(ASkill skill) {}
 
     public void levelUp() {}
 
