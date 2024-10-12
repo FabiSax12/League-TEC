@@ -1,6 +1,7 @@
 package models;
 
 public abstract class Entity {
+    protected String spritePath;
     protected float health;
     protected int damage;
 
@@ -14,6 +15,10 @@ public abstract class Entity {
 
     public float getHealth() {
         return health;
+    }
+
+    public String getSpritePath() {
+        return spritePath;
     }
 
     public void setHealth(float health) {

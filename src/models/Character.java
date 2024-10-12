@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class Character extends Entity {
     private final String name;
-    private String spritePath;
     private int level;
     private int mana;
     private int damage;
@@ -73,10 +72,6 @@ public class Character extends Entity {
     // Getters
     public String getName() {
         return name;
-    }
-
-    public String getSpritePath() {
-        return spritePath;
     }
 
     public float getHealth() {

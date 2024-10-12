@@ -1,9 +1,8 @@
 package view;
 
+import models.*;
 import models.Character;
-import models.Entity;
-import models.Team;
-import models.Tower;
+import utils.IMG;
 import view.components.ButtonComponent;
 import view.components.MatrixButton;
 
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 public class CharacterPlacementPanel extends JPanel {
     private final MatrixButton[][] gridButtons;
@@ -72,15 +72,18 @@ public class CharacterPlacementPanel extends JPanel {
         gridCharactersPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         gridButtons = new MatrixButton[10][10];
-        int identifierCounter = 0;
+        byte identifierCounter = 0;
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
                 MatrixButton button = new MatrixButton();
+                button.setPreferredSize(new Dimension(74, 74));
+                button.setMaximumSize(new Dimension(74, 74));
+                button.setMinimumSize(new Dimension(74, 74));
                 button.setBackground(Color.LIGHT_GRAY);
-                button.identifier = identifierCounter;
+                button.setIdentifier(identifierCounter);
                 identifierCounter++;
 
-                button.addActionListener(e -> placeCharacter(button));
+                button.addActionListener(e -> placeCharacter(gridCharactersPanel,button));
 
                 gridButtons[row][col] = button;
                 gridCharactersPanel.add(button);
@@ -89,11 +92,18 @@ public class CharacterPlacementPanel extends JPanel {
 //        Ajustar la posición y proporciones de los componentes
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0.8;  // La matriz ocupará el 80% del ancho
+        gbc.gridheight=2;
+        gbc.gridwidth=2;
+        gbc.weightx = 1.0;  // La matriz ocupará el 80% del ancho
         generalPanel.add(gridCharactersPanel, gbc);
+        gbc.weighty = 0.0;
 
-        gbc.gridx = 1;
-        gbc.weightx = 0.1;  // La lista ocupará el 10% del ancho
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.gridheight=2;
+        gbc.gridwidth=1;
+        gbc.weightx = 0.5;  // La lista ocupará el 10% del ancho
+        gbc.weighty = 1.0;  // La lista ocupará el 10% del ancho
         generalPanel.add(scrollPane, gbc);
 
         add(generalPanel, BorderLayout.CENTER);
@@ -109,7 +119,7 @@ public class CharacterPlacementPanel extends JPanel {
         setVisible(true);
     }
 
-    private void placeCharacter(MatrixButton button) {
+    private void placeCharacter(JPanel panel,MatrixButton button) {
         if(selectionList.getSelectedValue() == null){
             JOptionPane.showMessageDialog(
                     this,
@@ -119,22 +129,22 @@ public class CharacterPlacementPanel extends JPanel {
             );
         }else{
             if (firstPlayerTime && validatePlayerArea(button)) {
-                button.setBackground(Color.BLUE);
                 button.setEnabled(false);
-                button.setText(String.valueOf(button.getIdentifier()));
+                button.setImagepath(selectionList.getSelectedValue().getSpritePath());
                 int selection = selectionList.getSelectedIndex();
                 team1Characters.remove(selection);
                 if (team1Characters.isEmpty()){changePlayer();}
+                ConfForEachButton(button);
             }else if (validatePlayerArea(button)){
-                button.setBackground(Color.RED);
                 button.setEnabled(false);
-                button.setText(String.valueOf(button.getIdentifier()));
+                button.setImagepath(selectionList.getSelectedValue().getSpritePath());
                 int selection = selectionList.getSelectedIndex();
                 team2Characters.remove(selection);
                 if (team2Characters.isEmpty()){
                     confirmButton.setEnabled(true);
                     disableMatrixButtons();
                 }
+                ConfForEachButton(button);
             }
         }
     }
@@ -155,5 +165,22 @@ public class CharacterPlacementPanel extends JPanel {
         }else{
             return (50 - buttonID) <= 0;
         }
+    }
+
+    private void ConfForEachButton (MatrixButton btn){
+        Image image = IMG.toImage(Objects.requireNonNull(getClass().getResource(btn.getImagepath())));
+        // Escalar la imagen al tamaño del botón
+        Image scaledImage = image.getScaledInstance(btn.getWidth()-20,btn.getHeight()-20, Image.SCALE_AREA_AVERAGING);
+        btn.setIcon(new ImageIcon(scaledImage));
+        if (btn.getIdentifier()<50){
+            btn.setFilter(new Color(255,0,0,100));
+            btn.setEntity(team1,btn.getImagepath());
+        }
+        else{
+            btn.setFilter(new Color(0,0,255,100));
+            btn.setEntity(team2,btn.getImagepath());
+        }
+        btn.revalidate();
+        btn.repaint();
     }
 }
