@@ -60,7 +60,7 @@ public class CharacterPlacementPanel extends JPanel {
         labelsPanel.add(playerLabel,BorderLayout.BEFORE_LINE_BEGINS);
         add(labelsPanel,BorderLayout.NORTH);
 
-        // Usamos GridBagLayout en lugar de GridLayout para mayor control sobre la distribución
+        //GridBagLayout en lugar de GridLayout para mayor control sobre la distribución
         JPanel generalPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;

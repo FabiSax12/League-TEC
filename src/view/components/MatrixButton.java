@@ -13,12 +13,29 @@ public class MatrixButton extends JButton {
     private byte color=0;  // 0 = rojo, 1 = azul, 2 = verde, etc.
     private Character character = null;
     private Tower tower = null;
+    private ImageIcon icon;
 
     public MatrixButton() {
         setFocusPainted(false);
         setBackground(new Color(220, 220, 220));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         this.characterImagePath="";
+    }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if (icon != null) {
+            // Escalar el GIF animado para adaptarse al tamaño del botón
+            Image scaledImage = icon.getImage().getScaledInstance(getWidth(), getHeight(), Image.SCALE_DEFAULT);
+
+            // Dibujar la imagen escalada
+            g.drawImage(scaledImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+    public void setIcon(ImageIcon icon) {
+        this.icon = icon;
+        repaint();  // Asegurarse de que el botón se redibuje
     }
     public void setFilter(Color colorTransparente) {
         setContentAreaFilled(false); // Evita que el fondo se pinte automáticamente
