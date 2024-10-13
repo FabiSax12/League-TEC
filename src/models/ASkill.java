@@ -13,8 +13,7 @@ public abstract class ASkill {
         this.element = element;
     }
 
-    // Método abstracto que se implementará en cada tipo de habilidad
-    public abstract void use(Character user, Character target);
+    public abstract void use(Character user, Entity target);
 
     public JSONObject toJson() {
         JSONObject jsonSkill = new JSONObject();

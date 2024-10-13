@@ -1,15 +1,17 @@
 package models;
 
 public abstract class Entity {
+    protected float maxHealth;
     protected float health;
     protected int damage;
+    protected int defense;
 
-    public void takeDamage(int damage) {
-
+    public void attack(Entity target, int damage) {
+        target.takeDamage(damage);
     }
 
-    public void attack(Entity entity, int damage) {
-
+    public void takeDamage(int damage) {
+        this.health -= damage - defense;
     }
 
     public float getHealth() {
@@ -20,11 +22,27 @@ public abstract class Entity {
         this.health = health;
     }
 
+    public float getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(float maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
     public int getDamage() {
         return damage;
     }
 
     public void setDamage(int damage) {
         this.damage = damage;
+    }
+
+    public int getDefense() {
+        return defense;
+    }
+
+    public void setDefense(int defense) {
+        this.defense = defense;
     }
 }
