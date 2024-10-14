@@ -94,17 +94,17 @@ public class MainGameArena extends JPanel{
         int[] positionAvailable = {btn.getIdentifier() - 10,btn.getIdentifier() + 10,btn.getIdentifier() - 1,btn.getIdentifier() + 1,btn.getIdentifier()};
         for(MatrixButton[] buttonRow: matrix){
             for(MatrixButton button: buttonRow){
-                if(Arrays.stream(positionAvailable).anyMatch(i -> i == button.getIdentifier())){
-                    if(button.getIdentifier()!=btn.getIdentifier()){
-                        button.setEnabled(true);
-                        button.setBackground(new Color(153, 255, 153));
-                        button.addActionListener(e->moveCharacter(button,btn));
-                    }else{
+                if((Arrays.stream(positionAvailable).anyMatch(i -> i == button.getIdentifier()))&&(button.getCharacter()==null)&&(button.getTower()==null)){
+                    button.setEnabled(true);
+                    button.setBackground(new Color(153, 255, 153));
+                    button.addActionListener(e->moveCharacter(button,btn,positionAvailable));
+                }
+                else if(button.getIdentifier()==btn.getIdentifier()){
                         System.out.println("Restore aplicado a btn #"+button.getIdentifier());
                         ActionListenerCleaner(button);
                         button.addActionListener(e -> restorePreviousState(btn,positionAvailable));
-                    }
-                }else{button.setEnabled(false);}
+                }
+                else{button.setEnabled(false);}
             }
         }
     }
@@ -153,36 +153,57 @@ public class MainGameArena extends JPanel{
             //elif(selection==2){changePlayerTurn();}
         }
     }
-    private void moveCharacter(MatrixButton destinationButton,MatrixButton originButton){
+    private void moveCharacter(MatrixButton destinationButton,MatrixButton originButton,int[] btnArr){
         System.out.println("Moviendo del botón #"+originButton.getIdentifier()+" al botón #"+destinationButton.getIdentifier());
         swapButtonsAtributes(destinationButton, originButton);
+        ActionListenerCleaner(originButton);
+        ActionListenerCleaner(destinationButton);
+        destinationButton.setEnabled(true);
+        originButton.setEnabled(false);
+        destinationButton.addActionListener(e->showPopup(destinationButton));
+        for(MatrixButton[] buttonRow: matrix){
+            for(MatrixButton button: buttonRow){
+                /*Si el botón está en la lista de botones disponibles y no es el botón de origen o destino, se resetea a sus valores por defecto*/
+                if(Arrays.stream(btnArr).anyMatch(i -> i == button.getIdentifier()) && (button.getIdentifier()!=originButton.getIdentifier()) && (button.getIdentifier()!=destinationButton.getIdentifier())){
+                    button.setEnabled(false);
+                    button.setBackground(Color.LIGHT_GRAY);
+                }else if(!button.getImagepath().isEmpty()){button.setEnabled(true);}
+            }
+        }
     }
     public static void swapButtonsAtributes(MatrixButton destinationButton, MatrixButton originButton) {
-
-        // Intercambiar el atributo characterImagePath
+        /* Intercambiar el atributo characterImagePath */
         String tempImagePath = destinationButton.getImagepath();
         destinationButton.setImagepath(originButton.getImagepath());
         originButton.setImagepath(tempImagePath);
 
-        // Intercambiar el atributo color
-        byte tempColor = destinationButton.getColor();
-        destinationButton.setColor(originButton.getColor());
-        originButton.setColor(tempColor);
-
-        // Intercambiar el atributo icon
+        /* Intercambiar el atributo icon */
         ImageIcon tempIcon = destinationButton.getIcon();
         destinationButton.setIcon(originButton.getIcon());
         originButton.setIcon(tempIcon);
 
-        // Intercambiar el atributo character
-        Character tempCharacter = destinationButton.getCharacter();
-        destinationButton.setCharacter(originButton.getCharacter());
-        originButton.setCharacter(tempCharacter);
+        /* Intercambiar el atributo color */
+        destinationButton.setFilter(originButton.getFilter());
+        originButton.removeFilter();
+        originButton.setBackground(Color.LIGHT_GRAY);
 
-        // Intercambiar el atributo tower
-        Tower tempTower = destinationButton.getTower();
-        destinationButton.setTower(originButton.getTower());
-        originButton.setTower(tempTower);
+        /* Intercambiar Character */
+        if(originButton.getCharacter() != null) {
+            Character tempCharacter = destinationButton.getCharacter();
+            Character originCharacter = originButton.getCharacter();
+            destinationButton.setCharacter(originCharacter);
+            originButton.setCharacter(tempCharacter);
+        }
+
+        /* Intercambiar Tower */
+        if(originButton.getTower() != null){
+            Tower tempTower = destinationButton.getTower();
+            Tower originTower = originButton.getTower();
+            destinationButton.setTower(originTower);
+            originButton.setTower(tempTower);
+        }
+
+        /* Revalidar y repintar */
         originButton.revalidate();
         originButton.repaint();
         destinationButton.revalidate();
