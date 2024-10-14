@@ -42,7 +42,7 @@
             "mana": 70,
             "attack": 40,
             "element": "GROUND",
-            "sprite": "/assets/giphy.gif",
+            "sprite": "/assets/guerrero_de_tierra.jpg",
             "skills": [
                 {
                     "name": "Espadazo de Piedra",

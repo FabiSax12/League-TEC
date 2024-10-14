@@ -173,12 +173,12 @@ public class CharacterPlacementPanel extends JPanel {
         Image scaledImage = image.getScaledInstance(btn.getWidth()-20,btn.getHeight()-20, Image.SCALE_AREA_AVERAGING);
         btn.setIcon(new ImageIcon(scaledImage));
         if (btn.getIdentifier()<50){
-            btn.setFilter(new Color(255,0,0,100));
             btn.setEntity(team1,btn.getImagepath());
+            btn.setFilter(new Color(255,0,0,100));
         }
         else{
-            btn.setFilter(new Color(0,0,255,100));
             btn.setEntity(team2,btn.getImagepath());
+            btn.setFilter(new Color(0,0,255,100));
         }
         btn.revalidate();
         btn.repaint();

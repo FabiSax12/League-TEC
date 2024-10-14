@@ -6,6 +6,7 @@ import view.components.MatrixButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 
 public class MainGameArena extends JPanel{
@@ -75,38 +76,56 @@ public class MainGameArena extends JPanel{
     }
     private void setMatrixButtons(JPanel gridMatrixButtonsPanel){
         for(MatrixButton[] buttonRow: matrix){
-            for(MatrixButton button: buttonRow){
-                ActionListener[] listeners = button.getActionListeners();
-                for (ActionListener listener : listeners) {
-                    button.removeActionListener(listener);
+            for(MatrixButton button: buttonRow) {
+                ActionListenerCleaner(button);
+                if (!button.getImagepath().isEmpty()){
+                    button.setEnabled(true);
+                    button.addActionListener(e->characterAction(button));
                 }
-
                 gridMatrixButtonsPanel.add(button);
                 button.setPreferredSize(new Dimension(74, 74));
-                //ConfForEachButton(gridMatrixButtonsPanel,button);
             }
         }
     }
-//    private void ConfForEachButton (JPanel matrix,MatrixButton btn){
-//        btn.setPreferredSize(new Dimension(74, 74));
-//        if (!btn.getImagepath().isEmpty()){
-//            Image image = IMG.toImage(Objects.requireNonNull(getClass().getResource(btn.getImagepath())));
-//            // Escalar la imagen al tamaño del botón
-//            Image scaledImage = image.getScaledInstance(btn.getWidth()-20,btn.getHeight(), Image.SCALE_SMOOTH);
-//            btn.setEnabled(true);
-//            btn.setText("");
-//            btn.setIcon(new ImageIcon(scaledImage));
-//            if (btn.getIdentifier()<50){
-//                btn.setFilter(new Color(255,0,0,100));
-//                btn.setEntity(team1,btn.getImagepath());
-//            }
-//            else{
-//                btn.setFilter(new Color(0,0,255,100));
-//                btn.setEntity(team2,btn.getImagepath());
-//            }
-//            btn.revalidate();
-//            btn.repaint();
-//        }
-//        matrix.add(btn);
-//    }
+    private void characterAction(MatrixButton btn){
+        // Calcular las posiciones alrededor del botón actual
+        int[] positionAvailable = {btn.getIdentifier() - 10,btn.getIdentifier() + 10,btn.getIdentifier() - 1,btn.getIdentifier() + 1,btn.getIdentifier()};
+        for(MatrixButton[] buttonRow: matrix){
+            for(MatrixButton button: buttonRow){
+                if(Arrays.stream(positionAvailable).anyMatch(i -> i == button.getIdentifier())){
+                    if(button.getIdentifier()!=btn.getIdentifier()){
+                        button.setEnabled(true);
+                        button.setBackground(new Color(153, 255, 153));
+                    }else{
+                        System.out.println("Restore aplicado a btn #"+button.getIdentifier());
+                        ActionListenerCleaner(button);
+                        button.addActionListener(e -> restorePreviousState(btn,positionAvailable));
+                    }
+                }else{button.setEnabled(false);}
+            }
+        }
+    }
+    // Método para restaurar el estado anterior de los botones
+    private void restorePreviousState(MatrixButton btn,int[] btnArray) {// Calcular las posiciones alrededor del botón actual
+        for(MatrixButton[] buttonRow: matrix){
+            for(MatrixButton button: buttonRow){
+                if(Arrays.stream(btnArray).anyMatch(i -> i == button.getIdentifier())){
+                    if(button.getIdentifier()!=btn.getIdentifier()){
+                        button.setEnabled(false);
+                        button.setBackground(Color.LIGHT_GRAY);
+                    }else{
+                        System.out.println("Character Action aplicado a btn #"+button.getIdentifier());
+                        ActionListenerCleaner(button);
+                        button.addActionListener(e -> characterAction(button));
+                    }
+                }else if(!button.getImagepath().isEmpty()){button.setEnabled(true);}
+            }
+        }
+    }
+    private void ActionListenerCleaner(MatrixButton button){
+        ActionListener[] listeners = button.getActionListeners();
+        for (ActionListener listener : listeners) {
+            button.removeActionListener(listener);
+        }
+    }
 }
