@@ -1,6 +1,8 @@
 package view;
 
 import models.Team;
+import models.Tower;
+import models.Character;
 import view.components.MatrixButton;
 
 import javax.swing.*;
@@ -80,14 +82,14 @@ public class MainGameArena extends JPanel{
                 ActionListenerCleaner(button);
                 if (!button.getImagepath().isEmpty()){
                     button.setEnabled(true);
-                    button.addActionListener(e->characterAction(button));
+                    button.addActionListener(e->showPopup(button));
                 }
                 gridMatrixButtonsPanel.add(button);
                 button.setPreferredSize(new Dimension(74, 74));
             }
         }
     }
-    private void characterAction(MatrixButton btn){
+    private void characterMoveSelectionCeld(MatrixButton btn){
         // Calcular las posiciones alrededor del botón actual
         int[] positionAvailable = {btn.getIdentifier() - 10,btn.getIdentifier() + 10,btn.getIdentifier() - 1,btn.getIdentifier() + 1,btn.getIdentifier()};
         for(MatrixButton[] buttonRow: matrix){
@@ -96,6 +98,7 @@ public class MainGameArena extends JPanel{
                     if(button.getIdentifier()!=btn.getIdentifier()){
                         button.setEnabled(true);
                         button.setBackground(new Color(153, 255, 153));
+                        button.addActionListener(e->moveCharacter(button,btn));
                     }else{
                         System.out.println("Restore aplicado a btn #"+button.getIdentifier());
                         ActionListenerCleaner(button);
@@ -116,7 +119,7 @@ public class MainGameArena extends JPanel{
                     }else{
                         System.out.println("Character Action aplicado a btn #"+button.getIdentifier());
                         ActionListenerCleaner(button);
-                        button.addActionListener(e -> characterAction(button));
+                        button.addActionListener(e -> showPopup(button));
                     }
                 }else if(!button.getImagepath().isEmpty()){button.setEnabled(true);}
             }
@@ -127,5 +130,62 @@ public class MainGameArena extends JPanel{
         for (ActionListener listener : listeners) {
             button.removeActionListener(listener);
         }
+    }
+    private void showPopup(MatrixButton button) {
+        // Crear los botones personalizados que aparecerán en el diálogo
+        Object[] options = {"Mover", "Atacar","Pasar"};
+
+        // Mostrar la ventana emergente con botones personalizados
+        int selection = JOptionPane.showOptionDialog(
+                null,            // Componente padre
+                "Que desea hacer?",            // Mensaje
+                "Selección de acción",           // Título del cuadro de diálogo
+                JOptionPane.DEFAULT_OPTION,     // Tipo de cuadro de diálogo
+                JOptionPane.INFORMATION_MESSAGE, // Tipo de mensaje
+                null,                           // Icono personalizado (null para sin icono)
+                options,                         // Botones personalizados
+                options[0]);                    // Opción por defecto
+        // Comprobar qué botón fue seleccionado
+        if (selection != -1) {  // Si se selecciona una opción (no se cierra con 'x')
+            System.out.println("Seleccionaste: " + options[selection]);
+            if (selection==0){characterMoveSelectionCeld(button);}
+            //elif(selection==1){characterAttack(button);}
+            //elif(selection==2){changePlayerTurn();}
+        }
+    }
+    private void moveCharacter(MatrixButton destinationButton,MatrixButton originButton){
+        System.out.println("Moviendo del botón #"+originButton.getIdentifier()+" al botón #"+destinationButton.getIdentifier());
+        swapButtonsAtributes(destinationButton, originButton);
+    }
+    public static void swapButtonsAtributes(MatrixButton destinationButton, MatrixButton originButton) {
+
+        // Intercambiar el atributo characterImagePath
+        String tempImagePath = destinationButton.getImagepath();
+        destinationButton.setImagepath(originButton.getImagepath());
+        originButton.setImagepath(tempImagePath);
+
+        // Intercambiar el atributo color
+        byte tempColor = destinationButton.getColor();
+        destinationButton.setColor(originButton.getColor());
+        originButton.setColor(tempColor);
+
+        // Intercambiar el atributo icon
+        ImageIcon tempIcon = destinationButton.getIcon();
+        destinationButton.setIcon(originButton.getIcon());
+        originButton.setIcon(tempIcon);
+
+        // Intercambiar el atributo character
+        Character tempCharacter = destinationButton.getCharacter();
+        destinationButton.setCharacter(originButton.getCharacter());
+        originButton.setCharacter(tempCharacter);
+
+        // Intercambiar el atributo tower
+        Tower tempTower = destinationButton.getTower();
+        destinationButton.setTower(originButton.getTower());
+        originButton.setTower(tempTower);
+        originButton.revalidate();
+        originButton.repaint();
+        destinationButton.revalidate();
+        destinationButton.repaint();
     }
 }

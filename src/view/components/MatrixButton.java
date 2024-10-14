@@ -61,7 +61,10 @@ public class MatrixButton extends JButton {
         });
     }
     public void setIdentifier(byte identifier){this.identifier=identifier;}
-    public void setImagepath(String path){this.characterImagePath=path;}
+    public void setImagepath(String path){
+        if (path==null){setIcon(null);this.characterImagePath="";}
+        else{this.characterImagePath=path;}
+    }
     public void setColor(byte color){
         switch (color){
             case 0:
@@ -76,6 +79,38 @@ public class MatrixButton extends JButton {
             case 3:
                 setBackground(Color.WHITE);
                 break;
+        }
+    }
+    public void setCharacter(Character character){
+        if (character == null) {
+            this.character = null;
+            setToolTipText(null);
+        }else{
+            this.character = character;
+            String tooltipText ="<html>"
+                    + "<b><i>Nombre:</i></b> " + character.getName() + "<br>"
+                    + "<b><i>Puntos de vida:</i></b> " + character.getHealth() + "<br>"
+                    + "<b><i>Maná:</i></b> " + character.getMana() + "<br>"
+                    + "<b><i>Daño:</i></b> " + character.getDamage() + "<br>"
+                    + "<b><i>Elemento:</i></b> " + character.getElement() + "<br>"
+                    + "<b><i>Movimientos:</i></b> " + character.getMovements() + "<br>"
+                    + "</html>";
+            setToolTipText(tooltipText);
+            System.out.println("character agregado...");
+        }
+    }
+    public void setTower(Tower tower){
+        if (tower == null) {
+            this.tower = null;
+            setToolTipText(null);
+        } else {
+            this.tower = tower;
+            String tooltipText = "<html>"
+                    + "<b><i>Nombre:</i></b> Torre<br>"
+                    + "<b><i>Puntos de vida:</i></b> " + tower.getHealth() + "<br>"
+                    + "<b><i>Daño:</i></b> " + tower.getDamage() + "<br>"
+                    + "</html>";
+            setToolTipText(tooltipText);
         }
     }
     public void setEntity(Team team,String pathImageExpected) {
@@ -108,7 +143,8 @@ public class MatrixButton extends JButton {
         }
 
     }
-    public int getIdentifier() {return identifier;}
+    public ImageIcon getIcon(){return icon;}
+    public byte getIdentifier() {return identifier;}
     public String getImagepath(){return characterImagePath;}
     public byte getColor(){return color;}
     public Character getCharacter() {return character;}
