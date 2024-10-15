@@ -53,6 +53,14 @@ public class Character extends Entity {
         }
     }
 
+    public int getMovements() {
+        return movements;
+    }
+
+    public void setMovements(int movements) {
+        this.movements = movements;
+    }
+
     public void useSkill(int skillIndex, Entity target) {
         ASkill skill = skills.get(skillIndex);
         skill.use(this, target);
@@ -81,7 +89,7 @@ public class Character extends Entity {
 
     public float getHealth() {
         return health;
-
+    }
     public String getSpritePath() {
         return spritePath;
     }
@@ -102,20 +110,12 @@ public class Character extends Entity {
         this.maxMana = maxMana;
     }
 
-    public int getMana() {
+    public double getMana() {
         return mana;
     }
 
     public void setMana(int mana) {
         this.mana = mana;
-    }
-
-    public int getMovements() {
-        return movements;
-    }
-
-    public void setMovements(int movements) {
-        this.movements = movements;
     }
 
     public boolean isDead() {
