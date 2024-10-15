@@ -8,6 +8,7 @@ public class Team {
     private final ArrayList<Character> characters;
     private final ArrayList<Tower> towers;
     private boolean turn = false;
+    private byte moves = 0;
 
     public Team(Player player) {
         this.name = player.getName();
@@ -34,6 +35,14 @@ public class Team {
         return this.towers;
     }
 
+    public byte getMoves() {
+        return moves;
+    }
+
+    public void setMoves() {
+        this.moves += 1;
+    }
+
     public String getName() {
         return name;
     }
@@ -41,4 +50,6 @@ public class Team {
     public boolean getTurn(){return turn;}
 
     public Player getPlayer(){return player;}
+
+    public void resetMoves(){this.moves=0;}
 }

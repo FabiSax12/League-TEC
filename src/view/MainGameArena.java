@@ -22,6 +22,9 @@ public class MainGameArena extends JPanel{
         this.window=mainWindow;
         this.match= match;
         this.matrix=matrixButton;
+        System.out.println("La arena actual es:"+match.getArena());
+        match.startMatch();
+        match.getTeam1().setTurn(true);
         /*Creación de componentes*/
         JPanel gridMatrixButtonsPanel = new JPanel(new GridLayout(10, 10, 5, 5));
         JPanel firstPlayerPanel = new JPanel();
@@ -35,6 +38,7 @@ public class MainGameArena extends JPanel{
         setLayout(new GridBagLayout());
         gridMatrixButtonsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setMatrixButtons(gridMatrixButtonsPanel);
+        enablePlayerButtons();
         gridMatrixButtonsPanel.setBackground(new Color(2, 25, 153));
         firstPlayerPanel.setBackground(new Color(255, 204, 102));
         secondPlayerPanel.setBackground(new Color(51, 204, 51));
@@ -81,7 +85,6 @@ public class MainGameArena extends JPanel{
     private void showPopup(MatrixButton button) {
         // Crear los botones personalizados que aparecerán en el diálogo
         Object[] options = {"Mover", "Atacar","Pasar"};
-
         // Mostrar la ventana emergente con botones personalizados
         int selection = JOptionPane.showOptionDialog(
                 null,            // Componente padre
@@ -97,7 +100,26 @@ public class MainGameArena extends JPanel{
             System.out.println("Seleccionaste: " + options[selection]);
             if (selection==0){characterMoveSelectionCeld(button);}
             else if(selection==1){characterAttackSelection(button);}
-            //elif(selection==2){changePlayerTurn();}
+            else {passTurn(button);}
+        }
+    }
+
+    private void showTowerPopup(MatrixButton button) {
+        Object[] options = {"Atacar","Pasar"};
+        int selection = JOptionPane.showOptionDialog(
+                null,            // Componente padre
+                "Que desea hacer?",            // Mensaje
+                "Selección de acción",           // Título del cuadro de diálogo
+                JOptionPane.DEFAULT_OPTION,     // Tipo de cuadro de diálogo
+                JOptionPane.INFORMATION_MESSAGE, // Tipo de mensaje
+                null,                           // Icono personalizado (null para sin icono)
+                options,                         // Botones personalizados
+                options[0]);                    // Opción por defecto
+
+        if (selection != -1) {
+            System.out.println("Seleccionaste: " + options[selection]);
+            if(selection==0){characterAttackSelection(button);}
+            else{passTurn(button);}
         }
     }
 
@@ -107,7 +129,8 @@ public class MainGameArena extends JPanel{
                 ActionListenerCleaner(button);
                 if (!button.getImagepath().isEmpty()){
                     button.setEnabled(true);
-                    button.addActionListener(e->showPopup(button));
+                    if (button.getTower()==null){button.addActionListener(e->showPopup(button));}
+                    else{button.addActionListener(e->showTowerPopup(button));}
                 }
                 gridMatrixButtonsPanel.add(button);
                 button.setPreferredSize(new Dimension(74, 74));
@@ -116,7 +139,6 @@ public class MainGameArena extends JPanel{
     }
 
     private void characterMoveSelectionCeld(MatrixButton btn){
-        // Calcular las posiciones alrededor del botón actual
         int[] positionAvailable = {btn.getIdentifier() - 10,btn.getIdentifier() + 10,btn.getIdentifier() - 1,btn.getIdentifier() + 1,btn.getIdentifier()};
         for(MatrixButton[] buttonRow: matrix){
             for(MatrixButton button: buttonRow){
@@ -145,11 +167,13 @@ public class MainGameArena extends JPanel{
                     }else{
                         System.out.println("Character Action aplicado a btn #"+button.getIdentifier());
                         ActionListenerCleaner(button);
-                        button.addActionListener(e -> showPopup(button));
+                        if (button.getTower()==null){button.addActionListener(e->showPopup(button));}
+                        else{button.addActionListener(e->showTowerPopup(button));}//////////////////////////////////////////////////////////////
                     }
                 }else if(!button.getImagepath().isEmpty()){button.setEnabled(true);}
             }
         }
+        verifyMovements();
     }
 
     private void ActionListenerCleaner(MatrixButton button){
@@ -161,6 +185,7 @@ public class MainGameArena extends JPanel{
 
     private void moveCharacter(MatrixButton destinationButton,MatrixButton originButton,int[] btnArr){
         System.out.println("Moviendo del botón #"+originButton.getIdentifier()+" al botón #"+destinationButton.getIdentifier());
+        increaseMovements();
         swapButtonsAtributes(destinationButton, originButton);
         for(MatrixButton[] buttonRow: matrix){
             for(MatrixButton button: buttonRow){
@@ -170,17 +195,19 @@ public class MainGameArena extends JPanel{
                     button.setBackground(Color.LIGHT_GRAY);
                     System.out.println("Se ha desabilitado el botón #"+button.getIdentifier());
                 }
-                else if (!button.getImagepath().isEmpty()){button.setEnabled(true);
+                else if ((!button.getImagepath().isEmpty())&&(button.getIdentifier()!=destinationButton.getIdentifier())){
+                    button.setEnabled(true);
                     System.out.println("Se ha habilitado el botón #"+button.getIdentifier());}
             }
         }
+        verifyMovements();
     }
 
     public void swapButtonsAtributes(MatrixButton destinationButton, MatrixButton originButton) {
         /* Configuración de Botón de destino */
         destinationButton.setImagepath(originButton.getImagepath());
         destinationButton.setBackground(Color.LIGHT_GRAY);
-        destinationButton.setFilter(originButton.getFilter());
+        destinationButton.setFilter(new Color(0, 0, 0,100));
         destinationButton.setIcon(originButton.getIcon());
         if(originButton.getCharacter() != null) {
             destinationButton.setCharacter(originButton.getCharacter());
@@ -190,7 +217,7 @@ public class MainGameArena extends JPanel{
         }
         ActionListenerCleaner(destinationButton);
         destinationButton.addActionListener(e->showPopup(destinationButton));
-        destinationButton.setEnabled(true);
+        destinationButton.setEnabled(false);
 
         /* Configuración de Botón de Origen */
         originButton.setImagepath("");
@@ -214,13 +241,79 @@ public class MainGameArena extends JPanel{
     }
 
     public void characterAttackSelection(MatrixButton button){
-        System.out.println(match.getTeam1().getPlayer().getName());
-        System.out.println(match.getTeam2().getPlayer().getName());
-        match.startMatch();
-
 
     }
+
     public void characterAttack(MatrixButton button){
 
+    }
+
+    public void enablePlayerButtons(){
+        if(match.getTeam1().getTurn()){
+            for(int row = 0;row<5;row++){
+                for(MatrixButton button:matrix[row]){
+                    if ((button.getCharacter()!=null || button.getTower()!=null)&&(!Objects.equals(button.getFilter(), new Color(0, 0, 0,100)))){button.setEnabled(true);}
+                    else{button.setEnabled(false);}
+                }
+            }
+            for(int row = 5;row<10;row++){
+                for(MatrixButton button:matrix[row]){
+                    button.setEnabled(false);
+                }
+            }
+        }else{
+            for(int row = 5;row<10;row++){
+                for(MatrixButton button:matrix[row]){
+                    if ((button.getCharacter()!=null || button.getTower()!=null)&&(!Objects.equals(button.getFilter(), new Color(0, 0, 0,100)))){button.setEnabled(true);}
+                    else{button.setEnabled(false);}
+                }
+            }
+            for(int row = 0;row<5;row++){
+                for(MatrixButton button:matrix[row]){
+                    button.setEnabled(false);
+                }
+            }
+        }
+    }
+
+    public void increaseMovements(){
+        if (match.getTeam1().getTurn()){
+            match.getTeam1().setMoves();
+        }else{
+            match.getTeam2().setMoves();
+        }
+    }
+
+    public void verifyMovements(){
+        if ((match.getTeam1().getTurn())&&(match.getTeam1().getMoves()>=6)){
+            match.getTeam1().resetMoves();
+            match.getTeam1().setTurn(false);
+            match.getTeam2().setTurn(true);
+        }else if ((match.getTeam2().getTurn())&&(match.getTeam2().getMoves()>=6)){
+            match.getTeam2().resetMoves();
+            match.getTeam2().setTurn(false);
+            match.getTeam1().setTurn(true);
+            restoreButtonsFilters();
+        }
+        enablePlayerButtons();
+    }
+
+    public void restoreButtonsFilters(){
+        for(MatrixButton[] rows:matrix){
+            for(MatrixButton btn:rows){
+                if ((Objects.equals(btn.getFilter(), new Color(0, 0, 0,100)))&&(btn.getIdentifier()<50)){
+                    btn.setFilter(new Color(255,0,0,100));
+                }else if ((Objects.equals(btn.getFilter(), new Color(0, 0, 0,100)))&&(btn.getIdentifier()>49)){
+                    btn.setFilter(new Color(0,0,255,100));
+                }
+            }
+        }
+    }
+
+    public void passTurn(MatrixButton btn){
+        increaseMovements();
+        btn.setFilter(new Color(0, 0, 0,100));
+        btn.setEnabled(false);
+        verifyMovements();
     }
 }
