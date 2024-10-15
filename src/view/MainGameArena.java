@@ -1,5 +1,6 @@
 package view;
 
+import models.Match;
 import models.Team;
 import models.Tower;
 import models.Character;
@@ -14,20 +15,19 @@ import java.util.Objects;
 
 public class MainGameArena extends JPanel{
     private MainGameWindow window;
-    private Team team1;
-    private Team team2;
+    private Match match;
     private MatrixButton[][] matrix;
 
-    public MainGameArena(MainGameWindow mainWindow, Team team1, Team team2,MatrixButton[][] matrixButton) {
+    public MainGameArena(MainGameWindow mainWindow, Match match, MatrixButton[][] matrixButton) {
         this.window=mainWindow;
-        this.team1=team1;
-        this.team2=team2;
+        this.match= match;
         this.matrix=matrixButton;
         /*Creación de componentes*/
         JPanel gridMatrixButtonsPanel = new JPanel(new GridLayout(10, 10, 5, 5));
         JPanel firstPlayerPanel = new JPanel();
         JPanel secondPlayerPanel = new JPanel();
         JLabel title = new JLabel("A Jugar",SwingConstants.CENTER);
+        window.setTitle("Ejecución de juego");
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -77,6 +77,30 @@ public class MainGameArena extends JPanel{
         gbc.fill=GridBagConstraints.BOTH;
         add(secondPlayerPanel,gbc);
     }
+
+    private void showPopup(MatrixButton button) {
+        // Crear los botones personalizados que aparecerán en el diálogo
+        Object[] options = {"Mover", "Atacar","Pasar"};
+
+        // Mostrar la ventana emergente con botones personalizados
+        int selection = JOptionPane.showOptionDialog(
+                null,            // Componente padre
+                "Que desea hacer?",            // Mensaje
+                "Selección de acción",           // Título del cuadro de diálogo
+                JOptionPane.DEFAULT_OPTION,     // Tipo de cuadro de diálogo
+                JOptionPane.INFORMATION_MESSAGE, // Tipo de mensaje
+                null,                           // Icono personalizado (null para sin icono)
+                options,                         // Botones personalizados
+                options[0]);                    // Opción por defecto
+        // Comprobar qué botón fue seleccionado
+        if (selection != -1) {  // Si se selecciona una opción (no se cierra con 'x')
+            System.out.println("Seleccionaste: " + options[selection]);
+            if (selection==0){characterMoveSelectionCeld(button);}
+            else if(selection==1){characterAttackSelection(button);}
+            //elif(selection==2){changePlayerTurn();}
+        }
+    }
+
     private void setMatrixButtons(JPanel gridMatrixButtonsPanel){
         for(MatrixButton[] buttonRow: matrix){
             for(MatrixButton button: buttonRow) {
@@ -90,6 +114,7 @@ public class MainGameArena extends JPanel{
             }
         }
     }
+
     private void characterMoveSelectionCeld(MatrixButton btn){
         // Calcular las posiciones alrededor del botón actual
         int[] positionAvailable = {btn.getIdentifier() - 10,btn.getIdentifier() + 10,btn.getIdentifier() - 1,btn.getIdentifier() + 1,btn.getIdentifier()};
@@ -109,7 +134,7 @@ public class MainGameArena extends JPanel{
             }
         }
     }
-    // Método para restaurar el estado anterior de los botones
+
     private void restorePreviousState(MatrixButton btn,int[] btnArray) {// Calcular las posiciones alrededor del botón actual
         for(MatrixButton[] buttonRow: matrix){
             for(MatrixButton button: buttonRow){
@@ -126,34 +151,14 @@ public class MainGameArena extends JPanel{
             }
         }
     }
+
     private void ActionListenerCleaner(MatrixButton button){
         ActionListener[] listeners = button.getActionListeners();
         for (ActionListener listener : listeners) {
             button.removeActionListener(listener);
         }
     }
-    private void showPopup(MatrixButton button) {
-        // Crear los botones personalizados que aparecerán en el diálogo
-        Object[] options = {"Mover", "Atacar","Pasar"};
 
-        // Mostrar la ventana emergente con botones personalizados
-        int selection = JOptionPane.showOptionDialog(
-                null,            // Componente padre
-                "Que desea hacer?",            // Mensaje
-                "Selección de acción",           // Título del cuadro de diálogo
-                JOptionPane.DEFAULT_OPTION,     // Tipo de cuadro de diálogo
-                JOptionPane.INFORMATION_MESSAGE, // Tipo de mensaje
-                null,                           // Icono personalizado (null para sin icono)
-                options,                         // Botones personalizados
-                options[0]);                    // Opción por defecto
-        // Comprobar qué botón fue seleccionado
-        if (selection != -1) {  // Si se selecciona una opción (no se cierra con 'x')
-            System.out.println("Seleccionaste: " + options[selection]);
-            if (selection==0){characterMoveSelectionCeld(button);}
-            //elif(selection==1){characterAttack(button);}
-            //elif(selection==2){changePlayerTurn();}
-        }
-    }
     private void moveCharacter(MatrixButton destinationButton,MatrixButton originButton,int[] btnArr){
         System.out.println("Moviendo del botón #"+originButton.getIdentifier()+" al botón #"+destinationButton.getIdentifier());
         swapButtonsAtributes(destinationButton, originButton);
@@ -170,6 +175,7 @@ public class MainGameArena extends JPanel{
             }
         }
     }
+
     public void swapButtonsAtributes(MatrixButton destinationButton, MatrixButton originButton) {
         /* Configuración de Botón de destino */
         destinationButton.setImagepath(originButton.getImagepath());
@@ -205,5 +211,16 @@ public class MainGameArena extends JPanel{
         originButton.repaint();
         destinationButton.revalidate();
         destinationButton.repaint();
+    }
+
+    public void characterAttackSelection(MatrixButton button){
+        System.out.println(match.getTeam1().getPlayer().getName());
+        System.out.println(match.getTeam2().getPlayer().getName());
+        match.startMatch();
+
+
+    }
+    public void characterAttack(MatrixButton button){
+
     }
 }
