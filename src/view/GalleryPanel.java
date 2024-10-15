@@ -2,6 +2,7 @@ package view;
 
 import database.DB;
 import models.Character;
+import utils.IMG;
 import view.components.ButtonComponent;
 
 import javax.swing.*;
@@ -29,11 +30,8 @@ public class GalleryPanel extends JPanel {
             characterPanel.setLayout(new BorderLayout());
 
             try {
-                ImageIcon characterIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource(character.getSpritePath())));
-                Image originalImage = characterIcon.getImage();
-                Image scaledImage = getScaledImage(originalImage, 200, 200);
-
-                JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+                Image image = IMG.toImage(Objects.requireNonNull(getClass().getResource(character.getSpritePath())));
+                JLabel imageLabel = new JLabel(new ImageIcon(image));
                 characterPanel.add(imageLabel, BorderLayout.CENTER);
             } catch (NullPointerException e) {
                 e.printStackTrace();
@@ -60,17 +58,5 @@ public class GalleryPanel extends JPanel {
         add(btnBack, BorderLayout.SOUTH);
     }
 
-    private Image getScaledImage(Image srcImg, int w, int h) {
-        BufferedImage scaledImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = scaledImage.createGraphics();
 
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        g2d.drawImage(srcImg, 0, 0, w, h, null);
-        g2d.dispose();
-
-        return scaledImage;
-    }
 }

@@ -79,6 +79,9 @@ public class Character extends Entity {
         return name;
     }
 
+    public float getHealth() {
+        return health;
+
     public String getSpritePath() {
         return spritePath;
     }
