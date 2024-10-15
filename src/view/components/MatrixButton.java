@@ -14,11 +14,9 @@ public class MatrixButton extends JButton {
     private Character character = null;
     private Tower tower = null;
     private ImageIcon icon=null;
-    private javax.swing.plaf.ButtonUI originalUI;
 
 
     public MatrixButton() {
-        this.originalUI = getUI();
         setFocusPainted(false);
         setBackground(new Color(220, 220, 220));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -61,8 +59,12 @@ public class MatrixButton extends JButton {
     }
 
     public void setImagepath(String path){
-        if ((path==null)||(path.isEmpty())){setIcon(null);this.characterImagePath="";}
-        else{this.characterImagePath=path;}
+        if ((path.isEmpty())||(path==null)){setIcon(null);this.characterImagePath="";}
+        else{
+            this.characterImagePath=path;
+            ImageIcon newIcon = new ImageIcon(path);
+            setIcon(newIcon);
+        }
     }
 
     public void setCharacter(Character character){

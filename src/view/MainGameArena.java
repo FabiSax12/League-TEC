@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Objects;
 
 
 public class MainGameArena extends JPanel{
@@ -156,52 +157,48 @@ public class MainGameArena extends JPanel{
     private void moveCharacter(MatrixButton destinationButton,MatrixButton originButton,int[] btnArr){
         System.out.println("Moviendo del botón #"+originButton.getIdentifier()+" al botón #"+destinationButton.getIdentifier());
         swapButtonsAtributes(destinationButton, originButton);
-        ActionListenerCleaner(originButton);
-        ActionListenerCleaner(destinationButton);
-        destinationButton.setEnabled(true);
-        originButton.setEnabled(false);
-        destinationButton.addActionListener(e->showPopup(destinationButton));
         for(MatrixButton[] buttonRow: matrix){
             for(MatrixButton button: buttonRow){
-                /*Si el botón está en la lista de botones disponibles y no es el botón de origen o destino, se resetea a sus valores por defecto*/
-                if(Arrays.stream(btnArr).anyMatch(i -> i == button.getIdentifier()) && (button.getIdentifier()!=originButton.getIdentifier()) && (button.getIdentifier()!=destinationButton.getIdentifier())){
+                if(Objects.equals(button.getBackground(), new Color(153, 255, 153))){
                     button.setEnabled(false);
+                    ActionListenerCleaner(button);
                     button.setBackground(Color.LIGHT_GRAY);
-                }else if(!button.getImagepath().isEmpty()){button.setEnabled(true);}
+                    System.out.println("Se ha desabilitado el botón #"+button.getIdentifier());
+                }
+                else if (!button.getImagepath().isEmpty()){button.setEnabled(true);
+                    System.out.println("Se ha habilitado el botón #"+button.getIdentifier());}
             }
         }
     }
-    public static void swapButtonsAtributes(MatrixButton destinationButton, MatrixButton originButton) {
-        /* Intercambiar el atributo characterImagePath */
-        String tempImagePath = destinationButton.getImagepath();
+    public void swapButtonsAtributes(MatrixButton destinationButton, MatrixButton originButton) {
+        /* Configuración de Botón de destino */
         destinationButton.setImagepath(originButton.getImagepath());
-        originButton.setImagepath(tempImagePath);
-
-        /* Intercambiar el atributo icon */
-        ImageIcon tempIcon = destinationButton.getIcon();
-        destinationButton.setIcon(originButton.getIcon());
-        originButton.setIcon(tempIcon);
-
-        /* Intercambiar el atributo color */
+        destinationButton.setBackground(Color.LIGHT_GRAY);
         destinationButton.setFilter(originButton.getFilter());
+        destinationButton.setIcon(originButton.getIcon());
+        if(originButton.getCharacter() != null) {
+            destinationButton.setCharacter(originButton.getCharacter());
+        }
+        if(originButton.getTower() != null){
+            destinationButton.setTower(originButton.getTower());
+        }
+        ActionListenerCleaner(destinationButton);
+        destinationButton.addActionListener(e->showPopup(destinationButton));
+        destinationButton.setEnabled(true);
+
+        /* Configuración de Botón de Origen */
+        originButton.setImagepath("");
         originButton.removeFilter();
         originButton.setBackground(Color.LIGHT_GRAY);
-
-        /* Intercambiar Character */
+        originButton.setIcon(null);
         if(originButton.getCharacter() != null) {
-            Character tempCharacter = destinationButton.getCharacter();
-            Character originCharacter = originButton.getCharacter();
-            destinationButton.setCharacter(originCharacter);
-            originButton.setCharacter(tempCharacter);
+            originButton.setCharacter(null);
         }
-
-        /* Intercambiar Tower */
         if(originButton.getTower() != null){
-            Tower tempTower = destinationButton.getTower();
-            Tower originTower = originButton.getTower();
-            destinationButton.setTower(originTower);
-            originButton.setTower(tempTower);
+            originButton.setTower(null);
         }
+        ActionListenerCleaner(originButton);
+        originButton.setEnabled(false);
 
         /* Revalidar y repintar */
         originButton.revalidate();
