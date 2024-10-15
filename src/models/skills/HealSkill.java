@@ -3,9 +3,10 @@ package models.skills;
 import models.ASkill;
 import models.Character;
 import models.Element;
+import models.Entity;
 
 public class HealSkill extends ASkill {
-    private int healAmount;
+    private final int healAmount;
 
     public HealSkill(String name, int healAmount, int manaCost, Element element) {
         super(name, manaCost, element);
@@ -13,7 +14,7 @@ public class HealSkill extends ASkill {
     }
 
     @Override
-    public void use(Character user, Character target) {
-        
+    public void use(Character user, Entity target) {
+        target.setHealth(target.getHealth() + healAmount);
     }
 }
