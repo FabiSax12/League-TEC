@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.Objects;
 
 public class CharacterPlacementPanel extends JPanel {
@@ -24,7 +23,7 @@ public class CharacterPlacementPanel extends JPanel {
     private boolean firstPlayerTime = true;
     private JLabel playerLabel;
 
-    public CharacterPlacementPanel(MainGameWindow mainWindow, Team team1, Team team2) {
+    public CharacterPlacementPanel(MainGameWindow mainWindow,Team team1,Team team2) {
         this.team1 = team1;
         this.team2 = team2;
         this.team1Characters = new DefaultListModel<>();
@@ -110,7 +109,7 @@ public class CharacterPlacementPanel extends JPanel {
 
         confirmButton = new ButtonComponent("Confirmar");
         confirmButton.setEnabled(false);
-        confirmButton.addActionListener(e -> mainWindow.startGameArena(team1, team2,gridButtons));
+        confirmButton.addActionListener(e -> mainWindow.startGameArena(new Match(ArenaFactory.create(), team1, team2),gridButtons));
 
         JPanel controlPanel = new JPanel();
         controlPanel.add(confirmButton);
@@ -118,7 +117,6 @@ public class CharacterPlacementPanel extends JPanel {
 
         setVisible(true);
     }
-
     private void placeCharacter(JPanel panel,MatrixButton button) {
         if(selectionList.getSelectedValue() == null){
             JOptionPane.showMessageDialog(
