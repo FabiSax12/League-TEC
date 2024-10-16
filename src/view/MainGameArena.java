@@ -329,14 +329,14 @@ public class MainGameArena extends JPanel{
                 btnAttacker.getTower().attack(btnTarget.getTower(), btnAttacker.getEntityDamage());
                 btnTarget.updateEntityInfo();
                 System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
-                JOptionPane.showConfirmDialog(window,"Enemigo dañado");
+                JOptionPane.showMessageDialog(window,"Enemigo dañado");
             }else{
                 System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
                 btnTarget.addActionListener(e->showTowerPopup(btnTarget));
                 btnAttacker.getTower().attack(btnTarget.getCharacter(), btnAttacker.getEntityDamage());
                 btnTarget.updateEntityInfo();
                 System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
-                JOptionPane.showConfirmDialog(window,"Enemigo dañado");
+                JOptionPane.showMessageDialog(window,"Enemigo dañado");
             }
 
         }
