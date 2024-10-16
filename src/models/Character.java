@@ -67,7 +67,7 @@ public class Character extends Entity {
     }
 
     public void applyElementalBoost() {
-
+        this.damage += (int) (this.damage * 0.10);
     }
 
     public void addSkill(ASkill skill) {
