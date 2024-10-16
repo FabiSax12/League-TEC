@@ -41,6 +41,8 @@
             "health": 1000,
             "mana": 70,
             "attack": 40,
+            "defense": 0,
+            "movements": 1,
             "element": "GROUND",
             "sprite": "/assets/guerrero_de_tierra.jpg",
             "skills": [
@@ -81,6 +83,8 @@
             "health": 750,
             "mana": 120,
             "attack": 80,
+            "defense": 0,
+            "movements": 1,
             "element": "FIRE",
             "sprite": "/assets/mago_de_fuego.jpg",
             "skills": [
@@ -120,6 +124,8 @@
             "health": 800,
             "mana": 150,
             "attack": 30,
+            "defense": 0,
+            "movements": 1,
             "element": "WATER",
             "sprite": "/assets/sacerdote_del_agua.jpg",
             "skills": [
@@ -159,6 +165,8 @@
             "health": 850,
             "mana": 80,
             "attack": 100,
+            "defense": 0,
+            "movements": 1,
             "element": "AIR",
             "sprite": "/assets/asesino_del_aire.jpg",
             "skills": [
@@ -191,6 +199,8 @@
             "health": 1200,
             "mana": 60,
             "attack": 30,
+            "defense": 0,
+            "movements": 1,
             "element": "GROUND",
             "sprite": "/assets/golem_de_roca.jpg",
             "skills": [
@@ -223,6 +233,8 @@
             "health": 900,
             "mana": 100,
             "attack": 90,
+            "defense": 0,
+            "movements": 1,
             "element": "FIRE",
             "sprite": "/assets/fenix_de_llamas.jpg",
             "skills": [
@@ -255,6 +267,8 @@
             "health": 900,
             "mana": 90,
             "attack": 75,
+            "defense": 0,
+            "movements": 1,
             "element": "AIR",
             "sprite": "/assets/guardabosques_de_la_tormenta.jpg",
             "skills": [
@@ -287,6 +301,8 @@
             "health": 850,
             "mana": 130,
             "attack": 35,
+            "defense": 0,
+            "movements": 1,
             "element": "WATER",
             "sprite": "/assets/monje_de_la_marea.jpg",
             "skills": [
@@ -318,6 +334,8 @@
             "health": 800,
             "mana": 100,
             "attack": 110,
+            "defense": 0,
+            "movements": 1,
             "element": "AIR",
             "sprite": "/assets/segador_de_sombras.jpg",
             "skills": [
