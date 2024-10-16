@@ -84,7 +84,7 @@ public class MainGameArena extends JPanel{
 
     private void showPopup(MatrixButton button) {
         // Crear los botones personalizados que aparecerán en el diálogo
-        Object[] options = {"Mover", "Atacar","Pasar"};
+        Object[] options = {"Mover", "Habilidad","Pasar"};
         // Mostrar la ventana emergente con botones personalizados
         int selection = JOptionPane.showOptionDialog(
                 null,            // Componente padre
@@ -240,54 +240,25 @@ public class MainGameArena extends JPanel{
 
     public void characterAbilitySelection(MatrixButton button){
         if(button.getCharacter()!=null){
-            int[] positions=getPositionsToAbility(button);
             ASkill[] arrayAbilitys=button.getCharacter().getSkills();
-            for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
-            if (positions.length != 0) {
-                String[] skillNames = new String[arrayAbilitys.length];
-                for (int i = 0; i < arrayAbilitys.length; i++) {
-                    skillNames[i] = arrayAbilitys[i].getName(); // Asumiendo que ASkill tiene un método getName()
-                }
-
-                JComboBox<String> skillSelection = new JComboBox<>(skillNames);
-                int option = JOptionPane.showConfirmDialog(
-                        null,
-                        skillSelection,
-                        "Selecciona una habilidad",
-                        JOptionPane.OK_CANCEL_OPTION
-                );
-
-                if (option == JOptionPane.OK_OPTION) {
-                    int selectedSkillIndex = skillSelection.getSelectedIndex();
-                    ASkill selectedSkill = arrayAbilitys[selectedSkillIndex];
-                    System.out.println("Habilidad seleccionada: " + selectedSkill.getName());
-
-                    characterAbility(button, selectedSkill);
-                }
+            String[] skillNames = new String[arrayAbilitys.length];
+            for (int i = 0; i < arrayAbilitys.length; i++) {skillNames[i] = arrayAbilitys[i].getName();}
+            JComboBox<String> skillSelection = new JComboBox<>(skillNames);
+            int option = JOptionPane.showConfirmDialog(null,skillSelection,"Selecciona una habilidad",JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                int selectedSkillIndex = skillSelection.getSelectedIndex();
+                ASkill selectedSkill = arrayAbilitys[selectedSkillIndex];
+                System.out.println("Habilidad seleccionada: " + selectedSkill.getName());
+                characterAbility(button, selectedSkill);
             }
-            else{
-                JOptionPane.showMessageDialog(
-                    window,
-                    "Debes estar al lado de un enemigo para atacar.",
-                    "No hay enemigos al alcance",
-                    JOptionPane.WARNING_MESSAGE
-            );}
         }else if(button.getTower()!=null){
             int[] positions=getPositionsToAbility(button);
             for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
-            if (positions.length!=0){
-                towerAttack(button,positions);
-            }
+            if (positions.length!=0){towerAttack(button,positions);}
             else{
-                JOptionPane.showMessageDialog(
-                        window,
-                        "Debes estar al lado de un enemigo para atacar.",
-                        "No hay enemigos al alcance",
-                        JOptionPane.WARNING_MESSAGE
-                );}
+                JOptionPane.showMessageDialog(window,"Debes estar al lado de un enemigo para atacar.","No hay enemigos al alcance",JOptionPane.WARNING_MESSAGE);
+            }
         }
-
-
     }
 
     public void characterAbility(MatrixButton button,ASkill skill){
@@ -297,12 +268,18 @@ public class MainGameArena extends JPanel{
         String type = skill.toJson().get("type").toString();
         switch (type){
             case "attack":
+                int[] positions=getPositionsToAbility(button);
+                for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
+                if (positions.length != 0) {
+                    characterAttack();
+                }else{
+                    JOptionPane.showMessageDialog(window,"Debes estar al lado de un enemigo para atacar.","No hay enemigos al alcance",JOptionPane.WARNING_MESSAGE);
+                }
                 break;
             case "buff":
                 break;
             case "heal":
         }
-
     }
 
     public void characterAttack(){
@@ -338,7 +315,6 @@ public class MainGameArena extends JPanel{
                 System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
                 JOptionPane.showMessageDialog(window,"Enemigo dañado");
             }
-
         }
         else{
 
