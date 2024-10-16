@@ -7,32 +7,45 @@ import models.Character;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A custom JButton component used to display and manage matrix-style game elements such as characters and towers.
+ *
+ * <p>This button supports displaying scaled images, applying transparent filters, and managing tooltips
+ * for characters and towers. It also allows setting identifiers and managing entities (characters or towers).</p>
+ */
 public class MatrixButton extends JButton {
     private byte identifier = 0;
-    private String characterImagePath="";
-    private Color filter=null;
+    private String characterImagePath = "";
+    private Color filter = null;
     private Character character = null;
     private Tower tower = null;
-    private ImageIcon icon=null;
+    private ImageIcon icon = null;
 
-
+    /**
+     * Constructs a MatrixButton with default styles.
+     */
     public MatrixButton() {
         setFocusPainted(false);
         setBackground(new Color(220, 220, 220));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
 
+    /**
+     * Paints the button component, drawing the image and applying a filter if one is set.
+     *
+     * @param g the Graphics object used for painting.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Dibujar la imagen escalada
+        // Draw the scaled image if present
         if (icon != null) {
             Image scaledImage = icon.getImage().getScaledInstance(getWidth(), getHeight(), Image.SCALE_DEFAULT);
             g.drawImage(scaledImage, 0, 0, getWidth(), getHeight(), this);
         }
 
-        // Dibujar el filtro si está aplicado
+        // Draw the filter if applied
         if (filter != null) {
             Graphics2D g2d = (Graphics2D) g.create();
             g2d.setColor(filter);
@@ -41,44 +54,80 @@ public class MatrixButton extends JButton {
         }
     }
 
+    /**
+     * Sets an ImageIcon to be displayed on the button.
+     *
+     * @param icon the ImageIcon to display.
+     */
     public void setIcon(ImageIcon icon) {
         this.icon = icon;
         repaint();
     }
 
+    /**
+     * Applies a transparent color filter to the button.
+     *
+     * @param colorTransparente the transparent color filter to apply.
+     */
     public void setFilter(Color colorTransparente) {
         this.filter = colorTransparente;
         repaint();
     }
 
-    public void setIdentifier(byte identifier){this.identifier=identifier;}
+    /**
+     * Sets the identifier for the button.
+     *
+     * @param identifier the identifier to set.
+     */
+    public void setIdentifier(byte identifier) {
+        this.identifier = identifier;
+    }
 
+    /**
+     * Removes the currently applied filter.
+     */
     public void removeFilter() {
         this.filter = null;
         repaint();
     }
 
-    public void setImagepath(String path){
-        if ((path.isEmpty())||(path==null)){setIcon(null);this.characterImagePath="";}
-        else{
-            this.characterImagePath=path;
+    /**
+     * Sets the image path for the character and updates the icon.
+     *
+     * @param path the path of the image.
+     */
+    public void setImagepath(String path) {
+        if (path == null || path.isEmpty()) {
+            setIcon(null);
+            this.characterImagePath = "";
+        } else {
+            this.characterImagePath = path;
             ImageIcon newIcon = new ImageIcon(path);
             setIcon(newIcon);
         }
     }
 
-    public void setCharacter(Character character){
+    /**
+     * Associates a character with the button and generates a tooltip for the character.
+     *
+     * @param character the character to associate with the button.
+     */
+    public void setCharacter(Character character) {
         if (character == null) {
             this.character = null;
             setToolTipText(null);
         } else {
             this.character = character;
             setToolTipText(generaTooltipCharacter(character));
-            System.out.println("character agregado...");
         }
     }
 
-    public void setTower(Tower tower){
+    /**
+     * Associates a tower with the button and generates a tooltip for the tower.
+     *
+     * @param tower the tower to associate with the button.
+     */
+    public void setTower(Tower tower) {
         if (tower == null) {
             this.tower = null;
             setToolTipText(null);
@@ -88,34 +137,35 @@ public class MatrixButton extends JButton {
         }
     }
 
-    public void setEntity(Team team,String pathImageExpected) {
-        for (Character character:team.getCharacters()){
-            if (character.getSpritePath().equals(pathImageExpected)){
+    /**
+     * Sets the entity (character or tower) based on the team and image path.
+     *
+     * @param team the team containing characters and towers.
+     * @param pathImageExpected the expected image path for the entity.
+     */
+    public void setEntity(Team team, String pathImageExpected) {
+        for (Character character : team.getCharacters()) {
+            if (character.getSpritePath().equals(pathImageExpected)) {
                 this.character = character;
                 setToolTipText(generaTooltipCharacter(character));
                 return;
             }
         }
-        for (Tower tower:team.getTowers()){
-            if (tower.getSpritePath().equals(pathImageExpected)){
+        for (Tower tower : team.getTowers()) {
+            if (tower.getSpritePath().equals(pathImageExpected)) {
                 this.tower = tower;
                 setToolTipText(generaTooltipTower(tower));
                 return;
             }
         }
-
     }
 
-    public ImageIcon getIcon(){return icon;}
-
-    public byte getIdentifier() {return identifier;}
-
-    public String getImagepath(){return characterImagePath;}
-
-    public Character getCharacter() {return character;}
-
-    public Tower getTower() {return tower;}
-
+    /**
+     * Generates a tooltip for the given character.
+     *
+     * @param character the character to generate the tooltip for.
+     * @return the tooltip as a String.
+     */
     private String generaTooltipCharacter(Character character) {
         return "<html>"
                 + "<b><i>Nombre:</i></b> " + character.getName() + "<br>"
@@ -127,6 +177,12 @@ public class MatrixButton extends JButton {
                 + "</html>";
     }
 
+    /**
+     * Generates a tooltip for the given tower.
+     *
+     * @param tower the tower to generate the tooltip for.
+     * @return the tooltip as a String.
+     */
     private String generaTooltipTower(Tower tower) {
         return "<html>"
                 + "<b><i>Nombre:</i></b> Torre<br>"
@@ -135,8 +191,28 @@ public class MatrixButton extends JButton {
                 + "</html>";
     }
 
-    public Color getFilter(){return filter;}
+    // Getters
+    public ImageIcon getIcon() {
+        return icon;
+    }
 
+    public byte getIdentifier() {
+        return identifier;
+    }
+
+    public String getImagepath() {
+        return characterImagePath;
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public Tower getTower() {
+        return tower;
+    }
+
+    public Color getFilter() {
+        return filter;
+    }
 }
-
-

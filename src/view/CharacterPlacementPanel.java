@@ -12,6 +12,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
 
+/**
+ * CharacterPlacementPanel is responsible for placing characters on the game grid before starting the match.
+ * It handles the selection of characters by both teams and updates the grid accordingly.
+ */
 public class CharacterPlacementPanel extends JPanel {
     private final MatrixButton[][] gridButtons;
     private final Team team1;
@@ -23,6 +27,13 @@ public class CharacterPlacementPanel extends JPanel {
     private boolean firstPlayerTime = true;
     private JLabel playerLabel;
 
+    /**
+     * Constructor to initialize the character placement panel.
+     *
+     * @param mainWindow Reference to the main game window.
+     * @param team1      First team participating in the match.
+     * @param team2      Second team participating in the match.
+     */
     public CharacterPlacementPanel(MainGameWindow mainWindow,Team team1,Team team2) {
         this.team1 = team1;
         this.team2 = team2;
@@ -117,6 +128,13 @@ public class CharacterPlacementPanel extends JPanel {
 
         setVisible(true);
     }
+
+    /**
+     * Places the selected character on the grid.
+     *
+     * @param panel  The grid panel where the character will be placed.
+     * @param button The button corresponding to the grid cell where the character will be placed.
+     */
     private void placeCharacter(JPanel panel,MatrixButton button) {
         if(selectionList.getSelectedValue() == null){
             JOptionPane.showMessageDialog(
@@ -146,6 +164,10 @@ public class CharacterPlacementPanel extends JPanel {
             }
         }
     }
+
+    /**
+     * Changes the current player to the next one.
+     */
     private void changePlayer() {
         firstPlayerTime = false;
         SwingUtilities.invokeLater(() -> {// Asegurar que la actualización de la interfaz ocurra en el Event Dispatch Thread
@@ -153,9 +175,20 @@ public class CharacterPlacementPanel extends JPanel {
             selectionList.setModel(team2Characters);
         });
     }
+
+    /**
+     * Disables all buttons on the grid once both players have placed their characters.
+     */
     private void disableMatrixButtons(){
         for(MatrixButton[] buttonRow: gridButtons){for(MatrixButton button: buttonRow){button.setEnabled(false);}}
     }
+
+    /**
+     * Validates if the selected button is within the allowed area for the current player.
+     *
+     * @param button The button to validate.
+     * @return true if the button is in the valid area, false otherwise.
+     */
     private boolean validatePlayerArea(MatrixButton button){
         int buttonID=button.getIdentifier();
         if (firstPlayerTime){
@@ -165,6 +198,11 @@ public class CharacterPlacementPanel extends JPanel {
         }
     }
 
+    /**
+     * Configures the button for each character after placement, including setting the sprite image.
+     *
+     * @param btn The button to configure.
+     */
     private void ConfForEachButton (MatrixButton btn){
         Image image = IMG.toImage(Objects.requireNonNull(getClass().getResource(btn.getImagepath())));
         // Escalar la imagen al tamaño del botón

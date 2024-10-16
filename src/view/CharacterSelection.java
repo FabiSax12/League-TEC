@@ -11,12 +11,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * CharacterSelection is a JPanel that allows players to select characters for their teams before a match.
+ * It handles the display of available characters, the selection for each player, and confirms the selection.
+ */
 public class CharacterSelection extends JPanel {
     private final DefaultListModel<Character> listModel1;
     private final DefaultListModel<Character> listModel2;
     private final JList<Character> selectionList;
     private final JButton confirmButton;
 
+    /**
+     * Constructor that initializes the character selection panel.
+     *
+     * @param mainWindow Reference to the main game window.
+     * @param team1      First team to select characters.
+     * @param team2      Second team to select characters.
+     */
     public CharacterSelection(MainGameWindow mainWindow, Team team1, Team team2) {
         CharacterSelectionController controller = new CharacterSelectionController(this);
 
@@ -117,14 +128,29 @@ public class CharacterSelection extends JPanel {
         setVisible(true);
     }
 
+    /**
+     * Gets the list model for player 1's selected characters.
+     *
+     * @return The list model for player 1's characters.
+     */
     public DefaultListModel<Character> getPlayer1ListModel() {
         return listModel1;
     }
 
+    /**
+     * Gets the list model for player 2's selected characters.
+     *
+     * @return The list model for player 2's characters.
+     */
     public DefaultListModel<Character> getPlayer2ListModel() {
         return listModel2;
     }
 
+    /**
+     * Enables or disables the confirm button based on the selection state.
+     *
+     * @param enabled true to enable the confirm button, false to disable it.
+     */
     public void enableConfirmButton(boolean enabled) {
         confirmButton.setEnabled(enabled);
     }
