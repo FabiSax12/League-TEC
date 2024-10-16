@@ -4,6 +4,7 @@ import models.ASkill;
 import models.Character;
 import models.Element;
 import models.Entity;
+import org.json.JSONObject;
 
 public class HealSkill extends ASkill {
     private final int healAmount;
@@ -14,7 +15,19 @@ public class HealSkill extends ASkill {
     }
 
     @Override
+    public JSONObject toJson() {
+        JSONObject jsonSkill = super.toJson();
+        jsonSkill.put("type", "heal");
+        jsonSkill.put("heal", healAmount);
+        return jsonSkill;
+    }
+
+    @Override
     public void use(Character user, Entity target) {
         target.setHealth(target.getHealth() + healAmount);
+    }
+
+    public int getHealAmount() {
+        return healAmount;
     }
 }

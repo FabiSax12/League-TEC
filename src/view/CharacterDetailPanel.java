@@ -3,10 +3,12 @@ package view;
 import models.Character;
 import models.ASkill;
 import view.components.ButtonComponent;
+import view.components.CustomColors;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Objects;
 
 public class CharacterDetailPanel extends JPanel {
@@ -26,16 +28,22 @@ public class CharacterDetailPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
 
-        ImageIcon characterIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource(character.getSpritePath())));
-        Image originalImage = characterIcon.getImage();
-        Image scaledImage = getScaledImage(originalImage, 200, 200);
-        JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-        gbc.gridwidth = 2;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        detailsPanel.add(imageLabel, gbc);
+        File imageFile = new File(System.getProperty("user.dir") + "\\src" + character.getSpritePath());
+        if (imageFile.exists()) {
+            ImageIcon characterIcon = new ImageIcon(imageFile.getAbsolutePath());
+            Image originalImage = characterIcon.getImage();
+            Image scaledImage = getScaledImage(originalImage, 200, 200);
+            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+            gbc.gridwidth = 2;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            detailsPanel.add(imageLabel, gbc);
 
-        gbc.gridwidth = 1;
+            gbc.gridwidth = 1;
+        } else {
+            // Maneja el caso de que la imagen no se encuentre
+            System.out.println("Imagen no encontrada: " + character.getSpritePath());
+        }
 
         addDetailRow(detailsPanel, "Salud:", String.valueOf(character.getHealth()), gbc, 1);
         addDetailRow(detailsPanel, "Mana:", String.valueOf(character.getMana()), gbc, 2);
@@ -51,13 +59,16 @@ public class CharacterDetailPanel extends JPanel {
 
         add(skillsPanel, BorderLayout.SOUTH);
 
-        JButton btnBack = new ButtonComponent("Volver a la galería");
+        JButton btnBack = new ButtonComponent("Volver", CustomColors.RED);
+        JButton editCharacter = new ButtonComponent("Editar", CustomColors.BLUE);
         btnBack.addActionListener(e -> mainWindow.showPanel("Gallery"));
+        editCharacter.addActionListener(e -> mainWindow.editCharacter(character));
 
-        JPanel backButtonPanel = new JPanel();
-        backButtonPanel.add(btnBack);
-        backButtonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        add(backButtonPanel, BorderLayout.PAGE_END);
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(btnBack);
+        buttonPanel.add(editCharacter);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        add(buttonPanel, BorderLayout.PAGE_END);
     }
 
     private static JPanel getjPanel(Character character) {

@@ -6,18 +6,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Character extends Entity {
-    private final String name;
-    private final String spritePath;
+    private String name;
+    private String spritePath;
     private int level;
     private int maxMana;
     private int mana;
-    private int defense;
     private int movements;
     private boolean dead;
-    private final Element element;
+    private Element element;
     private final ArrayList<ASkill> skills;
 
-    public Character(String name, float health, int mana, int damage, Element element, String spritePath) {
+    public Character(String name, float health, int mana, int damage, int defense, int movements, Element element, String spritePath) {
         this.name = name;
         this.maxHealth = health;
         this.health = health;
@@ -25,9 +24,9 @@ public class Character extends Entity {
         this.mana = mana;
         this.damage = damage;
         this.element = element;
+        this.defense = defense;
+        this.movements = movements;
         this.level = 1;
-        this.defense = 20;
-        this.movements = 1;
         this.skills = new ArrayList<>();
         this.spritePath = spritePath;
     }
@@ -87,11 +86,19 @@ public class Character extends Entity {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public float getHealth() {
         return health;
     }
     public String getSpritePath() {
         return spritePath;
+    }
+
+    public void setSpritePath(String spritePath) {
+        this.spritePath = spritePath;
     }
 
     public int getLevel() {
@@ -130,8 +137,16 @@ public class Character extends Entity {
         return element;
     }
 
+    public void setElement(Element element) {
+        this.element = element;
+    }
+
     public ASkill[] getSkills() {
         return skills.toArray(new ASkill[0]);
+    }
+
+    public void clearSkills() {
+        this.skills.clear();
     }
 
     @Override
@@ -146,7 +161,7 @@ public class Character extends Entity {
         jsonCharacter.put("mana", this.getMana());
         jsonCharacter.put("attack", this.getDamage());
         jsonCharacter.put("element", this.getElement().toString());
-        jsonCharacter.put("level", this.getLevel());
+        jsonCharacter.put("sprite", this.getSpritePath());
         jsonCharacter.put("defense", this.getDefense());
         jsonCharacter.put("movements", this.getMovements());
         jsonCharacter.put("skills", this.getSkillsAsJson());

@@ -2,6 +2,7 @@ package models.skills;
 
 import models.*;
 import models.Character;
+import org.json.JSONObject;
 
 public class BuffSkill extends ASkill {
     private final String statToBoost;
@@ -9,8 +10,17 @@ public class BuffSkill extends ASkill {
 
     public BuffSkill(String name, String statToBoost, double boostFactor, int manaCost, Element element) {
         super(name, manaCost, element);
-        this.statToBoost = statToBoost;
+        this.statToBoost = statToBoost.toLowerCase();
         this.boostFactor = boostFactor;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject jsonSkill = super.toJson();
+        jsonSkill.put("type", "buff");
+        jsonSkill.put("stat", statToBoost.toLowerCase());
+        jsonSkill.put("boost", boostFactor);
+        return jsonSkill;
     }
 
     @Override
@@ -21,5 +31,13 @@ public class BuffSkill extends ASkill {
         if (target instanceof Character) {
             ((Character) target).statBuff(statToBoost, boostFactor, 1);
         }
+    }
+
+    public String getStat() {
+        return statToBoost;
+    }
+
+    public double getBoost() {
+        return boostFactor;
     }
 }

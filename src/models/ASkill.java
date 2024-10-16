@@ -18,7 +18,7 @@ public abstract class ASkill {
     public JSONObject toJson() {
         JSONObject jsonSkill = new JSONObject();
         jsonSkill.put("name", this.name);
-        jsonSkill.put("manaCost", this.manaCost);
+        jsonSkill.put("mana", this.manaCost);
         jsonSkill.put("element", this.element.toString());
         return jsonSkill;
     }

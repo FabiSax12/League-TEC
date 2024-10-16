@@ -4,16 +4,17 @@ import database.DB;
 import models.Character;
 import utils.IMG;
 import view.components.ButtonComponent;
+import view.components.CustomColors;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.io.File;
 import java.util.Objects;
 
 public class GalleryPanel extends JPanel {
 
-    public GalleryPanel(MainGameWindow mainWindow) throws IOException {
+    public GalleryPanel(MainGameWindow mainWindow) {
         Character[] characters = DB.getCharacters().toArray(new Character[0]);
 
         setLayout(new BorderLayout());
@@ -30,9 +31,17 @@ public class GalleryPanel extends JPanel {
             characterPanel.setLayout(new BorderLayout());
 
             try {
-                Image image = IMG.toImage(Objects.requireNonNull(getClass().getResource(character.getSpritePath())));
-                JLabel imageLabel = new JLabel(new ImageIcon(image));
-                characterPanel.add(imageLabel, BorderLayout.CENTER);
+                File imageFile = new File(System.getProperty("user.dir") + "\\src" + character.getSpritePath().replace("/", "\\"));
+                if (imageFile.exists()) {
+                    ImageIcon characterIcon = new ImageIcon(imageFile.getAbsolutePath());
+                    Image originalImage = characterIcon.getImage();
+                    Image scaledImage = getScaledImage(originalImage, 200, 200);
+                    JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+                    characterPanel.add(imageLabel, BorderLayout.CENTER);
+                } else {
+                    // Maneja el caso de que la imagen no se encuentre
+                    System.out.println("Imagen no encontrada: " + character.getSpritePath());
+                }
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
@@ -53,9 +62,15 @@ public class GalleryPanel extends JPanel {
 
         add(scrollPane, BorderLayout.CENTER);
 
-        JButton btnBack = new ButtonComponent("Volver al Menú");
+        JPanel buttonPanel = new JPanel();
+        JButton btnBack = new ButtonComponent("Volver al Menú", CustomColors.RED);
+        JButton btnCreate = new ButtonComponent("Crear Personaje", CustomColors.BLUE);
         btnBack.addActionListener(e -> mainWindow.showPanel("Menu"));
-        add(btnBack, BorderLayout.SOUTH);
+        btnCreate.addActionListener(e -> mainWindow.showPanel("CreateCharacter"));
+
+        buttonPanel.add(btnBack);
+        buttonPanel.add(btnCreate);
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
 
