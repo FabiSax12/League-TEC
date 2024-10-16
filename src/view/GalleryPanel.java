@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Objects;
 
+import static utils.IMG.getScaledImage;
+
 public class GalleryPanel extends JPanel {
 
     public GalleryPanel(MainGameWindow mainWindow) {

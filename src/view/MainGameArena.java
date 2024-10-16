@@ -1,15 +1,15 @@
 package view;
 
-import models.Match;
-import models.Team;
-import models.Tower;
 import models.Character;
+import models.Match;
+import models.*;
 import view.components.MatrixButton;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Objects;
 
 
@@ -25,7 +25,7 @@ public class MainGameArena extends JPanel{
         System.out.println("La arena actual es:"+match.getArena());
         match.startMatch();
         match.getTeam1().setTurn(true);
-        /*Creación de componentes*/
+        /*Components creation*/
         JPanel gridMatrixButtonsPanel = new JPanel(new GridLayout(10, 10, 5, 5));
         JPanel firstPlayerPanel = new JPanel();
         JPanel secondPlayerPanel = new JPanel();
@@ -34,17 +34,17 @@ public class MainGameArena extends JPanel{
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        /*Configuración de componentes*/
+        /*Components settings*/
+        this.match.getTeam1().setTowers(1);
+        this.match.getTeam2().setTowers(2);
+        setArenaColor(gridMatrixButtonsPanel);
+        setArenaColor(firstPlayerPanel);
+        setArenaColor(secondPlayerPanel);
+        setArenaColor(this);
         setLayout(new GridBagLayout());
         gridMatrixButtonsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setMatrixButtons(gridMatrixButtonsPanel);
         enablePlayerButtons();
-        gridMatrixButtonsPanel.setBackground(new Color(2, 25, 153));
-        firstPlayerPanel.setBackground(new Color(255, 204, 102));
-        secondPlayerPanel.setBackground(new Color(51, 204, 51));
-        title.setBackground(new Color(0, 153, 204));
-        setBackground(new Color(123, 113, 98));
-        //gridMatrixButtonsPanel.set
 
         /*Agregar componentes*/
         gbc.gridy=0;
@@ -99,7 +99,7 @@ public class MainGameArena extends JPanel{
         if (selection != -1) {  // Si se selecciona una opción (no se cierra con 'x')
             System.out.println("Seleccionaste: " + options[selection]);
             if (selection==0){characterMoveSelectionCeld(button);}
-            else if(selection==1){characterAttackSelection(button);}
+            else if(selection==1){characterAbilitySelection(button);}
             else {passTurn(button);}
         }
     }
@@ -118,7 +118,7 @@ public class MainGameArena extends JPanel{
 
         if (selection != -1) {
             System.out.println("Seleccionaste: " + options[selection]);
-            if(selection==0){characterAttackSelection(button);}
+            if(selection==0){characterAbilitySelection(button);}
             else{passTurn(button);}
         }
     }
@@ -139,7 +139,7 @@ public class MainGameArena extends JPanel{
     }
 
     private void characterMoveSelectionCeld(MatrixButton btn){
-        int[] positionAvailable = {btn.getIdentifier() - 10,btn.getIdentifier() + 10,btn.getIdentifier() - 1,btn.getIdentifier() + 1,btn.getIdentifier()};
+        int[] positionAvailable = getPositions(btn);
         for(MatrixButton[] buttonRow: matrix){
             for(MatrixButton button: buttonRow){
                 if((Arrays.stream(positionAvailable).anyMatch(i -> i == button.getIdentifier()))&&(button.getCharacter()==null)&&(button.getTower()==null)){
@@ -157,19 +157,17 @@ public class MainGameArena extends JPanel{
         }
     }
 
-    private void restorePreviousState(MatrixButton btn,int[] btnArray) {// Calcular las posiciones alrededor del botón actual
+    private void restorePreviousState(MatrixButton btn,int[] btnArray) {
+        System.out.println("Character Action aplicado a btn #"+btn.getIdentifier());
+        ActionListenerCleaner(btn);
+        if (btn.getTower()==null){btn.addActionListener(e->showPopup(btn));}
+        else{btn.addActionListener(e->showTowerPopup(btn));}//////////////////////////////////////////////////////////////// Calcular las posiciones alrededor del botón actual
         for(MatrixButton[] buttonRow: matrix){
             for(MatrixButton button: buttonRow){
                 if(Arrays.stream(btnArray).anyMatch(i -> i == button.getIdentifier())){
-                    if(button.getIdentifier()!=btn.getIdentifier()){
-                        button.setEnabled(false);
-                        button.setBackground(Color.LIGHT_GRAY);
-                    }else{
-                        System.out.println("Character Action aplicado a btn #"+button.getIdentifier());
-                        ActionListenerCleaner(button);
-                        if (button.getTower()==null){button.addActionListener(e->showPopup(button));}
-                        else{button.addActionListener(e->showTowerPopup(button));}//////////////////////////////////////////////////////////////
-                    }
+                    button.setBackground(Color.LIGHT_GRAY);
+                    ActionListenerCleaner(button);
+                    button.setEnabled(false);
                 }else if(!button.getImagepath().isEmpty()){button.setEnabled(true);}
             }
         }
@@ -240,36 +238,138 @@ public class MainGameArena extends JPanel{
         destinationButton.repaint();
     }
 
-    public void characterAttackSelection(MatrixButton button){
+    public void characterAbilitySelection(MatrixButton button){
+        if(button.getCharacter()!=null){
+            int[] positions=getPositionsToAbility(button);
+            ASkill[] arrayAbilitys=button.getCharacter().getSkills();
+            System.out.println(arrayAbilitys.length);
+            for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
+            if (positions.length!=0){
+                characterAbility(button);
+            }
+            else{
+                JOptionPane.showMessageDialog(
+                    window,
+                    "Debes estar al lado de un enemigo para atacar.",
+                    "No hay enemigos al alcance",
+                    JOptionPane.WARNING_MESSAGE
+            );}
+        }else if(button.getTower()!=null){
+            int[] positions=getPositionsToAbility(button);
+            for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
+            if (positions.length!=0){
+                towerAbility(button);
+            }
+            else{
+                JOptionPane.showMessageDialog(
+                        window,
+                        "Debes estar al lado de un enemigo para atacar.",
+                        "No hay enemigos al alcance",
+                        JOptionPane.WARNING_MESSAGE
+                );}
+            passTurn(button);
+        }
+
 
     }
 
-    public void characterAttack(MatrixButton button){
+    public void characterAbility(MatrixButton button){
+        System.out.println("El personaje ha atacado");
+        passTurn(button);
+    }
 
+    public void towerAbility(MatrixButton button){
+        System.out.println("La torre ha atacado");
+        passTurn(button);
+    }
+
+    public boolean verifyTeam(MatrixButton btn,Team team){
+        ArrayList<Character> characters=team.getCharacters();
+        int towersTeamNumber=team.getTowersTeamNumber();
+        if(btn.getCharacter()!=null){
+            return characters.stream().anyMatch(i->i == btn.getCharacter());
+        }else if(btn.getTower()!=null){
+            return towersTeamNumber==btn.getTower().getTeam();
+        }return false;
+    }
+
+    public int[] getPositions(MatrixButton btn){
+        Team actualEnemyTeam;
+        if (match.getTeam1().getTurn()){
+            actualEnemyTeam=match.getTeam2();
+        }else{
+            actualEnemyTeam=match.getTeam1();
+        }
+        int[] arrayBannedLastPositions={9,19,29,39,49,59,69,79,89,99};
+        int[] arrayBannedNextPositions={0,10,20,30,40,50,60,70,80,90};
+        ArrayList<Byte> arrayPositions=new ArrayList<>();
+        for (MatrixButton[] row:matrix){
+            for(MatrixButton btnMtrx:row){
+                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())-10)){
+                    arrayPositions.add(btnMtrx.getIdentifier());
+                }
+                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())+10)){
+                    arrayPositions.add(btnMtrx.getIdentifier());
+                }
+                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())-1) && (Arrays.stream(arrayBannedLastPositions).noneMatch(i -> i == btnMtrx.getIdentifier()))){
+                    arrayPositions.add(btnMtrx.getIdentifier());
+                }
+                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())+1) && (Arrays.stream(arrayBannedNextPositions).noneMatch(i -> i == btnMtrx.getIdentifier()))){
+                    arrayPositions.add(btnMtrx.getIdentifier());
+                }
+            }
+        }
+        // Convertimos el ArrayList<Byte> a un array de int[] de manera funcional
+        return arrayPositions.stream()
+                .mapToInt(Byte::intValue)  // Mapeamos cada Byte a su valor int
+                .toArray();  // Recolectamos el resultado en un array de int[]
+    }
+
+    public int[] getPositionsToAbility(MatrixButton btn){
+        Team actualEnemyTeam;
+        if (match.getTeam1().getTurn()){
+            actualEnemyTeam=match.getTeam2();
+        }else{
+            actualEnemyTeam=match.getTeam1();
+        }
+        int[] arrayBannedLastPositions={9,19,29,39,49,59,69,79,89,99};
+        int[] arrayBannedNextPositions={0,10,20,30,40,50,60,70,80,90};
+        ArrayList<Byte> arrayPositions=new ArrayList<>();
+        for (MatrixButton[] row:matrix){
+            for(MatrixButton btnMtrx:row){
+                if ((btnMtrx.getIdentifier()==(btn.getIdentifier()-10)) && (verifyTeam(btnMtrx,actualEnemyTeam))){
+                    arrayPositions.add(btnMtrx.getIdentifier());
+                }
+                if ((btnMtrx.getIdentifier()==(btn.getIdentifier()+10)) && (verifyTeam(btnMtrx,actualEnemyTeam))){
+                    arrayPositions.add(btnMtrx.getIdentifier());
+                }
+                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())-1) && (Arrays.stream(arrayBannedLastPositions).noneMatch(i -> i == btnMtrx.getIdentifier())) && (verifyTeam(btnMtrx,actualEnemyTeam))){
+                    arrayPositions.add(btnMtrx.getIdentifier());
+                }
+                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())+1) && (Arrays.stream(arrayBannedNextPositions).noneMatch(i -> i == btnMtrx.getIdentifier())) && (verifyTeam(btnMtrx,actualEnemyTeam))){
+                    arrayPositions.add(btnMtrx.getIdentifier());
+                }
+            }
+        }
+        // Convertimos el ArrayList<Byte> a un array de int[] de manera funcional
+        return arrayPositions.stream()
+                .mapToInt(Byte::intValue)  // Mapeamos cada Byte a su valor int
+                .toArray();  // Recolectamos el resultado en un array de int[]
     }
 
     public void enablePlayerButtons(){
-        if(match.getTeam1().getTurn()){
-            for(int row = 0;row<5;row++){
-                for(MatrixButton button:matrix[row]){
-                    if ((button.getCharacter()!=null || button.getTower()!=null)&&(!Objects.equals(button.getFilter(), new Color(0, 0, 0,100)))){button.setEnabled(true);}
-                    else{button.setEnabled(false);}
-                }
-            }
-            for(int row = 5;row<10;row++){
-                for(MatrixButton button:matrix[row]){
+        Team currentTeam = match.getTeam1().getTurn() ? match.getTeam1() : match.getTeam2();
+        Team oppositeTeam = match.getTeam1().getTurn() ? match.getTeam2() : match.getTeam1();
+
+        for (MatrixButton[] row : matrix) {
+            for (MatrixButton button : row) {
+                if ((button.getCharacter() != null || button.getTower() != null) &&
+                        verifyTeam(button, currentTeam) &&
+                        !Objects.equals(button.getFilter(), new Color(0, 0, 0, 100))) {
+                    button.setEnabled(true);
+                } else if (verifyTeam(button, oppositeTeam)) {
                     button.setEnabled(false);
-                }
-            }
-        }else{
-            for(int row = 5;row<10;row++){
-                for(MatrixButton button:matrix[row]){
-                    if ((button.getCharacter()!=null || button.getTower()!=null)&&(!Objects.equals(button.getFilter(), new Color(0, 0, 0,100)))){button.setEnabled(true);}
-                    else{button.setEnabled(false);}
-                }
-            }
-            for(int row = 0;row<5;row++){
-                for(MatrixButton button:matrix[row]){
+                } else {
                     button.setEnabled(false);
                 }
             }
@@ -301,9 +401,9 @@ public class MainGameArena extends JPanel{
     public void restoreButtonsFilters(){
         for(MatrixButton[] rows:matrix){
             for(MatrixButton btn:rows){
-                if ((Objects.equals(btn.getFilter(), new Color(0, 0, 0,100)))&&(btn.getIdentifier()<50)){
+                if ((Objects.equals(btn.getFilter(), new Color(0, 0, 0,100)))&&(verifyTeam(btn,match.getTeam1()))){
                     btn.setFilter(new Color(255,0,0,100));
-                }else if ((Objects.equals(btn.getFilter(), new Color(0, 0, 0,100)))&&(btn.getIdentifier()>49)){
+                }else if ((Objects.equals(btn.getFilter(), new Color(0, 0, 0,100)))&&(verifyTeam(btn,match.getTeam2()))){
                     btn.setFilter(new Color(0,0,255,100));
                 }
             }
@@ -315,5 +415,22 @@ public class MainGameArena extends JPanel{
         btn.setFilter(new Color(0, 0, 0,100));
         btn.setEnabled(false);
         verifyMovements();
+    }
+
+    public void setArenaColor(JPanel pnl){
+        switch (match.getArena().getElement()){
+            case FIRE:
+                pnl.setBackground(new Color(255, 153, 51));
+                break;
+            case WATER:
+                pnl.setBackground(new Color(2, 25, 153));
+                break;
+            case GROUND:
+                pnl.setBackground(new Color(153, 102, 51));
+                break;
+            case AIR:
+                pnl.setBackground(new Color(121, 134, 134));
+                break;
+        }
     }
 }

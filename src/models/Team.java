@@ -52,4 +52,14 @@ public class Team {
     public Player getPlayer(){return player;}
 
     public void resetMoves(){this.moves=0;}
+
+    public void setTowers(int teamNumber){
+        for(Tower tower:this.getTowers()){
+            tower.setTeam(teamNumber);
+        }
+    }
+
+    public int getTowersTeamNumber(){
+        return towers.getFirst().getTeam();
+    }
 }

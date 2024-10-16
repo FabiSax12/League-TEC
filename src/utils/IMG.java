@@ -18,7 +18,7 @@ public abstract class IMG {
         return getScaledImage(originalImage, 200, 200);
     }
 
-    private static Image getScaledImage(Image srcImg, int w, int h) {
+    public static Image getScaledImage(Image srcImg, int w, int h) {
         BufferedImage scaledImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = scaledImage.createGraphics();
 
