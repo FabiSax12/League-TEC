@@ -1,87 +1,78 @@
 package controller;
 
 import database.DB;
-import models.*;
 import models.Character;
-import view.CharacterSelection;
+import models.Team;
 
 import javax.swing.*;
-import java.util.List;
 
 /**
- * Controller class for managing the character selection process.
- * It handles the interactions between the view and the model during character selection for both teams.
+ * The {@code CharacterSelectionController} class is responsible for handling the logic
+ * of selecting characters for both teams during the character selection phase of the game.
+ * It manages the list of available characters and the characters chosen by each team.
  */
 public class CharacterSelectionController {
-    private final CharacterSelection view;  // Reference to the view (CharacterSelection panel)
-    private List<Character> availableCharacters;  // List of available characters for selection
+    private final DefaultListModel<Character> listModel1;
+    private final DefaultListModel<Character> listModel2;
+    private final DefaultListModel<Character> availableListModel;
+    private final JList<Character> selectionList;
 
     /**
-     * Constructor for CharacterSelectionController. It initializes the list of available characters
-     * and associates the view with the controller.
+     * Constructs the controller for the character selection process.
      *
-     * @param view The CharacterSelection view instance
+     * @param listModel1 the list model that holds characters selected by the first team
+     * @param listModel2 the list model that holds characters selected by the second team
+     * @param availableListModel the list model that holds the available characters for selection
+     * @param selectionList the JList component displaying available characters
      */
-    public CharacterSelectionController(CharacterSelection view) {
-        initializeCharacters();
-        this.view = view;
+    public CharacterSelectionController(DefaultListModel<Character> listModel1, DefaultListModel<Character> listModel2, DefaultListModel<Character> availableListModel, JList<Character> selectionList) {
+        this.listModel1 = listModel1;
+        this.listModel2 = listModel2;
+        this.availableListModel = availableListModel;
+        this.selectionList = selectionList;
     }
 
     /**
-     * Initializes the list of available characters by retrieving them from the database.
+     * Populates the list of available characters from the database.
      */
-    private void initializeCharacters() {
-        availableCharacters = DB.getCharacters();
+    public void populateAvailableCharacters() {
+        availableListModel.clear();
+        DB.getCharacters().forEach(availableListModel::addElement);
     }
 
     /**
-     * Returns the list of available characters for selection.
+     * Adds a selected character to the specified team.
      *
-     * @return List of available characters
-     */
-    public List<Character> getAvailableCharacters() {
-        return availableCharacters;
-    }
-
-    /**
-     * Adds the selected character to the specified team and updates the associated list model.
-     * Also checks if the confirm button should be enabled.
-     *
-     * @param character  The selected character to be added
-     * @param team       The team to which the character is added
-     * @param listModel  The list model representing the team in the UI
+     * @param character the character to be added to the team
+     * @param team the team that the character will be added to
+     * @param listModel the list model that holds the characters selected by the team
      */
     public void addCharacterToTeam(Character character, Team team, DefaultListModel<Character> listModel) {
         if (character == null) {
-            JOptionPane.showMessageDialog(view, "Por favor, selecciona un personaje.");
+            JOptionPane.showMessageDialog(null, "Por favor, selecciona un personaje.");
+            return;
+        }
+
+        // Check if character has already been selected by any team
+        if (listModel1.contains(character) || listModel2.contains(character)) {
+            JOptionPane.showMessageDialog(null, "Este personaje ya ha sido seleccionado.");
             return;
         }
 
         if (listModel.size() >= 3) {
-            JOptionPane.showMessageDialog(view, team.getName() + " ya ha seleccionado 3 personajes.");
+            JOptionPane.showMessageDialog(null, team.getName() + " ya ha seleccionado 3 personajes.");
             return;
         }
 
         listModel.addElement(character);
         team.addCharacter(character);
-        checkConfirmButtonStatus();  // Check if confirm button should be enabled
+        refreshCharacterList();
     }
 
     /**
-     * Checks whether both teams have selected 3 characters each.
-     * Enables the confirm button if both teams are ready.
+     * Refreshes the list of available characters, updating the display to reflect the characters already selected.
      */
-    private void checkConfirmButtonStatus() {
-        view.enableConfirmButton(view.getPlayer1ListModel().size() == 3 && view.getPlayer2ListModel().size() == 3);
-    }
-
-    /**
-     * Finalizes the selection process and starts a new match with the selected teams.
-     *
-     * @param team1 The first team
-     * @param team2 The second team
-     */
-    public void confirmSelection(Team team1, Team team2) {
-        new Match(ArenaFactory.create(), team1, team2);
+    public void refreshCharacterList() {
+        selectionList.repaint();
     }
 }
