@@ -20,9 +20,9 @@ import java.util.UUID;
 
 public abstract class DB {
     private static final String filePath = System.getProperty("user.dir") + "\\src\\database\\data.json";
-    private static final ArrayList<Player> players = new ArrayList<>();
-    private static final ArrayList<Game> games = new ArrayList<>();
-    private static final ArrayList<Character> characters = new ArrayList<>();
+    private static ArrayList<Player> players = new ArrayList<>();
+    private static ArrayList<Game> games = new ArrayList<>();
+    private static ArrayList<Character> characters = new ArrayList<>();
     private static int nextPlayerId = 1;
 
     public static void loadData() {
@@ -99,6 +99,8 @@ public abstract class DB {
                     jsonCharacter.getInt("health"),
                     jsonCharacter.getInt("mana"),
                     jsonCharacter.getInt("attack"),
+                    jsonCharacter.getInt("defense"),
+                    jsonCharacter.getInt("movements"),
                     element,
                     jsonCharacter.getString("sprite")
             );
@@ -203,6 +205,10 @@ public abstract class DB {
             jsonCharacters.put(jsonCharacter);
         }
         data.put("characters", jsonCharacters);
+    }
+
+    public static void addCharacter(Character newCharacter) {
+        characters.add(newCharacter);
     }
 
     public static void addProfile(String name) {
