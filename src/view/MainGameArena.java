@@ -242,10 +242,28 @@ public class MainGameArena extends JPanel{
         if(button.getCharacter()!=null){
             int[] positions=getPositionsToAbility(button);
             ASkill[] arrayAbilitys=button.getCharacter().getSkills();
-            System.out.println(arrayAbilitys.length);
             for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
-            if (positions.length!=0){
-                characterAbility(button);
+            if (positions.length != 0) {
+                String[] skillNames = new String[arrayAbilitys.length];
+                for (int i = 0; i < arrayAbilitys.length; i++) {
+                    skillNames[i] = arrayAbilitys[i].getName(); // Asumiendo que ASkill tiene un método getName()
+                }
+
+                JComboBox<String> skillSelection = new JComboBox<>(skillNames);
+                int option = JOptionPane.showConfirmDialog(
+                        null,
+                        skillSelection,
+                        "Selecciona una habilidad",
+                        JOptionPane.OK_CANCEL_OPTION
+                );
+
+                if (option == JOptionPane.OK_OPTION) {
+                    int selectedSkillIndex = skillSelection.getSelectedIndex();
+                    ASkill selectedSkill = arrayAbilitys[selectedSkillIndex];
+                    System.out.println("Habilidad seleccionada: " + selectedSkill.getName());
+
+                    characterAbility(button, selectedSkill);
+                }
             }
             else{
                 JOptionPane.showMessageDialog(
@@ -258,7 +276,7 @@ public class MainGameArena extends JPanel{
             int[] positions=getPositionsToAbility(button);
             for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
             if (positions.length!=0){
-                towerAbility(button);
+                towerAttack(button,positions);
             }
             else{
                 JOptionPane.showMessageDialog(
@@ -267,20 +285,73 @@ public class MainGameArena extends JPanel{
                         "No hay enemigos al alcance",
                         JOptionPane.WARNING_MESSAGE
                 );}
-            passTurn(button);
         }
 
 
     }
 
-    public void characterAbility(MatrixButton button){
+    public void characterAbility(MatrixButton button,ASkill skill){
         System.out.println("El personaje ha atacado");
         passTurn(button);
+        System.out.println("Tipo de ataque: "+skill.toJson().get("type"));
+        String type = skill.toJson().get("type").toString();
+        switch (type){
+            case "attack":
+                break;
+            case "buff":
+                break;
+            case "heal":
+        }
+
     }
 
-    public void towerAbility(MatrixButton button){
-        System.out.println("La torre ha atacado");
-        passTurn(button);
+    public void characterAttack(){
+
+    }
+
+    public void towerAttack(MatrixButton button,int[] enemies){
+        for (MatrixButton[] row : matrix) {
+            for (MatrixButton tempButton : row) {
+                if (Arrays.stream(enemies).anyMatch(i->i==tempButton.getIdentifier())){
+                    tempButton.setEnabled(true);
+                    ActionListenerCleaner(tempButton);
+                    tempButton.addActionListener(e->restoreAndGetAttack(tempButton,button,enemies));
+                }
+            }
+        }
+    }
+
+    void restoreAndGetAttack(MatrixButton btnTarget, MatrixButton btnAttacker,int[] enemies){
+        if(btnAttacker.getTower()!=null){
+            if(btnTarget.getTower()!=null){
+                System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
+                btnTarget.addActionListener(e->showTowerPopup(btnTarget));
+                btnAttacker.getTower().attack(btnTarget.getTower(), btnAttacker.getEntityDamage());
+                btnTarget.updateEntityInfo();
+                System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
+                JOptionPane.showConfirmDialog(window,"Enemigo dañado");
+            }else{
+                System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
+                btnTarget.addActionListener(e->showTowerPopup(btnTarget));
+                btnAttacker.getTower().attack(btnTarget.getCharacter(), btnAttacker.getEntityDamage());
+                btnTarget.updateEntityInfo();
+                System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
+                JOptionPane.showConfirmDialog(window,"Enemigo dañado");
+            }
+
+        }
+        else{
+
+        }
+        for (MatrixButton[] row : matrix) {
+            for (MatrixButton tempButton : row) {
+                if (Arrays.stream(enemies).anyMatch(i->i==tempButton.getIdentifier())){
+                    ActionListenerCleaner(tempButton);
+                    tempButton.setEnabled(false);
+                }
+            }
+
+        }passTurn(btnAttacker);
     }
 
     public boolean verifyTeam(MatrixButton btn,Team team){
@@ -294,12 +365,6 @@ public class MainGameArena extends JPanel{
     }
 
     public int[] getPositions(MatrixButton btn){
-        Team actualEnemyTeam;
-        if (match.getTeam1().getTurn()){
-            actualEnemyTeam=match.getTeam2();
-        }else{
-            actualEnemyTeam=match.getTeam1();
-        }
         int[] arrayBannedLastPositions={9,19,29,39,49,59,69,79,89,99};
         int[] arrayBannedNextPositions={0,10,20,30,40,50,60,70,80,90};
         ArrayList<Byte> arrayPositions=new ArrayList<>();
@@ -355,6 +420,16 @@ public class MainGameArena extends JPanel{
         return arrayPositions.stream()
                 .mapToInt(Byte::intValue)  // Mapeamos cada Byte a su valor int
                 .toArray();  // Recolectamos el resultado en un array de int[]
+    }
+
+    public void setPlayerButtonsToAttack(Team targetTeam) {
+        for (MatrixButton[] row : matrix) {
+            for (MatrixButton button : row) {
+                if ((button.getCharacter() != null || button.getTower() != null) && verifyTeam(button, targetTeam)) {
+                    button.setEnabled(true);
+                }
+            }
+        }
     }
 
     public void enablePlayerButtons(){

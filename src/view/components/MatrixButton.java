@@ -135,8 +135,19 @@ public class MatrixButton extends JButton {
                 + "</html>";
     }
 
+    public void updateEntityInfo(){
+        if (character!=null){setToolTipText(generaTooltipCharacter(character));}
+        else{setToolTipText(generaTooltipTower(tower));}
+
+    }
+
+
     public Color getFilter(){return filter;}
 
+    public int getEntityDamage(){
+        if (character!=null){return character.getDamage();}
+        else{return tower.getDamage();}
+    }
 }
 
 
