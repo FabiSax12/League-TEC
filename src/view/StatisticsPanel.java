@@ -9,11 +9,21 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+/**
+ * The StatisticsPanel displays player statistics such as games played, wins, losses, win percentage,
+ * character deaths, and destroyed towers. It includes a table to visualize these statistics and a button
+ * to return to the main menu.
+ */
 public class StatisticsPanel extends JPanel {
     private final Player[] players;
     private final JTable statsTable;
     private final DefaultTableModel tableModel;
 
+    /**
+     * Constructs a StatisticsPanel that displays the player statistics and a back button to return to the menu.
+     *
+     * @param mainWindow The main game window that controls panel navigation.
+     */
     public StatisticsPanel(MainGameWindow mainWindow) {
         this.players = DB.getPlayers().toArray(new Player[0]);
 
@@ -42,6 +52,10 @@ public class StatisticsPanel extends JPanel {
         populateTable();
     }
 
+    /**
+     * Populates the table with player statistics.
+     * Retrieves player data from the database and populates the table with each player's statistics.
+     */
     private void populateTable() {
         tableModel.setRowCount(0);
 

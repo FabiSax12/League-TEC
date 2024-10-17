@@ -6,8 +6,17 @@ import view.components.CustomColors;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * MainMenuPanel represents the main menu of the game. It contains buttons to navigate to different panels like
+ * creating a game, viewing statistics, viewing the character gallery, or exiting the application.
+ */
 public class MainMenuPanel extends JPanel {
 
+    /**
+     * Constructs the MainMenuPanel, setting up the layout and adding buttons for navigation.
+     *
+     * @param mainWindow The main game window that controls the panel navigation.
+     */
     public MainMenuPanel(MainGameWindow mainWindow) {
         setLayout(new BorderLayout());
 

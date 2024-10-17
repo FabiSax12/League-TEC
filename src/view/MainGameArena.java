@@ -12,12 +12,23 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Objects;
 
-
+/**
+ * This class represents the main game arena where the match takes place.
+ * It handles the UI for the grid of buttons representing characters and towers,
+ * and manages the interactions such as movement, attacks, and turns.
+ */
 public class MainGameArena extends JPanel{
     private MainGameWindow window;
     private Match match;
     private MatrixButton[][] matrix;
 
+    /**
+     * Constructor for the game arena.
+     *
+     * @param mainWindow the main window of the game.
+     * @param match the current match being played.
+     * @param matrixButton the grid of buttons representing the arena.
+     */
     public MainGameArena(MainGameWindow mainWindow, Match match, MatrixButton[][] matrixButton) {
         this.window=mainWindow;
         this.match= match;
@@ -82,6 +93,11 @@ public class MainGameArena extends JPanel{
         add(secondPlayerPanel,gbc);
     }
 
+    /**
+     * Shows a popup for action selection (move, attack, pass) when a button representing a character is clicked.
+     *
+     * @param button the matrix button representing a character.
+     */
     private void showPopup(MatrixButton button) {
         // Crear los botones personalizados que aparecerán en el diálogo
         Object[] options = {"Mover", "Habilidad","Pasar"};
@@ -104,6 +120,11 @@ public class MainGameArena extends JPanel{
         }
     }
 
+    /**
+     * Shows a popup for attacking or passing when a button representing a tower is clicked.
+     *
+     * @param button the matrix button representing a tower.
+     */
     private void showTowerPopup(MatrixButton button) {
         Object[] options = {"Atacar","Pasar"};
         int selection = JOptionPane.showOptionDialog(
@@ -123,6 +144,11 @@ public class MainGameArena extends JPanel{
         }
     }
 
+    /**
+     * Initializes the matrix buttons and sets their action listeners based on the state of the game.
+     *
+     * @param gridMatrixButtonsPanel the panel containing the matrix buttons.
+     */
     private void setMatrixButtons(JPanel gridMatrixButtonsPanel){
         for(MatrixButton[] buttonRow: matrix){
             for(MatrixButton button: buttonRow) {
@@ -138,6 +164,11 @@ public class MainGameArena extends JPanel{
         }
     }
 
+    /**
+     * Handles the selection of a valid cell for character movement.
+     *
+     * @param btn the button representing the character.
+     */
     private void characterMoveSelectionCeld(MatrixButton btn){
         int[] positionAvailable = getPositions(btn);
         for(MatrixButton[] buttonRow: matrix){
@@ -157,6 +188,12 @@ public class MainGameArena extends JPanel{
         }
     }
 
+    /**
+     * Resets the state of the buttons after a move action is canceled.
+     *
+     * @param btn the button representing the character.
+     * @param btnArray the array of valid positions for movement.
+     */
     private void restorePreviousState(MatrixButton btn,int[] btnArray) {
         System.out.println("Character Action aplicado a btn #"+btn.getIdentifier());
         ActionListenerCleaner(btn);
@@ -174,6 +211,11 @@ public class MainGameArena extends JPanel{
         verifyMovements();
     }
 
+    /**
+     * Removes all ActionListeners from the specified MatrixButton.
+     *
+     * @param button the MatrixButton to clear listeners from.
+     */
     private void ActionListenerCleaner(MatrixButton button){
         ActionListener[] listeners = button.getActionListeners();
         for (ActionListener listener : listeners) {
@@ -181,6 +223,13 @@ public class MainGameArena extends JPanel{
         }
     }
 
+    /**
+     * Moves a character from the origin button to the destination button, swapping their attributes.
+     *
+     * @param destinationButton the MatrixButton to move the character to.
+     * @param originButton the MatrixButton the character is being moved from.
+     * @param btnArr array of button identifiers for movement validation.
+     */
     private void moveCharacter(MatrixButton destinationButton,MatrixButton originButton,int[] btnArr){
         System.out.println("Moviendo del botón #"+originButton.getIdentifier()+" al botón #"+destinationButton.getIdentifier());
         increaseMovements();
@@ -201,6 +250,13 @@ public class MainGameArena extends JPanel{
         verifyMovements();
     }
 
+    /**
+     * Swaps the attributes between two MatrixButtons, transferring the character or tower data from
+     * the origin to the destination button.
+     *
+     * @param destinationButton the button that will receive the attributes.
+     * @param originButton the button that is being cleared after the move.
+     */
     public void swapButtonsAtributes(MatrixButton destinationButton, MatrixButton originButton) {
         /* Configuración de Botón de destino */
         destinationButton.setImagepath(originButton.getImagepath());
@@ -440,6 +496,10 @@ public class MainGameArena extends JPanel{
         }
     }
 
+    /**
+     * Enables the buttons for the current player based on their team. Buttons for characters and towers
+     * are enabled, while other buttons are disabled.
+     */
     public void enablePlayerButtons(){
         Team currentTeam = match.getTeam1().getTurn() ? match.getTeam1() : match.getTeam2();
         Team oppositeTeam = match.getTeam1().getTurn() ? match.getTeam2() : match.getTeam1();
@@ -459,6 +519,9 @@ public class MainGameArena extends JPanel{
         }
     }
 
+    /**
+     * Increments the current player's movement count.
+     */
     public void increaseMovements(){
         if (match.getTeam1().getTurn()){
             match.getTeam1().setMoves();
@@ -467,6 +530,10 @@ public class MainGameArena extends JPanel{
         }
     }
 
+    /**
+     * Verifies if the current player has exceeded their allowed number of moves
+     * and switches the turn to the other player if necessary.
+     */
     public void verifyMovements(){
         if ((match.getTeam1().getTurn())&&(match.getTeam1().getMoves()>=6)){
             match.getTeam1().resetMoves();
@@ -481,6 +548,10 @@ public class MainGameArena extends JPanel{
         enablePlayerButtons();
     }
 
+    /**
+     * Restores the filters for all buttons after a turn change, updating the
+     * button appearance based on the team.
+     */
     public void restoreButtonsFilters(){
         for(MatrixButton[] rows:matrix){
             for(MatrixButton btn:rows){
@@ -493,6 +564,11 @@ public class MainGameArena extends JPanel{
         }
     }
 
+    /**
+     * Ends the current turn and passes it to the other player.
+     *
+     * @param btn the MatrixButton used to indicate the end of the turn.
+     */
     public void passTurn(MatrixButton btn){
         increaseMovements();
         btn.setFilter(new Color(0, 0, 0,100));
