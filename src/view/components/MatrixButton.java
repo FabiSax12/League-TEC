@@ -123,6 +123,7 @@ public class MatrixButton extends JButton {
                 + "<b><i>Maná:</i></b> " + character.getMana() + "<br>"
                 + "<b><i>Daño:</i></b> " + character.getDamage() + "<br>"
                 + "<b><i>Elemento:</i></b> " + character.getElement() + "<br>"
+                + "<b><i>Defensa:</i></b> " + character.getDefense() + "<br>"
                 + "<b><i>Movimientos:</i></b> " + character.getMovements() + "<br>"
                 + "</html>";
     }
