@@ -8,14 +8,20 @@ import view.components.CustomColors;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Objects;
 
-import static utils.IMG.getScaledImage;
-
+/**
+ * GalleryPanel displays a gallery of all characters, allowing users to view and create characters.
+ * The gallery is shown in a grid format with each character's image and name.
+ */
 public class GalleryPanel extends JPanel {
 
+    /**
+     * Constructs the GalleryPanel, displaying a grid of characters retrieved from the database.
+     * Provides buttons to navigate back to the menu or create a new character.
+     *
+     * @param mainWindow The main window that manages panel transitions and displays character details.
+     */
     public GalleryPanel(MainGameWindow mainWindow) {
         Character[] characters = DB.getCharacters().toArray(new Character[0]);
 
@@ -37,7 +43,7 @@ public class GalleryPanel extends JPanel {
                 if (imageFile.exists()) {
                     ImageIcon characterIcon = new ImageIcon(imageFile.getAbsolutePath());
                     Image originalImage = characterIcon.getImage();
-                    Image scaledImage = getScaledImage(originalImage, 200, 200);
+                    Image scaledImage = IMG.getScaledImage(originalImage, 200, 200);
                     JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
                     characterPanel.add(imageLabel, BorderLayout.CENTER);
                 } else {
@@ -74,6 +80,4 @@ public class GalleryPanel extends JPanel {
         buttonPanel.add(btnCreate);
         add(buttonPanel, BorderLayout.SOUTH);
     }
-
-
 }
