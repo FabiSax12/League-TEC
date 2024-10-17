@@ -11,8 +11,18 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Objects;
 
+/**
+ * CharacterDetailPanel displays detailed information about a specific character, including
+ * its attributes and skills.
+ */
 public class CharacterDetailPanel extends JPanel {
 
+    /**
+     * Constructs the CharacterDetailPanel.
+     *
+     * @param character  The character whose details are displayed.
+     * @param mainWindow The main game window to allow navigation.
+     */
     public CharacterDetailPanel(Character character, MainGameWindow mainWindow) {
         setLayout(new BorderLayout());
 
@@ -71,6 +81,12 @@ public class CharacterDetailPanel extends JPanel {
         add(buttonPanel, BorderLayout.PAGE_END);
     }
 
+    /**
+     * Creates a panel that displays the character's skills.
+     *
+     * @param character The character whose skills are displayed.
+     * @return A JPanel containing the skills.
+     */
     private static JPanel getjPanel(Character character) {
         JPanel skillsPanel = new JPanel(new BorderLayout());
         skillsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -89,6 +105,15 @@ public class CharacterDetailPanel extends JPanel {
         return skillsPanel;
     }
 
+    /**
+     * Adds a row to the details panel.
+     *
+     * @param panel The panel to which the row is added.
+     * @param label The label for the detail.
+     * @param value The value of the detail.
+     * @param gbc   The GridBagConstraints for positioning.
+     * @param row   The row index in the grid.
+     */
     private void addDetailRow(JPanel panel, String label, String value, GridBagConstraints gbc, int row) {
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -102,6 +127,14 @@ public class CharacterDetailPanel extends JPanel {
         panel.add(valueLabel, gbc);
     }
 
+    /**
+     * Scales an image to the specified width and height.
+     *
+     * @param srcImg The source image to scale.
+     * @param w      The desired width.
+     * @param h      The desired height.
+     * @return The scaled image.
+     */
     private Image getScaledImage(Image srcImg, int w, int h) {
         BufferedImage scaledImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = scaledImage.createGraphics();

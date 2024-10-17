@@ -54,13 +54,6 @@ public class MainGameArena extends JPanel{
      */
     private MatrixButton[][] matrix;
 
-    /**
-     * Constructs a new {@code MainGameArena} with the specified main window, match, and matrix buttons.
-     *
-     * @param mainWindow    The main game window.
-     * @param match         The {@link Match} object managing the game state.
-     * @param matrixButton  A 2D array of {@link MatrixButton} representing the game board.
-     */
     public MainGameArena(MainGameWindow mainWindow, Match match, MatrixButton[][] matrixButton) {
         this.window = mainWindow;
         this.match = match;

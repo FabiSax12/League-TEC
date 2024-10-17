@@ -21,6 +21,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * CharacterFormPanel is an abstract class that provides a form layout for creating or editing a character.
+ * It includes fields for character attributes such as name, health, mana, attack, defense, movements,
+ * element, image, and skills.
+ */
 public abstract class CharacterFormPanel extends JPanel {
     protected final JTextField nameField;
     protected final JTextField healthField;
@@ -32,17 +37,21 @@ public abstract class CharacterFormPanel extends JPanel {
     protected final JLabel imageLabel;
     protected final SkillInputs[] skillInputs;
     protected File selectedImageFile;
-    MainGameWindow mainPanel;
+    protected MainGameWindow mainPanel;
 
+    /**
+     * Constructs the CharacterFormPanel for creating or editing a character.
+     *
+     * @param character  The character being edited (null if creating a new character).
+     * @param mainPanel  The reference to the main game window for navigation.
+     */
     public CharacterFormPanel(Character character, MainGameWindow mainPanel) {
         this.mainPanel = mainPanel;
-
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 245));
 
-        // Panel de entrada con scroll
         JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridBagLayout());  // Usamos GridBagLayout para alineación
+        inputPanel.setLayout(new GridBagLayout());
         inputPanel.setBackground(new Color(250, 250, 250));
         inputPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
@@ -56,16 +65,15 @@ public abstract class CharacterFormPanel extends JPanel {
         gbc.gridy = 0;
         gbc.weightx = 1;
 
-        // Campos del personaje
-        nameField = createTextField("Nombre:", character != null ? character.getName() : "", inputPanel, gbc);
-        healthField = createTextField("Salud:", character != null ? String.valueOf(character.getHealth()) : "", inputPanel, gbc);
+        // Initialize fields for character attributes
+        nameField = createTextField("Name:", character != null ? character.getName() : "", inputPanel, gbc);
+        healthField = createTextField("Health:", character != null ? String.valueOf(character.getHealth()) : "", inputPanel, gbc);
         manaField = createTextField("Mana:", character != null ? String.valueOf(character.getMana()) : "", inputPanel, gbc);
-        attackField = createTextField("Ataque:", character != null ? String.valueOf(character.getDamage()) : "", inputPanel, gbc);
-        defenseField = createTextField("Defensa:", character != null ? String.valueOf(character.getDefense()) : "", inputPanel, gbc);
-        movementsField = createTextField("Movimientos:", character != null ? String.valueOf(character.getMovements()) : "", inputPanel, gbc);
+        attackField = createTextField("Attack:", character != null ? String.valueOf(character.getDamage()) : "", inputPanel, gbc);
+        defenseField = createTextField("Defense:", character != null ? String.valueOf(character.getDefense()) : "", inputPanel, gbc);
+        movementsField = createTextField("Movements:", character != null ? String.valueOf(character.getMovements()) : "", inputPanel, gbc);
 
-        // Selector de elemento
-        JLabel elementLabel = new JLabel("Elemento:");
+        JLabel elementLabel = new JLabel("Element:");
         inputPanel.add(elementLabel, gbc);
         gbc.gridx = 1;
         elementField = new ComboBoxComponent<>(Element.values());
@@ -74,13 +82,13 @@ public abstract class CharacterFormPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy++;
 
-        // Cargar imagen
-        imageLabel = new JLabel(character != null ? "Imagen actual: " + character.getSpritePath() : "Imagen no seleccionada");
+        // Image selection
+        imageLabel = new JLabel(character != null ? "Current Image: " + character.getSpritePath() : "No Image Selected");
         imageLabel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
         inputPanel.add(imageLabel, gbc);
         gbc.gridx = 1;
 
-        JButton loadImageButton = new JButton("Subir Imagen");
+        JButton loadImageButton = new JButton("Upload Image");
         styleButton(loadImageButton, new Color(70, 130, 180), Color.WHITE);
         loadImageButton.addActionListener(e -> loadImage());
         inputPanel.add(loadImageButton, gbc);
@@ -88,7 +96,7 @@ public abstract class CharacterFormPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy++;
 
-        // Habilidades del personaje
+        // Skills
         skillInputs = new SkillInputs[4];
         int length = character != null ? character.getSkills().length : 4;
         for (int i = 0; i < length; i++) {
@@ -97,10 +105,8 @@ public abstract class CharacterFormPanel extends JPanel {
 
         JPanel buttonsPanel = new JPanel();
 
-        JButton cancelBtn = new ButtonComponent("Cancelar", CustomColors.RED);
-        cancelBtn.addActionListener(e -> {
-            mainPanel.showPanel("Gallery");
-        });
+        JButton cancelBtn = new ButtonComponent("Cancel", CustomColors.RED);
+        cancelBtn.addActionListener(e -> mainPanel.showPanel("Gallery"));
 
         buttonsPanel.add(cancelBtn);
         buttonsPanel.add(getSaveButton());
@@ -109,36 +115,51 @@ public abstract class CharacterFormPanel extends JPanel {
         add(buttonsPanel, BorderLayout.SOUTH);
     }
 
-    // Método para crear un campo de texto alineado con etiquetas
+    /**
+     * Creates a JTextField with a label and adds it to the panel.
+     *
+     * @param label  The label for the field.
+     * @param value  The initial value of the field.
+     * @param panel  The panel to which the field is added.
+     * @param gbc    The GridBagConstraints for layout.
+     * @return The created JTextField.
+     */
     private JTextField createTextField(String label, String value, JPanel panel, GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridy++;
         panel.add(new JLabel(label), gbc);
         gbc.gridx = 1;
         JTextField textField = new JTextField(value);
-        textField.setPreferredSize(new Dimension(200, 30));  // Tamaño predefinido para más espacio
+        textField.setPreferredSize(new Dimension(200, 30));
         textField.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
         panel.add(textField, gbc);
         return textField;
     }
 
-    protected abstract JButton getSaveButton();  // Método abstracto para definir el botón "Guardar"
-
+    /**
+     * Loads an image from the file system and saves it to the assets directory.
+     */
     private void loadImage() {
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
             selectedImageFile = fileChooser.getSelectedFile();
-            imageLabel.setText("Imagen seleccionada: " + selectedImageFile.getName());
+            imageLabel.setText("Selected Image: " + selectedImageFile.getName());
 
             try {
                 saveImageToAssets(selectedImageFile);
             } catch (IOException ioException) {
-                JOptionPane.showMessageDialog(null, "Error al guardar la imagen.");
+                JOptionPane.showMessageDialog(null, "Error saving image.");
             }
         }
     }
 
+    /**
+     * Saves the selected image to the assets directory.
+     *
+     * @param sourceFile The selected image file.
+     * @throws IOException If an I/O error occurs during saving.
+     */
     protected void saveImageToAssets(File sourceFile) throws IOException {
         String projectPath = System.getProperty("user.dir");
         File assetsDir = new File(projectPath + "/src/assets");
@@ -149,11 +170,41 @@ public abstract class CharacterFormPanel extends JPanel {
 
         Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
 
-        imageLabel.setText("Imagen guardada en: assets/" + sourceFile.getName());
+        imageLabel.setText("Image saved to: assets/" + sourceFile.getName());
     }
 
-    protected abstract void saveCharacterData(ActionEvent e);  // Método abstracto para que cada subclase implemente la lógica de guardar
+    /**
+     * Abstract method that must be implemented by subclasses to define the save button's behavior.
+     *
+     * @return A JButton configured for saving the character.
+     */
+    protected abstract JButton getSaveButton();
 
+    /**
+     * Abstract method to be implemented by subclasses to define how the character data is saved.
+     *
+     * @param e The ActionEvent triggered by saving.
+     */
+    protected abstract void saveCharacterData(ActionEvent e);
+
+    /**
+     * Styles a button with the specified background and foreground colors.
+     *
+     * @param button     The JButton to style.
+     * @param background The background color.
+     * @param foreground The foreground (text) color.
+     */
+    private void styleButton(JButton button, Color background, Color foreground) {
+        button.setBackground(background);
+        button.setForeground(foreground);
+        button.setFocusPainted(false);
+        button.setBorder(new LineBorder(background.darker(), 1, true));
+        button.setPreferredSize(new Dimension(150, 40));
+    }
+
+    /**
+     * SkillInputs is a nested class representing the input fields for a character's skills.
+     */
     protected static class SkillInputs {
         JPanel attackPanel, buffPanel, healPanel, skillPanel;
         JTextField nameField, manaField;
@@ -161,17 +212,25 @@ public abstract class CharacterFormPanel extends JPanel {
         ComboBoxComponent<String> typeField;
         ComboBoxComponent<Element> elementField;
 
+        /**
+         * Constructs a SkillInputs panel to input a skill's data.
+         *
+         * @param inputPanel The parent panel to which the skill inputs are added.
+         * @param n          The skill number.
+         * @param skill      The skill being edited (null if creating a new skill).
+         * @param gbc        The GridBagConstraints for layout.
+         */
         SkillInputs(JPanel inputPanel, int n, ASkill skill, GridBagConstraints gbc) {
             gbc.gridx = 0;
             gbc.gridy++;
 
-            JLabel subTitle = new JLabel("Habilidad " + n);
+            JLabel subTitle = new JLabel("Skill " + n);
             subTitle.setFont(new Font("Arial", Font.BOLD, 16));
             inputPanel.add(subTitle, gbc);
             gbc.gridy++;
 
             gbc.gridx = 0;
-            inputPanel.add(new JLabel("Nombre:"), gbc);
+            inputPanel.add(new JLabel("Name:"), gbc);
             gbc.gridx = 1;
             nameField = new JTextField(skill != null ? skill.getName() : "");
             inputPanel.add(nameField, gbc);
@@ -185,7 +244,7 @@ public abstract class CharacterFormPanel extends JPanel {
 
             gbc.gridy++;
             gbc.gridx = 0;
-            inputPanel.add(new JLabel("Tipo:"), gbc);
+            inputPanel.add(new JLabel("Type:"), gbc);
             gbc.gridx = 1;
             String[] skillTypes = {"Attack", "Buff", "Heal"};
             typeField = new ComboBoxComponent<>(skillTypes);
@@ -193,31 +252,31 @@ public abstract class CharacterFormPanel extends JPanel {
 
             gbc.gridy++;
             gbc.gridx = 0;
-            inputPanel.add(new JLabel("Elemento:"), gbc);
+            inputPanel.add(new JLabel("Element:"), gbc);
             gbc.gridx = 1;
             elementField = new ComboBoxComponent<>(Element.values());
             inputPanel.add(elementField, gbc);
 
             skillPanel = new JPanel(new CardLayout());
 
-            // Panel para tipo "Attack"
+            // Attack panel
             attackPanel = new JPanel(new GridLayout(1, 2));
-            attackPanel.add(new JLabel("Daño:"));
+            attackPanel.add(new JLabel("Damage:"));
             damageField = new JTextField(skill != null && skill instanceof AttackSkill attack ? String.valueOf(attack.getDamage()) : "");
             attackPanel.add(damageField);
 
-            // Panel para tipo "Buff"
+            // Buff panel
             buffPanel = new JPanel(new GridLayout(2, 2));
-            buffPanel.add(new JLabel("Estadística:"));
+            buffPanel.add(new JLabel("Stat:"));
             statField = new JTextField(skill != null && skill instanceof BuffSkill buff ? buff.getStat() : "");
             buffPanel.add(statField);
-            buffPanel.add(new JLabel("Aumento %:"));
+            buffPanel.add(new JLabel("Boost %:"));
             boostField = new JTextField(skill != null && skill instanceof BuffSkill buff ? String.valueOf(buff.getBoost()) : "");
             buffPanel.add(boostField);
 
-            // Panel para tipo "Heal"
+            // Heal panel
             healPanel = new JPanel(new GridLayout(1, 2));
-            healPanel.add(new JLabel("Curación:"));
+            healPanel.add(new JLabel("Heal:"));
             healthField = new JTextField(skill != null && skill instanceof HealSkill heal ? String.valueOf(heal.getHealAmount()) : "");
             healPanel.add(healthField);
 
@@ -235,6 +294,11 @@ public abstract class CharacterFormPanel extends JPanel {
             typeField.addActionListener(e -> cl.show(skillPanel, (String) typeField.getSelectedItem()));
         }
 
+        /**
+         * Saves the skill data to the provided character.
+         *
+         * @param character The character to which the skill is added.
+         */
         public void save(Character character) {
             String skillType = (String) typeField.getSelectedItem();
             Element element = (Element) elementField.getSelectedItem();
@@ -257,13 +321,5 @@ public abstract class CharacterFormPanel extends JPanel {
                 }
             }
         }
-    }
-
-    private void styleButton(JButton button, Color background, Color foreground) {
-        button.setBackground(background);
-        button.setForeground(foreground);
-        button.setFocusPainted(false);
-        button.setBorder(new LineBorder(background.darker(), 1, true));
-        button.setPreferredSize(new Dimension(150, 40));
     }
 }
