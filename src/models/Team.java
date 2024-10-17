@@ -57,7 +57,12 @@ public class Team {
      *
      * @param turn {@code true} if it is this team's turn, {@code false} otherwise.
      */
-    public void setTurn(boolean turn){this.turn=turn;}
+    public void setTurn(boolean turn){
+        this.turn=turn;
+        for (Character indexCharacter:characters){
+            indexCharacter.regenerateMana();
+        }
+    }
 
     /**
      * Returns the list of towers in the team.
