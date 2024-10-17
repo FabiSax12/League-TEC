@@ -12,7 +12,10 @@ public abstract class Entity {
     }
 
     public void takeDamage(int damage) {
-        this.health -= damage - defense;
+        int totalDamage=damage - defense;
+        if (totalDamage > 0) {
+            this.health -= damage - defense;
+        }
     }
 
     public float getHealth() {

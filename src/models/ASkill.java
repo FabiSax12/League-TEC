@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 public abstract class ASkill {
     protected String name;
-    protected int manaCost;
+    protected double manaCost;
     protected Element element; // Fuego, Agua, Tierra, Aire
 
     public ASkill(String name, int manaCost, Element element) {
@@ -28,7 +28,7 @@ public abstract class ASkill {
         return name;
     }
 
-    public int getManaCost() {
+    public double getManaCost() {
         return manaCost;
     }
 

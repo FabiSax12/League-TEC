@@ -9,14 +9,14 @@ public class Character extends Entity {
     private String name;
     private String spritePath;
     private int level;
-    private int maxMana;
-    private int mana;
+    private double maxMana;
+    private double mana;
     private int movements;
     private boolean dead;
     private Element element;
     private final ArrayList<ASkill> skills;
 
-    public Character(String name, float health, int mana, int damage, int defense, int movements, Element element, String spritePath) {
+    public Character(String name, float health, double mana, int damage, int defense, int movements, Element element, String spritePath) {
         this.name = name;
         this.maxHealth = health;
         this.health = health;
@@ -60,8 +60,8 @@ public class Character extends Entity {
         this.movements = movements;
     }
 
-    public void useSkill(int skillIndex, Entity target) {
-        ASkill skill = skills.get(skillIndex);
+    public void useSkill(ASkill skill, Entity target) {
+        //ASkill skill = skills.get(skillIndex);
         skill.use(this, target);
         this.mana = this.mana - skill.getManaCost();
     }
@@ -109,7 +109,7 @@ public class Character extends Entity {
         this.level = level;
     }
 
-    public int getMaxMana() {
+    public double getMaxMana() {
         return maxMana;
     }
 
@@ -121,7 +121,7 @@ public class Character extends Entity {
         return mana;
     }
 
-    public void setMana(int mana) {
+    public void setMana(double mana) {
         this.mana = mana;
     }
 
