@@ -13,7 +13,7 @@ public class Tower extends Entity {
      */
     public Tower(){
         this.health = 10000;
-        this.damage = 25;
+        this.damage = 75;
         this.spritePath = "/assets/tower.jpg";
         this.team=0;
     }

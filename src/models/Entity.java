@@ -29,7 +29,10 @@ public abstract class Entity {
      * @param damage the amount of damage received.
      */
     public void takeDamage(int damage) {
-        this.health -= damage - defense;
+        int totalDamage=damage - defense;
+        if (totalDamage > 0) {
+            this.health -= damage - defense;
+        }
     }
 
     /**

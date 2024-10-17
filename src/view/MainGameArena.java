@@ -100,7 +100,7 @@ public class MainGameArena extends JPanel{
      */
     private void showPopup(MatrixButton button) {
         // Crear los botones personalizados que aparecerán en el diálogo
-        Object[] options = {"Mover", "Atacar","Pasar"};
+        Object[] options = {"Mover", "Habilidad","Pasar"};
         // Mostrar la ventana emergente con botones personalizados
         int selection = JOptionPane.showOptionDialog(
                 null,            // Componente padre
@@ -296,108 +296,76 @@ public class MainGameArena extends JPanel{
 
     public void characterAbilitySelection(MatrixButton button){
         if(button.getCharacter()!=null){
-            int[] positions=getPositionsToAbility(button);
             ASkill[] arrayAbilitys=button.getCharacter().getSkills();
-            for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
-            if (positions.length != 0) {
-                String[] skillNames = new String[arrayAbilitys.length];
-                for (int i = 0; i < arrayAbilitys.length; i++) {
-                    skillNames[i] = arrayAbilitys[i].getName(); // Asumiendo que ASkill tiene un método getName()
-                }
-
-                JComboBox<String> skillSelection = new JComboBox<>(skillNames);
-                int option = JOptionPane.showConfirmDialog(
-                        null,
-                        skillSelection,
-                        "Selecciona una habilidad",
-                        JOptionPane.OK_CANCEL_OPTION
-                );
-
-                if (option == JOptionPane.OK_OPTION) {
-                    int selectedSkillIndex = skillSelection.getSelectedIndex();
-                    ASkill selectedSkill = arrayAbilitys[selectedSkillIndex];
-                    System.out.println("Habilidad seleccionada: " + selectedSkill.getName());
-
-                    characterAbility(button, selectedSkill);
-                }
+            String[] skillNames = new String[arrayAbilitys.length];
+            for (int i = 0; i < arrayAbilitys.length; i++) {skillNames[i] = arrayAbilitys[i].getName();}
+            JComboBox<String> skillSelection = new JComboBox<>(skillNames);
+            int option = JOptionPane.showConfirmDialog(null,skillSelection,"Selecciona una habilidad",JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                int selectedSkillIndex = skillSelection.getSelectedIndex();
+                ASkill selectedSkill = arrayAbilitys[selectedSkillIndex];
+                System.out.println("Habilidad seleccionada: " + selectedSkill.getName());
+                characterAbility(button, selectedSkill);
             }
-            else{
-                JOptionPane.showMessageDialog(
-                    window,
-                    "Debes estar al lado de un enemigo para atacar.",
-                    "No hay enemigos al alcance",
-                    JOptionPane.WARNING_MESSAGE
-            );}
         }else if(button.getTower()!=null){
             int[] positions=getPositionsToAbility(button);
             for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
-            if (positions.length!=0){
-                towerAttack(button,positions);
-            }
+            if (positions.length!=0){towerAttack(button,positions);}
             else{
-                JOptionPane.showMessageDialog(
-                        window,
-                        "Debes estar al lado de un enemigo para atacar.",
-                        "No hay enemigos al alcance",
-                        JOptionPane.WARNING_MESSAGE
-                );}
+                JOptionPane.showMessageDialog(window,"Debes estar al lado de un enemigo para atacar.","No hay enemigos al alcance",JOptionPane.WARNING_MESSAGE);
+            }
         }
-
-
     }
 
     public void characterAbility(MatrixButton button,ASkill skill){
-        System.out.println("El personaje ha atacado");
-        passTurn(button);
-        System.out.println("Tipo de ataque: "+skill.toJson().get("type"));
         String type = skill.toJson().get("type").toString();
         switch (type){
             case "attack":
+                System.out.println("Tipo de ataque: "+skill.toJson().get("type"));
+                int[] positions=getPositionsToAbility(button);
+                for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
+                if (positions.length != 0) {
+                    characterAttack(button,positions,skill);
+                }else{
+                    JOptionPane.showMessageDialog(window,"Debes estar al lado de un enemigo para atacar.","No hay enemigos al alcance",JOptionPane.WARNING_MESSAGE);
+                }
                 break;
             case "buff":
                 break;
             case "heal":
         }
-
     }
 
-    public void characterAttack(){
-
-    }
-
-    public void towerAttack(MatrixButton button,int[] enemies){
+    public void characterAttack(MatrixButton button,int[] enemiesIndex,ASkill skill){
+        JOptionPane.showMessageDialog(window,"Selecciona al enemigo que deseas atacar");
         for (MatrixButton[] row : matrix) {
             for (MatrixButton tempButton : row) {
-                if (Arrays.stream(enemies).anyMatch(i->i==tempButton.getIdentifier())){
+                if (Arrays.stream(enemiesIndex).anyMatch(i->i==tempButton.getIdentifier())){
                     tempButton.setEnabled(true);
                     ActionListenerCleaner(tempButton);
-                    tempButton.addActionListener(e->restoreAndGetAttack(tempButton,button,enemies));
+                    tempButton.addActionListener(e-> restoreAndGetAttackForCharacter(tempButton,button,enemiesIndex,skill));
                 }
             }
         }
     }
-
-    void restoreAndGetAttack(MatrixButton btnTarget, MatrixButton btnAttacker,int[] enemies){
-        if(btnAttacker.getTower()!=null){
-            if(btnTarget.getTower()!=null){
-                System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
-                btnTarget.addActionListener(e->showTowerPopup(btnTarget));
-                btnAttacker.getTower().attack(btnTarget.getTower(), btnAttacker.getEntityDamage());
-                btnTarget.updateEntityInfo();
-                System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
-                JOptionPane.showMessageDialog(window,"Enemigo dañado");
-            }else{
-                System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
-                btnTarget.addActionListener(e->showTowerPopup(btnTarget));
-                btnAttacker.getTower().attack(btnTarget.getCharacter(), btnAttacker.getEntityDamage());
-                btnTarget.updateEntityInfo();
-                System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
-                JOptionPane.showMessageDialog(window,"Enemigo dañado");
-            }
-
-        }
-        else{
-
+    /**
+     * */
+    void restoreAndGetAttackForCharacter(MatrixButton btnTarget, MatrixButton btnAttacker, int[] enemies,ASkill skill){
+        if(btnTarget.getCharacter()!=null){
+            System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
+            btnTarget.addActionListener(e->showTowerPopup(btnTarget));
+            skill.use(btnAttacker.getCharacter(),btnTarget.getCharacter());
+            btnAttacker.getCharacter().useSkill(skill,btnTarget.getCharacter());
+            btnTarget.updateEntityInfo();
+            System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
+            JOptionPane.showMessageDialog(window,"Enemigo dañado");
+        }else{
+            System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
+            btnTarget.addActionListener(e->showTowerPopup(btnTarget));
+            btnAttacker.getCharacter().useSkill(skill,btnTarget.getTower());
+            btnTarget.updateEntityInfo();
+            System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
+            JOptionPane.showMessageDialog(window,"Enemigo dañado");
         }
         for (MatrixButton[] row : matrix) {
             for (MatrixButton tempButton : row) {
@@ -406,8 +374,48 @@ public class MainGameArena extends JPanel{
                     tempButton.setEnabled(false);
                 }
             }
+        }System.out.println(btnAttacker.getName()+" ha atacado");
+        passTurn(btnAttacker);
+    }
 
-        }passTurn(btnAttacker);
+    public void towerAttack(MatrixButton button,int[] enemies){
+        JOptionPane.showMessageDialog(window,"Selecciona al enemigo que deseas atacar");
+        for (MatrixButton[] row : matrix) {
+            for (MatrixButton tempButton : row) {
+                if (Arrays.stream(enemies).anyMatch(i->i==tempButton.getIdentifier())){
+                    tempButton.setEnabled(true);
+                    ActionListenerCleaner(tempButton);
+                    tempButton.addActionListener(e-> restoreAndGetAttackForTower(tempButton,button,enemies));
+                }
+            }
+        }
+    }
+
+    void restoreAndGetAttackForTower(MatrixButton btnTarget, MatrixButton btnAttacker, int[] enemies){
+        if(btnTarget.getTower()!=null){
+            System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
+            btnTarget.addActionListener(e->showTowerPopup(btnTarget));
+            btnAttacker.getTower().attack(btnTarget.getTower(), btnAttacker.getEntityDamage());
+            btnTarget.updateEntityInfo();
+            System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
+            JOptionPane.showMessageDialog(window,"Enemigo dañado");
+        }else{
+            System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
+            btnTarget.addActionListener(e->showTowerPopup(btnTarget));
+            btnAttacker.getTower().attack(btnTarget.getCharacter(), btnAttacker.getEntityDamage());
+            btnTarget.updateEntityInfo();
+            System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
+            JOptionPane.showMessageDialog(window,"Enemigo dañado");
+        }
+        for (MatrixButton[] row : matrix) {
+            for (MatrixButton tempButton : row) {
+                if (Arrays.stream(enemies).anyMatch(i->i==tempButton.getIdentifier())){
+                    ActionListenerCleaner(tempButton);
+                    tempButton.setEnabled(false);
+                }
+            }
+        }System.out.println("La torre ha atacado");
+        passTurn(btnAttacker);
     }
 
     public boolean verifyTeam(MatrixButton btn,Team team){

@@ -16,7 +16,7 @@ public class Character extends Entity {
     private String name;
     private String spritePath;
     private int level;
-    private int maxMana;
+    private double maxMana;
     private int mana;
     private int movements;
     private boolean dead;
@@ -185,7 +185,7 @@ public class Character extends Entity {
         this.level = level;
     }
 
-    public int getMaxMana() {
+    public double getMaxMana() {
         return maxMana;
     }
 
@@ -197,7 +197,7 @@ public class Character extends Entity {
         return mana;
     }
 
-    public void setMana(int mana) {
+    public void setMana(double mana) {
         this.mana = mana;
     }
 
