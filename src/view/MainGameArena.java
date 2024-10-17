@@ -578,7 +578,13 @@ public class MainGameArena extends JPanel{
         for (MatrixButton[] row : matrix) {
             for (MatrixButton tempButton : row) {
                 if (Arrays.stream(enemies).anyMatch(i -> i == tempButton.getIdentifier())){
-                    tempButton.setEnabled(false);
+                    if(tempButton.getCharacter()!=null){
+                        ActionListenerCleaner(tempButton);
+                        tempButton.addActionListener(e -> showPopup(tempButton));
+                    }else{
+                        ActionListenerCleaner(tempButton);
+                        tempButton.addActionListener(e -> showTowerPopup(tempButton));
+                    }
                 }
             }
         }
@@ -632,7 +638,13 @@ public class MainGameArena extends JPanel{
         for (MatrixButton[] row : matrix) {
             for (MatrixButton tempButton : row) {
                 if (Arrays.stream(enemies).anyMatch(i -> i == tempButton.getIdentifier())){
-                    tempButton.setEnabled(false);
+                    if(tempButton.getCharacter()!=null){
+                        ActionListenerCleaner(tempButton);
+                        tempButton.addActionListener(e -> showPopup(tempButton));
+                    }else{
+                        ActionListenerCleaner(tempButton);
+                        tempButton.addActionListener(e -> showTowerPopup(tempButton));
+                    }
                 }
             }
         }
