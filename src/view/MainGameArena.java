@@ -13,39 +13,64 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * This class represents the main game arena where the match takes place.
- * It handles the UI for the grid of buttons representing characters and towers,
- * and manages the interactions such as movement, attacks, and turns.
+ * The {@code MainGameArena} class represents the main game panel where player interactions
+ * and game board elements take place. It extends {@link JPanel} and manages a matrix of buttons
+ * that represent the cells of the game board.
+ * <p>
+ * This class handles user actions such as moving characters, using abilities, attacking,
+ * and passing turns. It also manages the visual aspects of the game arena, including
+ * setting colors based on the arena's element and updating button states.
+ * </p>
+ *
+ * <p>
+ * Example usage:
+ * <pre>{@code
+ * MainGameWindow mainWindow = new MainGameWindow();
+ * Match match = new Match();
+ * MatrixButton[][] matrixButtons = initializeMatrixButtons();
+ * MainGameArena gameArena = new MainGameArena(mainWindow, match, matrixButtons);
+ * mainWindow.add(gameArena);
+ * mainWindow.setVisible(true);
+ * }</pre>
+ * </p>
+ *
+ * @author Joseph
+ * @version 1.0
+ * @since 2024-04-27
  */
 public class MainGameArena extends JPanel{
+    /**
+     * The main game window that contains this panel.
+     */
     private MainGameWindow window;
-    private Match match;
-    private MatrixButton[][] matrix;
 
     /**
-     * Constructor for the game arena.
-     *
-     * @param mainWindow the main window of the game.
-     * @param match the current match being played.
-     * @param matrixButton the grid of buttons representing the arena.
+     * The {@link Match} object that manages the current state of the game.
      */
+    private Match match;
+
+    /**
+     * A 2D array of {@link MatrixButton} representing the game board.
+     */
+    private MatrixButton[][] matrix;
+
     public MainGameArena(MainGameWindow mainWindow, Match match, MatrixButton[][] matrixButton) {
-        this.window=mainWindow;
-        this.match= match;
-        this.matrix=matrixButton;
-        System.out.println("La arena actual es:"+match.getArena());
+        this.window = mainWindow;
+        this.match = match;
+        this.matrix = matrixButton;
+        System.out.println("La arena actual es:" + match.getArena());
         match.startMatch();
         match.getTeam1().setTurn(true);
-        /*Components creation*/
+        /* Components creation */
         JPanel gridMatrixButtonsPanel = new JPanel(new GridLayout(10, 10, 5, 5));
         JPanel firstPlayerPanel = new JPanel();
         JPanel secondPlayerPanel = new JPanel();
-        JLabel title = new JLabel("A Jugar",SwingConstants.CENTER);
+        JLabel title = new JLabel("A Jugar", SwingConstants.CENTER);
         window.setTitle("Ejecución de juego");
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        /*Components settings*/
+        /* Components settings */
         this.match.getTeam1().setTowers(1);
         this.match.getTeam2().setTowers(2);
         setArenaColor(gridMatrixButtonsPanel);
@@ -57,97 +82,108 @@ public class MainGameArena extends JPanel{
         setMatrixButtons(gridMatrixButtonsPanel);
         enablePlayerButtons();
 
-        /*Agregar componentes*/
-        gbc.gridy=0;
-        gbc.gridx=0;
+        /* Add components */
+        gbc.gridy = 0;
+        gbc.gridx = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.gridwidth=GridBagConstraints.REMAINDER;
-        add(title,gbc);
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        add(title, gbc);
 
-        gbc.gridy=1;
-        gbc.gridx=0;
-        gbc.gridwidth=1;
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridwidth = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.gridheight=GridBagConstraints.REMAINDER;
-        gbc.anchor=GridBagConstraints.CENTER;
-        gbc.fill=GridBagConstraints.BOTH;
-        add(firstPlayerPanel,gbc);
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(firstPlayerPanel, gbc);
 
-        gbc.gridy=1;
-        gbc.gridx=1;
-        gbc.gridwidth=1;
-        gbc.gridheight=GridBagConstraints.REMAINDER;
-        add(gridMatrixButtonsPanel,gbc);
+        gbc.gridy = 1;
+        gbc.gridx = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        add(gridMatrixButtonsPanel, gbc);
 
-        gbc.gridy=1;
-        gbc.gridx=2;
+        gbc.gridy = 1;
+        gbc.gridx = 2;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.gridwidth=GridBagConstraints.REMAINDER;;
-        gbc.gridheight=GridBagConstraints.REMAINDER;
-        gbc.anchor=GridBagConstraints.CENTER;
-        gbc.fill=GridBagConstraints.BOTH;
-        add(secondPlayerPanel,gbc);
+        gbc.gridwidth = GridBagConstraints.REMAINDER;;
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(secondPlayerPanel, gbc);
     }
 
     /**
-     * Shows a popup for action selection (move, attack, pass) when a button representing a character is clicked.
+     * Displays a popup dialog with options for a character button.
      *
-     * @param button the matrix button representing a character.
+     * @param button The {@link MatrixButton} that was clicked.
      */
     private void showPopup(MatrixButton button) {
-        // Crear los botones personalizados que aparecerán en el diálogo
+        // Create custom buttons that will appear in the dialog
         Object[] options = {"Mover", "Habilidad","Pasar"};
-        // Mostrar la ventana emergente con botones personalizados
+        // Show the popup window with custom buttons
         int selection = JOptionPane.showOptionDialog(
-                null,            // Componente padre
-                "Que desea hacer?",            // Mensaje
-                "Selección de acción",           // Título del cuadro de diálogo
-                JOptionPane.DEFAULT_OPTION,     // Tipo de cuadro de diálogo
-                JOptionPane.INFORMATION_MESSAGE, // Tipo de mensaje
-                null,                           // Icono personalizado (null para sin icono)
-                options,                         // Botones personalizados
-                options[0]);                    // Opción por defecto
-        // Comprobar qué botón fue seleccionado
-        if (selection != -1) {  // Si se selecciona una opción (no se cierra con 'x')
+                null,            // Parent component
+                "Que desea hacer?",            // Message
+                "Selección de acción",           // Dialog title
+                JOptionPane.DEFAULT_OPTION,     // Dialog type
+                JOptionPane.INFORMATION_MESSAGE, // Message type
+                null,                           // Custom icon (null for default)
+                options,                         // Custom buttons
+                options[0]);                    // Default option
+
+        // Check which button was selected
+        if (selection != -1) {  // If an option is selected (not closed with 'x')
             System.out.println("Seleccionaste: " + options[selection]);
-            if (selection==0){characterMoveSelectionCeld(button);}
-            else if(selection==1){characterAbilitySelection(button);}
-            else {passTurn(button);}
+            if (selection == 0){
+                characterMoveSelectionCeld(button);
+            }
+            else if(selection == 1){
+                characterAbilitySelection(button);
+            }
+            else {
+                passTurn(button);
+            }
         }
     }
 
     /**
-     * Shows a popup for attacking or passing when a button representing a tower is clicked.
+     * Displays a popup dialog with options for a tower button.
      *
-     * @param button the matrix button representing a tower.
+     * @param button The {@link MatrixButton} representing the tower that was clicked.
      */
     private void showTowerPopup(MatrixButton button) {
         Object[] options = {"Atacar","Pasar"};
         int selection = JOptionPane.showOptionDialog(
-                null,            // Componente padre
-                "Que desea hacer?",            // Mensaje
-                "Selección de acción",           // Título del cuadro de diálogo
-                JOptionPane.DEFAULT_OPTION,     // Tipo de cuadro de diálogo
-                JOptionPane.INFORMATION_MESSAGE, // Tipo de mensaje
-                null,                           // Icono personalizado (null para sin icono)
-                options,                         // Botones personalizados
-                options[0]);                    // Opción por defecto
+                null,            // Parent component
+                "Que desea hacer?",            // Message
+                "Selección de acción",           // Dialog title
+                JOptionPane.DEFAULT_OPTION,     // Dialog type
+                JOptionPane.INFORMATION_MESSAGE, // Message type
+                null,                           // Custom icon (null for default)
+                options,                         // Custom buttons
+                options[0]);                    // Default option
 
         if (selection != -1) {
             System.out.println("Seleccionaste: " + options[selection]);
-            if(selection==0){characterAbilitySelection(button);}
-            else{passTurn(button);}
+            if(selection == 0){
+                characterAbilitySelection(button);
+            }
+            else{
+                passTurn(button);
+            }
         }
     }
 
     /**
-     * Initializes the matrix buttons and sets their action listeners based on the state of the game.
+     * Configures the matrix buttons within the grid panel.
      *
-     * @param gridMatrixButtonsPanel the panel containing the matrix buttons.
+     * @param gridMatrixButtonsPanel The panel containing the grid of buttons.
      */
     private void setMatrixButtons(JPanel gridMatrixButtonsPanel){
         for(MatrixButton[] buttonRow: matrix){
@@ -155,8 +191,12 @@ public class MainGameArena extends JPanel{
                 ActionListenerCleaner(button);
                 if (!button.getImagepath().isEmpty()){
                     button.setEnabled(true);
-                    if (button.getTower()==null){button.addActionListener(e->showPopup(button));}
-                    else{button.addActionListener(e->showTowerPopup(button));}
+                    if (button.getTower() == null){
+                        button.addActionListener(e -> showPopup(button));
+                    }
+                    else{
+                        button.addActionListener(e -> showTowerPopup(button));
+                    }
                 }
                 gridMatrixButtonsPanel.add(button);
                 button.setPreferredSize(new Dimension(74, 74));
@@ -165,56 +205,68 @@ public class MainGameArena extends JPanel{
     }
 
     /**
-     * Handles the selection of a valid cell for character movement.
+     * Handles the selection of movement for a character button.
      *
-     * @param btn the button representing the character.
+     * @param btn The {} representing the character to move.
      */
     private void characterMoveSelectionCeld(MatrixButton btn){
         int[] positionAvailable = getPositions(btn);
         for(MatrixButton[] buttonRow: matrix){
             for(MatrixButton button: buttonRow){
-                if((Arrays.stream(positionAvailable).anyMatch(i -> i == button.getIdentifier()))&&(button.getCharacter()==null)&&(button.getTower()==null)){
+                if((Arrays.stream(positionAvailable).anyMatch(i -> i == button.getIdentifier())) &&
+                        (button.getCharacter() == null) &&
+                        (button.getTower() == null)){
                     button.setEnabled(true);
                     button.setBackground(new Color(153, 255, 153));
-                    button.addActionListener(e->moveCharacter(button,btn,positionAvailable));
+                    button.addActionListener(e -> moveCharacter(button, btn, positionAvailable));
                 }
-                else if(button.getIdentifier()==btn.getIdentifier()){
-                        System.out.println("Restore aplicado a btn #"+button.getIdentifier());
-                        ActionListenerCleaner(button);
-                        button.addActionListener(e -> restorePreviousState(btn,positionAvailable));
+                else if(button.getIdentifier() == btn.getIdentifier()){
+                    System.out.println("Restore aplicado a btn #" + button.getIdentifier());
+                    ActionListenerCleaner(button);
+                    button.addActionListener(e -> restorePreviousState(btn, positionAvailable));
                 }
-                else{button.setEnabled(false);}
+                else{
+                    button.setEnabled(false);
+                }
             }
         }
     }
 
     /**
-     * Resets the state of the buttons after a move action is canceled.
+     * Restores the previous state of a button after a movement action.
      *
-     * @param btn the button representing the character.
-     * @param btnArray the array of valid positions for movement.
+     * @param btn     The {@link MatrixButton} to restore.
+     * @param btnArray An array of identifiers representing previously available positions.
      */
-    private void restorePreviousState(MatrixButton btn,int[] btnArray) {
-        System.out.println("Character Action aplicado a btn #"+btn.getIdentifier());
+    private void restorePreviousState(MatrixButton btn, int[] btnArray) {
+        System.out.println("Character Action aplicado a btn #" + btn.getIdentifier());
         ActionListenerCleaner(btn);
-        if (btn.getTower()==null){btn.addActionListener(e->showPopup(btn));}
-        else{btn.addActionListener(e->showTowerPopup(btn));}//////////////////////////////////////////////////////////////// Calcular las posiciones alrededor del botón actual
+        if (btn.getTower() == null){
+            btn.addActionListener(e -> showPopup(btn));
+        }
+        else{
+            btn.addActionListener(e -> showTowerPopup(btn));
+        }
+        // Calculate positions around the current button
         for(MatrixButton[] buttonRow: matrix){
             for(MatrixButton button: buttonRow){
                 if(Arrays.stream(btnArray).anyMatch(i -> i == button.getIdentifier())){
                     button.setBackground(Color.LIGHT_GRAY);
                     ActionListenerCleaner(button);
                     button.setEnabled(false);
-                }else if(!button.getImagepath().isEmpty()){button.setEnabled(true);}
+                }
+                else if(!button.getImagepath().isEmpty()){
+                    button.setEnabled(true);
+                }
             }
         }
         verifyMovements();
     }
 
     /**
-     * Removes all ActionListeners from the specified MatrixButton.
+     * Removes all {@link ActionListener}s associated with a button.
      *
-     * @param button the MatrixButton to clear listeners from.
+     * @param button The {@link MatrixButton} from which to remove listeners.
      */
     private void ActionListenerCleaner(MatrixButton button){
         ActionListener[] listeners = button.getActionListeners();
@@ -224,14 +276,14 @@ public class MainGameArena extends JPanel{
     }
 
     /**
-     * Moves a character from the origin button to the destination button, swapping their attributes.
+     * Moves a character from the origin button to the destination button.
      *
-     * @param destinationButton the MatrixButton to move the character to.
-     * @param originButton the MatrixButton the character is being moved from.
-     * @param btnArr array of button identifiers for movement validation.
+     * @param destinationButton The {@link MatrixButton} where the character will move to.
+     * @param originButton      The {@link MatrixButton} where the character is currently located.
+     * @param btnArr            An array of identifiers representing available positions for movement.
      */
-    private void moveCharacter(MatrixButton destinationButton,MatrixButton originButton,int[] btnArr){
-        System.out.println("Moviendo del botón #"+originButton.getIdentifier()+" al botón #"+destinationButton.getIdentifier());
+    private void moveCharacter(MatrixButton destinationButton, MatrixButton originButton, int[] btnArr){
+        System.out.println("Moviendo del botón #" + originButton.getIdentifier() + " al botón #" + destinationButton.getIdentifier());
         increaseMovements();
         swapButtonsAtributes(destinationButton, originButton);
         for(MatrixButton[] buttonRow: matrix){
@@ -240,25 +292,25 @@ public class MainGameArena extends JPanel{
                     button.setEnabled(false);
                     ActionListenerCleaner(button);
                     button.setBackground(Color.LIGHT_GRAY);
-                    System.out.println("Se ha desabilitado el botón #"+button.getIdentifier());
+                    System.out.println("Se ha deshabilitado el botón #" + button.getIdentifier());
                 }
-                else if ((!button.getImagepath().isEmpty())&&(button.getIdentifier()!=destinationButton.getIdentifier())){
+                else if ((!button.getImagepath().isEmpty()) && (button.getIdentifier() != destinationButton.getIdentifier())){
                     button.setEnabled(true);
-                    System.out.println("Se ha habilitado el botón #"+button.getIdentifier());}
+                    System.out.println("Se ha habilitado el botón #" + button.getIdentifier());
+                }
             }
         }
         verifyMovements();
     }
 
     /**
-     * Swaps the attributes between two MatrixButtons, transferring the character or tower data from
-     * the origin to the destination button.
+     * Swaps the attributes between two buttons, representing the movement of a character.
      *
-     * @param destinationButton the button that will receive the attributes.
-     * @param originButton the button that is being cleared after the move.
+     * @param destinationButton The {@link MatrixButton} of the destination.
+     * @param originButton      The {@link MatrixButton} of the origin.
      */
     public void swapButtonsAtributes(MatrixButton destinationButton, MatrixButton originButton) {
-        /* Configuración de Botón de destino */
+        /* Destination Button Configuration */
         destinationButton.setImagepath(originButton.getImagepath());
         destinationButton.setBackground(Color.LIGHT_GRAY);
         destinationButton.setFilter(new Color(0, 0, 0,100));
@@ -270,10 +322,10 @@ public class MainGameArena extends JPanel{
             destinationButton.setTower(originButton.getTower());
         }
         ActionListenerCleaner(destinationButton);
-        destinationButton.addActionListener(e->showPopup(destinationButton));
+        destinationButton.addActionListener(e -> showPopup(destinationButton));
         destinationButton.setEnabled(false);
 
-        /* Configuración de Botón de Origen */
+        /* Origin Button Configuration */
         originButton.setImagepath("");
         originButton.removeFilter();
         originButton.setBackground(Color.LIGHT_GRAY);
@@ -287,205 +339,293 @@ public class MainGameArena extends JPanel{
         ActionListenerCleaner(originButton);
         originButton.setEnabled(false);
 
-        /* Revalidar y repintar */
+        /* Revalidate and Repaint */
         originButton.revalidate();
         originButton.repaint();
         destinationButton.revalidate();
         destinationButton.repaint();
     }
 
+    /**
+     * Handles the selection of abilities for a character or tower button.
+     *
+     * @param button The {@link MatrixButton} that was clicked.
+     */
     public void characterAbilitySelection(MatrixButton button){
-        if(button.getCharacter()!=null){
-            ASkill[] arrayAbilitys=button.getCharacter().getSkills();
+        if(button.getCharacter() != null){
+            ASkill[] arrayAbilitys = button.getCharacter().getSkills();
             String[] skillNames = new String[arrayAbilitys.length];
-            for (int i = 0; i < arrayAbilitys.length; i++) {skillNames[i] = arrayAbilitys[i].getName();}
+            for (int i = 0; i < arrayAbilitys.length; i++) {
+                skillNames[i] = arrayAbilitys[i].getName();
+            }
             JComboBox<String> skillSelection = new JComboBox<>(skillNames);
-            int option = JOptionPane.showConfirmDialog(null,skillSelection,"Selecciona una habilidad",JOptionPane.OK_CANCEL_OPTION);
+            int option = JOptionPane.showConfirmDialog(null, skillSelection, "Selecciona una habilidad", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
                 int selectedSkillIndex = skillSelection.getSelectedIndex();
                 ASkill selectedSkill = arrayAbilitys[selectedSkillIndex];
                 System.out.println("Habilidad seleccionada: " + selectedSkill.getName());
                 characterAbility(button, selectedSkill);
             }
-        }else if(button.getTower()!=null){
-            int[] positions=getPositionsToAbility(button);
-            for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
-            if (positions.length!=0){towerAttack(button,positions);}
+        }
+        else if(button.getTower() != null){
+            int[] positions = getPositionsToAbility(button);
+            for (int i : positions){
+                System.out.println("Enemigo detectado en botón #: " + i);
+            }
+            if (positions.length != 0){
+                towerAttack(button, positions);
+            }
             else{
-                JOptionPane.showMessageDialog(window,"Debes estar al lado de un enemigo para atacar.","No hay enemigos al alcance",JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(window, "Debes estar al lado de un enemigo para atacar.", "No hay enemigos al alcance", JOptionPane.WARNING_MESSAGE);
             }
         }
     }
 
-    public void characterAbility(MatrixButton button,ASkill skill){
+    /**
+     * Executes a selected ability for a character or tower.
+     *
+     * @param button The {@link MatrixButton} executing the ability.
+     * @param skill  The {@link ASkill} selected to execute.
+     */
+    public void characterAbility(MatrixButton button, ASkill skill){
         String type = skill.toJson().get("type").toString();
         switch (type){
             case "attack":
-                System.out.println("Tipo de ataque: "+skill.toJson().get("type"));
-                int[] positions=getPositionsToAbility(button);
-                for (int i:positions){System.out.println("Enemigo detectado en botón #: "+i);}
+                System.out.println("Tipo de ataque: " + skill.toJson().get("type"));
+                int[] positions = getPositionsToAbility(button);
+                for (int i : positions){
+                    System.out.println("Enemigo detectado en botón #: " + i);
+                }
                 if (positions.length != 0) {
-                    characterAttack(button,positions,skill);
-                }else{
-                    JOptionPane.showMessageDialog(window,"Debes estar al lado de un enemigo para atacar.","No hay enemigos al alcance",JOptionPane.WARNING_MESSAGE);
+                    characterAttack(button, positions, skill);
+                }
+                else{
+                    JOptionPane.showMessageDialog(window, "Debes estar al lado de un enemigo para atacar.", "No hay enemigos al alcance", JOptionPane.WARNING_MESSAGE);
                 }
                 break;
             case "buff":
+                // Implementation for 'buff'
                 break;
             case "heal":
+                // Implementation for 'heal'
+                break;
         }
     }
 
-    public void characterAttack(MatrixButton button,int[] enemiesIndex,ASkill skill){
-        JOptionPane.showMessageDialog(window,"Selecciona al enemigo que deseas atacar");
+    /**
+     * Handles a character's attack towards selected enemies using a specific skill.
+     *
+     * @param button       The {@link MatrixButton} of the character performing the attack.
+     * @param enemiesIndex An array of enemy identifiers available for attack.
+     * @param skill        The {@link ASkill} used for the attack.
+     */
+    public void characterAttack(MatrixButton button, int[] enemiesIndex, ASkill skill){
+        JOptionPane.showMessageDialog(window, "Selecciona al enemigo que deseas atacar");
         for (MatrixButton[] row : matrix) {
             for (MatrixButton tempButton : row) {
-                if (Arrays.stream(enemiesIndex).anyMatch(i->i==tempButton.getIdentifier())){
+                if (Arrays.stream(enemiesIndex).anyMatch(i -> i == tempButton.getIdentifier())){
                     tempButton.setEnabled(true);
                     ActionListenerCleaner(tempButton);
-                    tempButton.addActionListener(e-> restoreAndGetAttackForCharacter(tempButton,button,enemiesIndex,skill));
+                    tempButton.addActionListener(e -> restoreAndGetAttackForCharacter(tempButton, button, enemiesIndex, skill));
                 }
             }
         }
     }
+
     /**
-     * */
-    void restoreAndGetAttackForCharacter(MatrixButton btnTarget, MatrixButton btnAttacker, int[] enemies,ASkill skill){
-        if(btnTarget.getCharacter()!=null){
-            System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
-            btnTarget.addActionListener(e->showTowerPopup(btnTarget));
-            skill.use(btnAttacker.getCharacter(),btnTarget.getCharacter());
-            btnAttacker.getCharacter().useSkill(skill,btnTarget.getCharacter());
+     * Restores the state after a character attack has been executed.
+     *
+     * @param btnTarget    The {@link MatrixButton} representing the target of the attack.
+     * @param btnAttacker  The {@link MatrixButton} representing the attacker.
+     * @param enemies      An array of enemy identifiers involved in the attack.
+     * @param skill        The {@link ASkill} used during the attack.
+     */
+    void restoreAndGetAttackForCharacter(MatrixButton btnTarget, MatrixButton btnAttacker, int[] enemies, ASkill skill){
+        if(btnTarget.getCharacter() != null){
+            System.out.println("Current health of: " + btnTarget.getIdentifier() + " = " + btnTarget.getCharacter().getHealth());
+            btnTarget.addActionListener(e -> showTowerPopup(btnTarget));
+            skill.use(btnAttacker.getCharacter(), btnTarget.getCharacter());
+            btnAttacker.getCharacter().useSkill(skill, btnTarget.getCharacter());
             btnTarget.updateEntityInfo();
-            System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
-            JOptionPane.showMessageDialog(window,"Enemigo dañado");
-        }else{
-            System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
-            btnTarget.addActionListener(e->showTowerPopup(btnTarget));
-            btnAttacker.getCharacter().useSkill(skill,btnTarget.getTower());
+            System.out.println("Health after attack: " + btnTarget.getIdentifier() + " = " + btnTarget.getCharacter().getHealth());
+            JOptionPane.showMessageDialog(window, "Enemy damaged");
+        }
+        else{
+            System.out.println("Current health of: " + btnTarget.getIdentifier() + " = " + btnTarget.getTower().getHealth());
+            btnTarget.addActionListener(e -> showTowerPopup(btnTarget));
+            btnAttacker.getCharacter().useSkill(skill, btnTarget.getTower());
             btnTarget.updateEntityInfo();
-            System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
-            JOptionPane.showMessageDialog(window,"Enemigo dañado");
+            System.out.println("Health after attack: " + btnTarget.getIdentifier() + " = " + btnTarget.getTower().getHealth());
+            JOptionPane.showMessageDialog(window, "Enemy damaged");
         }
         for (MatrixButton[] row : matrix) {
             for (MatrixButton tempButton : row) {
-                if (Arrays.stream(enemies).anyMatch(i->i==tempButton.getIdentifier())){
+                if (Arrays.stream(enemies).anyMatch(i -> i == tempButton.getIdentifier())){
                     ActionListenerCleaner(tempButton);
                     tempButton.setEnabled(false);
                 }
             }
-        }System.out.println(btnAttacker.getName()+" ha atacado");
+        }
+        System.out.println(btnAttacker.getName() + " has attacked");
         passTurn(btnAttacker);
     }
 
-    public void towerAttack(MatrixButton button,int[] enemies){
-        JOptionPane.showMessageDialog(window,"Selecciona al enemigo que deseas atacar");
+    /**
+     * Handles a tower's attack towards selected enemies.
+     *
+     * @param button  The {@link MatrixButton} of the tower performing the attack.
+     * @param enemies An array of enemy identifiers available for attack.
+     */
+    public void towerAttack(MatrixButton button, int[] enemies){
+        JOptionPane.showMessageDialog(window, "Selecciona al enemigo que deseas atacar");
         for (MatrixButton[] row : matrix) {
             for (MatrixButton tempButton : row) {
-                if (Arrays.stream(enemies).anyMatch(i->i==tempButton.getIdentifier())){
+                if (Arrays.stream(enemies).anyMatch(i -> i == tempButton.getIdentifier())){
                     tempButton.setEnabled(true);
                     ActionListenerCleaner(tempButton);
-                    tempButton.addActionListener(e-> restoreAndGetAttackForTower(tempButton,button,enemies));
+                    tempButton.addActionListener(e -> restoreAndGetAttackForTower(tempButton, button, enemies));
                 }
             }
         }
     }
 
+    /**
+     * Restores the state after a tower attack has been executed.
+     *
+     * @param btnTarget    The {@link MatrixButton} representing the target of the attack.
+     * @param btnAttacker  The {@link MatrixButton} representing the attacking tower.
+     * @param enemies      An array of enemy identifiers involved in the attack.
+     */
     void restoreAndGetAttackForTower(MatrixButton btnTarget, MatrixButton btnAttacker, int[] enemies){
-        if(btnTarget.getTower()!=null){
-            System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
-            btnTarget.addActionListener(e->showTowerPopup(btnTarget));
+        if(btnTarget.getTower() != null){
+            System.out.println("Current health of: " + btnTarget.getIdentifier() + " = " + btnTarget.getTower().getHealth());
+            btnTarget.addActionListener(e -> showTowerPopup(btnTarget));
             btnAttacker.getTower().attack(btnTarget.getTower(), btnAttacker.getEntityDamage());
             btnTarget.updateEntityInfo();
-            System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getTower().getHealth());
-            JOptionPane.showMessageDialog(window,"Enemigo dañado");
-        }else{
-            System.out.println("Vida actual de: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
-            btnTarget.addActionListener(e->showTowerPopup(btnTarget));
+            System.out.println("Health after attack: " + btnTarget.getIdentifier() + " = " + btnTarget.getTower().getHealth());
+            JOptionPane.showMessageDialog(window, "Enemy damaged");
+        }
+        else{
+            System.out.println("Current health of: " + btnTarget.getIdentifier() + " = " + btnTarget.getCharacter().getHealth());
+            btnTarget.addActionListener(e -> showTowerPopup(btnTarget));
             btnAttacker.getTower().attack(btnTarget.getCharacter(), btnAttacker.getEntityDamage());
             btnTarget.updateEntityInfo();
-            System.out.println("Vida luego del ataque: "+ btnTarget.getIdentifier()+" = "+ btnTarget.getCharacter().getHealth());
-            JOptionPane.showMessageDialog(window,"Enemigo dañado");
+            System.out.println("Health after attack: " + btnTarget.getIdentifier() + " = " + btnTarget.getCharacter().getHealth());
+            JOptionPane.showMessageDialog(window, "Enemy damaged");
         }
         for (MatrixButton[] row : matrix) {
             for (MatrixButton tempButton : row) {
-                if (Arrays.stream(enemies).anyMatch(i->i==tempButton.getIdentifier())){
+                if (Arrays.stream(enemies).anyMatch(i -> i == tempButton.getIdentifier())){
                     ActionListenerCleaner(tempButton);
                     tempButton.setEnabled(false);
                 }
             }
-        }System.out.println("La torre ha atacado");
+        }
+        System.out.println("The tower has attacked");
         passTurn(btnAttacker);
     }
 
-    public boolean verifyTeam(MatrixButton btn,Team team){
-        ArrayList<Character> characters=team.getCharacters();
-        int towersTeamNumber=team.getTowersTeamNumber();
-        if(btn.getCharacter()!=null){
-            return characters.stream().anyMatch(i->i == btn.getCharacter());
-        }else if(btn.getTower()!=null){
-            return towersTeamNumber==btn.getTower().getTeam();
-        }return false;
+    /**
+     * Verifies if a button belongs to a specific team.
+     *
+     * @param btn   The {@link MatrixButton} to verify.
+     * @param team  The {@link Team} to which the button should belong.
+     * @return {@code true} if the button belongs to the team, {@code false} otherwise.
+     */
+    public boolean verifyTeam(MatrixButton btn, Team team){
+        ArrayList<Character> characters = team.getCharacters();
+        int towersTeamNumber = team.getTowersTeamNumber();
+        if(btn.getCharacter() != null){
+            return characters.stream().anyMatch(i -> i == btn.getCharacter());
+        }
+        else if(btn.getTower() != null){
+            return towersTeamNumber == btn.getTower().getTeam();
+        }
+        return false;
     }
 
+    /**
+     * Retrieves the adjacent positions available for movement from a given button.
+     *
+     * @param btn The {@link MatrixButton} from which to find adjacent positions.
+     * @return An array of integers representing the identifiers of available positions.
+     */
     public int[] getPositions(MatrixButton btn){
-        int[] arrayBannedLastPositions={9,19,29,39,49,59,69,79,89,99};
-        int[] arrayBannedNextPositions={0,10,20,30,40,50,60,70,80,90};
-        ArrayList<Byte> arrayPositions=new ArrayList<>();
-        for (MatrixButton[] row:matrix){
-            for(MatrixButton btnMtrx:row){
-                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())-10)){
+        int[] arrayBannedLastPositions = {9,19,29,39,49,59,69,79,89,99};
+        int[] arrayBannedNextPositions = {0,10,20,30,40,50,60,70,80,90};
+        ArrayList<Byte> arrayPositions = new ArrayList<>();
+        for (MatrixButton[] row : matrix){
+            for(MatrixButton btnMtrx : row){
+                if ((btnMtrx.getIdentifier() == (btn.getIdentifier() - 10))){
                     arrayPositions.add(btnMtrx.getIdentifier());
                 }
-                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())+10)){
+                if ((btnMtrx.getIdentifier() == (btn.getIdentifier() + 10))){
                     arrayPositions.add(btnMtrx.getIdentifier());
                 }
-                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())-1) && (Arrays.stream(arrayBannedLastPositions).noneMatch(i -> i == btnMtrx.getIdentifier()))){
+                if ((btnMtrx.getIdentifier() == (btn.getIdentifier() - 1)) &&
+                        (Arrays.stream(arrayBannedLastPositions).noneMatch(i -> i == btnMtrx.getIdentifier()))){
                     arrayPositions.add(btnMtrx.getIdentifier());
                 }
-                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())+1) && (Arrays.stream(arrayBannedNextPositions).noneMatch(i -> i == btnMtrx.getIdentifier()))){
+                if ((btnMtrx.getIdentifier() == (btn.getIdentifier() + 1)) &&
+                        (Arrays.stream(arrayBannedNextPositions).noneMatch(i -> i == btnMtrx.getIdentifier()))){
                     arrayPositions.add(btnMtrx.getIdentifier());
                 }
             }
         }
-        // Convertimos el ArrayList<Byte> a un array de int[] de manera funcional
+        // Convert the ArrayList<Byte> to an int[] array using streams
         return arrayPositions.stream()
-                .mapToInt(Byte::intValue)  // Mapeamos cada Byte a su valor int
-                .toArray();  // Recolectamos el resultado en un array de int[]
+                .mapToInt(Byte::intValue)  // Map each Byte to its int value
+                .toArray();  // Collect the result into an int[] array
     }
 
+    /**
+     * Retrieves the adjacent positions with enemies available for an ability from a given button.
+     *
+     * @param btn The {@link MatrixButton} from which to find adjacent enemy positions.
+     * @return An array of integers representing the identifiers of positions with enemies.
+     */
     public int[] getPositionsToAbility(MatrixButton btn){
         Team actualEnemyTeam;
         if (match.getTeam1().getTurn()){
-            actualEnemyTeam=match.getTeam2();
-        }else{
-            actualEnemyTeam=match.getTeam1();
+            actualEnemyTeam = match.getTeam2();
         }
-        int[] arrayBannedLastPositions={9,19,29,39,49,59,69,79,89,99};
-        int[] arrayBannedNextPositions={0,10,20,30,40,50,60,70,80,90};
-        ArrayList<Byte> arrayPositions=new ArrayList<>();
-        for (MatrixButton[] row:matrix){
-            for(MatrixButton btnMtrx:row){
-                if ((btnMtrx.getIdentifier()==(btn.getIdentifier()-10)) && (verifyTeam(btnMtrx,actualEnemyTeam))){
+        else{
+            actualEnemyTeam = match.getTeam1();
+        }
+        int[] arrayBannedLastPositions = {9,19,29,39,49,59,69,79,89,99};
+        int[] arrayBannedNextPositions = {0,10,20,30,40,50,60,70,80,90};
+        ArrayList<Byte> arrayPositions = new ArrayList<>();
+        for (MatrixButton[] row : matrix){
+            for(MatrixButton btnMtrx : row){
+                if ((btnMtrx.getIdentifier() == (btn.getIdentifier() - 10)) && (verifyTeam(btnMtrx, actualEnemyTeam))){
                     arrayPositions.add(btnMtrx.getIdentifier());
                 }
-                if ((btnMtrx.getIdentifier()==(btn.getIdentifier()+10)) && (verifyTeam(btnMtrx,actualEnemyTeam))){
+                if ((btnMtrx.getIdentifier() == (btn.getIdentifier() + 10)) && (verifyTeam(btnMtrx, actualEnemyTeam))){
                     arrayPositions.add(btnMtrx.getIdentifier());
                 }
-                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())-1) && (Arrays.stream(arrayBannedLastPositions).noneMatch(i -> i == btnMtrx.getIdentifier())) && (verifyTeam(btnMtrx,actualEnemyTeam))){
+                if ((btnMtrx.getIdentifier() == (btn.getIdentifier() - 1)) &&
+                        (Arrays.stream(arrayBannedLastPositions).noneMatch(i -> i == btnMtrx.getIdentifier())) &&
+                        (verifyTeam(btnMtrx, actualEnemyTeam))){
                     arrayPositions.add(btnMtrx.getIdentifier());
                 }
-                if ((btnMtrx.getIdentifier()==(btn.getIdentifier())+1) && (Arrays.stream(arrayBannedNextPositions).noneMatch(i -> i == btnMtrx.getIdentifier())) && (verifyTeam(btnMtrx,actualEnemyTeam))){
+                if ((btnMtrx.getIdentifier() == (btn.getIdentifier() + 1)) &&
+                        (Arrays.stream(arrayBannedNextPositions).noneMatch(i -> i == btnMtrx.getIdentifier())) &&
+                        (verifyTeam(btnMtrx, actualEnemyTeam))){
                     arrayPositions.add(btnMtrx.getIdentifier());
                 }
             }
         }
-        // Convertimos el ArrayList<Byte> a un array de int[] de manera funcional
+        // Convert the ArrayList<Byte> to an int[] array using streams
         return arrayPositions.stream()
-                .mapToInt(Byte::intValue)  // Mapeamos cada Byte a su valor int
-                .toArray();  // Recolectamos el resultado en un array de int[]
+                .mapToInt(Byte::intValue)  // Map each Byte to its int value
+                .toArray();  // Collect the result into an int[] array
     }
 
+    /**
+     * Enables the buttons of players that can attack based on the target team.
+     *
+     * @param targetTeam The {@link Team} that can be attacked.
+     */
     public void setPlayerButtonsToAttack(Team targetTeam) {
         for (MatrixButton[] row : matrix) {
             for (MatrixButton button : row) {
@@ -497,8 +637,7 @@ public class MainGameArena extends JPanel{
     }
 
     /**
-     * Enables the buttons for the current player based on their team. Buttons for characters and towers
-     * are enabled, while other buttons are disabled.
+     * Enables the buttons of the current player's team.
      */
     public void enablePlayerButtons(){
         Team currentTeam = match.getTeam1().getTurn() ? match.getTeam1() : match.getTeam2();
@@ -520,26 +659,27 @@ public class MainGameArena extends JPanel{
     }
 
     /**
-     * Increments the current player's movement count.
+     * Increments the movement count for the current team.
      */
     public void increaseMovements(){
         if (match.getTeam1().getTurn()){
             match.getTeam1().setMoves();
-        }else{
+        }
+        else{
             match.getTeam2().setMoves();
         }
     }
 
     /**
-     * Verifies if the current player has exceeded their allowed number of moves
-     * and switches the turn to the other player if necessary.
+     * Verifies if the current team has reached the movement limit and switches turns if necessary.
      */
     public void verifyMovements(){
-        if ((match.getTeam1().getTurn())&&(match.getTeam1().getMoves()>=6)){
+        if ((match.getTeam1().getTurn()) && (match.getTeam1().getMoves() >= 6)){
             match.getTeam1().resetMoves();
             match.getTeam1().setTurn(false);
             match.getTeam2().setTurn(true);
-        }else if ((match.getTeam2().getTurn())&&(match.getTeam2().getMoves()>=6)){
+        }
+        else if ((match.getTeam2().getTurn()) && (match.getTeam2().getMoves() >= 6)){
             match.getTeam2().resetMoves();
             match.getTeam2().setTurn(false);
             match.getTeam1().setTurn(true);
@@ -549,15 +689,15 @@ public class MainGameArena extends JPanel{
     }
 
     /**
-     * Restores the filters for all buttons after a turn change, updating the
-     * button appearance based on the team.
+     * Restores the filters of the buttons after a turn has been passed.
      */
     public void restoreButtonsFilters(){
-        for(MatrixButton[] rows:matrix){
-            for(MatrixButton btn:rows){
-                if ((Objects.equals(btn.getFilter(), new Color(0, 0, 0,100)))&&(verifyTeam(btn,match.getTeam1()))){
+        for(MatrixButton[] rows : matrix){
+            for(MatrixButton btn : rows){
+                if ((Objects.equals(btn.getFilter(), new Color(0, 0, 0,100))) && (verifyTeam(btn, match.getTeam1()))){
                     btn.setFilter(new Color(255,0,0,100));
-                }else if ((Objects.equals(btn.getFilter(), new Color(0, 0, 0,100)))&&(verifyTeam(btn,match.getTeam2()))){
+                }
+                else if ((Objects.equals(btn.getFilter(), new Color(0, 0, 0,100))) && (verifyTeam(btn, match.getTeam2()))){
                     btn.setFilter(new Color(0,0,255,100));
                 }
             }
@@ -565,9 +705,9 @@ public class MainGameArena extends JPanel{
     }
 
     /**
-     * Ends the current turn and passes it to the other player.
+     * Passes the turn of the current team, increments movements, and verifies the game state.
      *
-     * @param btn the MatrixButton used to indicate the end of the turn.
+     * @param btn The {@link MatrixButton} that performs the pass turn action.
      */
     public void passTurn(MatrixButton btn){
         increaseMovements();
@@ -576,6 +716,11 @@ public class MainGameArena extends JPanel{
         verifyMovements();
     }
 
+    /**
+     * Sets the background color of a panel based on the arena's element.
+     *
+     * @param pnl The {@link JPanel} to set the background color for.
+     */
     public void setArenaColor(JPanel pnl){
         switch (match.getArena().getElement()){
             case FIRE:
