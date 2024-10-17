@@ -16,7 +16,7 @@ public class Character extends Entity {
     private String name;
     private String spritePath;
     private int level;
-    private double maxMana;
+    private int maxMana;
     private int mana;
     private int movements;
     private boolean dead;
@@ -80,11 +80,11 @@ public class Character extends Entity {
     /**
      * Uses a skill from the character's skill list.
      *
-     * @param skillIndex the index of the skill in the list.
+     * @param skill the index of the skill in the list.
      * @param target the entity being targeted by the skill.
      */
-    public void useSkill(int skillIndex, Entity target) {
-        ASkill skill = skills.get(skillIndex);
+    public void useSkill(ASkill skill, Entity target) {
+//        ASkill skill = skills.get(skillIndex);
         skill.use(this, target);
         this.mana = this.mana - skill.getManaCost();
     }
@@ -185,7 +185,7 @@ public class Character extends Entity {
         this.level = level;
     }
 
-    public double getMaxMana() {
+    public int getMaxMana() {
         return maxMana;
     }
 
@@ -193,11 +193,11 @@ public class Character extends Entity {
         this.maxMana = maxMana;
     }
 
-    public double getMana() {
+    public int getMana() {
         return mana;
     }
 
-    public void setMana(double mana) {
+    public void setMana(int mana) {
         this.mana = mana;
     }
 
