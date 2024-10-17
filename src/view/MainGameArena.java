@@ -55,19 +55,26 @@ public class MainGameArena extends JPanel{
      */
     private MatrixButton[][] matrix;
 
+    /**
+     * Constructs a new {@code MainGameArena} with the specified main window, match, and matrix buttons.
+     *
+     * @param mainWindow    The main game window.
+     * @param match         The {@link Match} object managing the game state.
+     * @param matrixButton  A 2D array of {@link MatrixButton} representing the game board.
+     */
     public MainGameArena(MainGameWindow mainWindow, Match match, MatrixButton[][] matrixButton) {
         this.window = mainWindow;
         this.match = match;
         this.matrix = matrixButton;
-        System.out.println("La arena actual es:" + match.getArena());
+        System.out.println("Current arena is: " + match.getArena());
         match.startMatch();
         match.getTeam1().setTurn(true);
         /* Components creation */
         JPanel gridMatrixButtonsPanel = new JPanel(new GridLayout(10, 10, 5, 5));
         JPanel firstPlayerPanel = new JPanel();
         JPanel secondPlayerPanel = new JPanel();
-        JLabel title = new JLabel("A Jugar", SwingConstants.CENTER);
-        window.setTitle("Ejecución de juego");
+        JLabel title = new JLabel("Let's Play", SwingConstants.CENTER);
+        window.setTitle("Game Execution");
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -126,12 +133,12 @@ public class MainGameArena extends JPanel{
      */
     private void showPopup(MatrixButton button) {
         // Create custom buttons that will appear in the dialog
-        Object[] options = {"Mover", "Habilidad","Pasar"};
+        Object[] options = {"Move", "Ability","Pass"};
         // Show the popup window with custom buttons
         int selection = JOptionPane.showOptionDialog(
                 null,            // Parent component
-                "Que desea hacer?",            // Message
-                "Selección de acción",           // Dialog title
+                "What would you like to do?",            // Message
+                "Action Selection",           // Dialog title
                 JOptionPane.DEFAULT_OPTION,     // Dialog type
                 JOptionPane.INFORMATION_MESSAGE, // Message type
                 null,                           // Custom icon (null for default)
@@ -140,7 +147,7 @@ public class MainGameArena extends JPanel{
 
         // Check which button was selected
         if (selection != -1) {  // If an option is selected (not closed with 'x')
-            System.out.println("Seleccionaste: " + options[selection]);
+            System.out.println("You selected: " + options[selection]);
             if (selection == 0){
                 characterMoveSelectionCeld(button);
             }
@@ -159,11 +166,11 @@ public class MainGameArena extends JPanel{
      * @param button The {@link MatrixButton} representing the tower that was clicked.
      */
     private void showTowerPopup(MatrixButton button) {
-        Object[] options = {"Atacar","Pasar"};
+        Object[] options = {"Attack","Pass"};
         int selection = JOptionPane.showOptionDialog(
                 null,            // Parent component
-                "Que desea hacer?",            // Message
-                "Selección de acción",           // Dialog title
+                "What would you like to do?",            // Message
+                "Action Selection",           // Dialog title
                 JOptionPane.DEFAULT_OPTION,     // Dialog type
                 JOptionPane.INFORMATION_MESSAGE, // Message type
                 null,                           // Custom icon (null for default)
@@ -171,7 +178,7 @@ public class MainGameArena extends JPanel{
                 options[0]);                    // Default option
 
         if (selection != -1) {
-            System.out.println("Seleccionaste: " + options[selection]);
+            System.out.println("You selected: " + options[selection]);
             if(selection == 0){
                 characterAbilitySelection(button);
             }
@@ -208,7 +215,7 @@ public class MainGameArena extends JPanel{
     /**
      * Handles the selection of movement for a character button.
      *
-     * @param btn The {} representing the character to move.
+     * @param btn The {@link MatrixButton} representing the character to move.
      */
     private void characterMoveSelectionCeld(MatrixButton btn){
         int[] positionAvailable = getPositions(btn);
@@ -222,7 +229,7 @@ public class MainGameArena extends JPanel{
                     button.addActionListener(e -> moveCharacter(button, btn, positionAvailable));
                 }
                 else if(button.getIdentifier() == btn.getIdentifier()){
-                    System.out.println("Restore aplicado a btn #" + button.getIdentifier());
+                    System.out.println("Restore applied to button #" + button.getIdentifier());
                     ActionListenerCleaner(button);
                     button.addActionListener(e -> restorePreviousState(btn, positionAvailable));
                 }
@@ -240,7 +247,7 @@ public class MainGameArena extends JPanel{
      * @param btnArray An array of identifiers representing previously available positions.
      */
     private void restorePreviousState(MatrixButton btn, int[] btnArray) {
-        System.out.println("Character Action aplicado a btn #" + btn.getIdentifier());
+        System.out.println("Character Action applied to button #" + btn.getIdentifier());
         ActionListenerCleaner(btn);
         if (btn.getTower() == null){
             btn.addActionListener(e -> showPopup(btn));
@@ -284,7 +291,7 @@ public class MainGameArena extends JPanel{
      * @param btnArr            An array of identifiers representing available positions for movement.
      */
     private void moveCharacter(MatrixButton destinationButton, MatrixButton originButton, int[] btnArr){
-        System.out.println("Moviendo del botón #" + originButton.getIdentifier() + " al botón #" + destinationButton.getIdentifier());
+        System.out.println("Moving from button #" + originButton.getIdentifier() + " to button #" + destinationButton.getIdentifier());
         increaseMovements();
         swapButtonsAtributes(destinationButton, originButton);
         for(MatrixButton[] buttonRow: matrix){
@@ -293,11 +300,11 @@ public class MainGameArena extends JPanel{
                     button.setEnabled(false);
                     ActionListenerCleaner(button);
                     button.setBackground(Color.LIGHT_GRAY);
-                    System.out.println("Se ha deshabilitado el botón #" + button.getIdentifier());
+                    System.out.println("Button #" + button.getIdentifier() + " has been disabled");
                 }
                 else if ((!button.getImagepath().isEmpty()) && (button.getIdentifier() != destinationButton.getIdentifier())){
                     button.setEnabled(true);
-                    System.out.println("Se ha habilitado el botón #" + button.getIdentifier());
+                    System.out.println("Button #" + button.getIdentifier() + " has been enabled");
                 }
             }
         }
@@ -360,24 +367,24 @@ public class MainGameArena extends JPanel{
                 skillNames[i] = arrayAbilitys[i].getName();
             }
             JComboBox<String> skillSelection = new JComboBox<>(skillNames);
-            int option = JOptionPane.showConfirmDialog(null, skillSelection, "Selecciona una habilidad", JOptionPane.OK_CANCEL_OPTION);
+            int option = JOptionPane.showConfirmDialog(null, skillSelection, "Select an ability", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
                 int selectedSkillIndex = skillSelection.getSelectedIndex();
                 ASkill selectedSkill = arrayAbilitys[selectedSkillIndex];
-                System.out.println("Habilidad seleccionada: " + selectedSkill.getName());
+                System.out.println("Selected ability: " + selectedSkill.getName());
                 characterAbility(button, selectedSkill);
             }
         }
         else if(button.getTower() != null){
             int[] positions = getPositionsToAttack(button);
             for (int i : positions){
-                System.out.println("Enemigo detectado en botón #: " + i);
+                System.out.println("Enemy detected at button #: " + i);
             }
             if (positions.length != 0){
                 towerAttack(button, positions);
             }
             else{
-                JOptionPane.showMessageDialog(window, "Debes estar al lado de un enemigo para atacar.", "No hay enemigos al alcance", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(window, "You must be next to an enemy to attack.", "No enemies in range", JOptionPane.WARNING_MESSAGE);
             }
         }
     }
@@ -392,39 +399,50 @@ public class MainGameArena extends JPanel{
         String type = skill.toJson().get("type").toString();
         switch (type){
             case "attack":
-                System.out.println("Tipo de ataque: " + skill.toJson().get("type"));
+                System.out.println("Attack type: " + skill.toJson().get("type"));
                 int[] positions = getPositionsToAttack(button);
                 for (int i : positions){
-                    System.out.println("Enemigo detectado en botón #: " + i);
+                    System.out.println("Enemy detected at button #: " + i);
                 }
                 if (positions.length != 0) {
                     characterAttack(button, positions, skill);
                 }
                 else{
-                    JOptionPane.showMessageDialog(window, "Debes estar al lado de un enemigo para atacar.", "No hay enemigos al alcance", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(window, "You must be next to an enemy to attack.", "No enemies in range", JOptionPane.WARNING_MESSAGE);
                 }
                 break;
             case "buff":
-                System.out.println("Tipo de buff: " + skill.toJson().get("type"));
+                System.out.println("Buff type: " + skill.toJson().get("type"));
                 int[] positionsBuff = getPositionsToBuffOrHeal(button);
                 for (int i : positionsBuff){
-                    System.out.println("Aliado detectado en botón #: " + i);
+                    System.out.println("Ally detected at button #: " + i);
                 }
                 characterBuffOrHeal(button, positionsBuff, skill);
                 break;
             case "heal":
-                System.out.println("Tipo de buff: " + skill.toJson().get("type"));
+                System.out.println("Heal type: " + skill.toJson().get("type"));
                 int[] positionsHeal = getPositionsToBuffOrHeal(button);
                 for (int i : positionsHeal){
-                    System.out.println("Aliado detectado en botón #: " + i);
+                    System.out.println("Ally detected at button #: " + i);
                 }
                 characterBuffOrHeal(button, positionsHeal, skill);
                 break;
         }
     }
 
+    /**
+     * Handles the buffing or healing of allies.
+     *
+     * @param button      The {@link MatrixButton} performing the buff or heal.
+     * @param alliesBuff  An array of ally identifiers available for buffing or healing.
+     * @param skill       The {@link ASkill} used for buffing or healing.
+     */
     public void characterBuffOrHeal(MatrixButton button, int[] alliesBuff, ASkill skill){
-        JOptionPane.showMessageDialog(window, "Selecciona un aliado para buffear");
+        if (skill instanceof BuffSkill){
+            JOptionPane.showMessageDialog(window, "Select an ally to buff");
+        } else {
+            JOptionPane.showMessageDialog(window, "Select an ally to heal");
+        }
         for (MatrixButton[] row : matrix) {
             for (MatrixButton tempButton : row) {
                 if (Arrays.stream(alliesBuff).anyMatch(i -> i == tempButton.getIdentifier())){
@@ -436,6 +454,12 @@ public class MainGameArena extends JPanel{
         }
     }
 
+    /**
+     * Retrieves the adjacent positions with allies available for buffing or healing from a given button.
+     *
+     * @param btn The {@link MatrixButton} from which to find adjacent ally positions.
+     * @return An array of integers representing the identifiers of positions with allies.
+     */
     public int[] getPositionsToBuffOrHeal(MatrixButton btn){
         Team actualTeam;
         if (match.getTeam1().getTurn()){
@@ -458,34 +482,53 @@ public class MainGameArena extends JPanel{
                 .toArray();  // Collect the result into an int[] array
     }
 
+    /**
+     * Restores the state after a buff or heal action has been executed.
+     *
+     * @param btnTarget    The {@link MatrixButton} representing the target of the buff or heal.
+     * @param btnHealer    The {@link MatrixButton} representing the healer.
+     * @param allies       An array of ally identifiers involved in the buff or heal.
+     * @param skill        The {@link ASkill} used during the buff or heal.
+     */
     public void restoreAndBuffOrHeal(MatrixButton btnTarget, MatrixButton btnHealer, int[] allies, ASkill skill){
         if (skill instanceof BuffSkill){
             if(btnTarget.getCharacter() != null){
-                btnTarget.addActionListener(e -> showPopup(btnTarget));
                 skill.use(btnHealer.getCharacter(), btnTarget.getCharacter());
                 btnTarget.updateEntityInfo();
                 JOptionPane.showMessageDialog(window, "Ally Buffed");
             }
             else {
-                JOptionPane.showMessageDialog(window, "Tower cant be buffed");
+                JOptionPane.showMessageDialog(window, "Tower cannot be buffed");
             }
             System.out.println(btnTarget.getName() + " buffed");
-        }else{
+            passTurn(btnHealer);
+        } else {
             if(btnTarget.getCharacter() != null){
-                btnTarget.addActionListener(e -> showPopup(btnTarget));
                 skill.use(btnHealer.getCharacter(), btnTarget.getCharacter());
                 btnTarget.updateEntityInfo();
-                JOptionPane.showMessageDialog(window, "Ally healed");
+                JOptionPane.showMessageDialog(window, "Ally Healed");
             }
             else {
-                btnTarget.addActionListener(e -> showTowerPopup(btnTarget));
                 btnHealer.getCharacter().useSkill(skill, btnTarget.getTower());
                 btnTarget.updateEntityInfo();
-                JOptionPane.showMessageDialog(window, "Ally healed");
+                JOptionPane.showMessageDialog(window, "Ally Healed");
             }
             System.out.println(btnTarget.getName() + " healed");
+            passTurn(btnHealer);
         }
-        passTurn(btnHealer);
+        for (MatrixButton[] row : matrix) {
+            for (MatrixButton tempButton : row) {
+                if (Arrays.stream(allies).anyMatch(i -> i == tempButton.getIdentifier())){
+                    if(tempButton.getCharacter()!=null){
+                        ActionListenerCleaner(tempButton);
+                        tempButton.addActionListener(e -> showPopup(tempButton));
+                    }else{
+                        ActionListenerCleaner(tempButton);
+                        tempButton.addActionListener(e -> showTowerPopup(tempButton));
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -496,7 +539,7 @@ public class MainGameArena extends JPanel{
      * @param skill        The {@link ASkill} used for the attack.
      */
     public void characterAttack(MatrixButton button, int[] enemiesIndex, ASkill skill){
-        JOptionPane.showMessageDialog(window, "Selecciona al enemigo que deseas atacar");
+        JOptionPane.showMessageDialog(window, "Select the enemy you want to attack");
         for (MatrixButton[] row : matrix) {
             for (MatrixButton tempButton : row) {
                 if (Arrays.stream(enemiesIndex).anyMatch(i -> i == tempButton.getIdentifier())){
@@ -550,7 +593,7 @@ public class MainGameArena extends JPanel{
      * @param enemies An array of enemy identifiers available for attack.
      */
     public void towerAttack(MatrixButton button, int[] enemies){
-        JOptionPane.showMessageDialog(window, "Selecciona al enemigo que deseas atacar");
+        JOptionPane.showMessageDialog(window, "Select the enemy you want to attack");
         for (MatrixButton[] row : matrix) {
             for (MatrixButton tempButton : row) {
                 if (Arrays.stream(enemies).anyMatch(i -> i == tempButton.getIdentifier())){
@@ -719,7 +762,7 @@ public class MainGameArena extends JPanel{
             for (MatrixButton button : row) {
                 if ((button.getCharacter() != null || button.getTower() != null) && verifyTeam(button, currentTeam) && !Objects.equals(button.getFilter(), new Color(0, 0, 0, 100))) {
                     button.setEnabled(true);
-                    System.out.println("Botón "+button.getIdentifier()+" activado");
+                    System.out.println("Button " + button.getIdentifier() + " enabled");
                 } else if (verifyTeam(button, oppositeTeam)) {
                     button.setEnabled(false);
                 } else {
@@ -785,7 +828,7 @@ public class MainGameArena extends JPanel{
         btn.setFilter(new Color(0, 0, 0,100));
         btn.setEnabled(false);
         verifyMovements();
-        System.out.println("turnos restantes (1):"+match.getTeam1().getMoves()+" (2):"+match.getTeam2().getMoves());
+        System.out.println("Remaining moves (1): " + match.getTeam1().getMoves() + " (2): " + match.getTeam2().getMoves());
     }
 
     /**
