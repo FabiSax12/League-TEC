@@ -37,22 +37,9 @@ public class GalleryPanel extends JPanel {
         for (Character character : characters) {
             JPanel characterPanel = new JPanel();
             characterPanel.setLayout(new BorderLayout());
-
-            try {
-                File imageFile = new File(System.getProperty("user.dir") + "\\src" + character.getSpritePath().replace("/", "\\"));
-                if (imageFile.exists()) {
-                    ImageIcon characterIcon = new ImageIcon(imageFile.getAbsolutePath());
-                    Image originalImage = characterIcon.getImage();
-                    Image scaledImage = IMG.getScaledImage(originalImage, 200, 200);
-                    JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-                    characterPanel.add(imageLabel, BorderLayout.CENTER);
-                } else {
-                    // Maneja el caso de que la imagen no se encuentre
-                    System.out.println("Imagen no encontrada: " + character.getSpritePath());
-                }
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
+            Image image = IMG.toImageAndScale(character.getSpritePath(), 200, 200);
+            JLabel imageLabel = new JLabel(new ImageIcon(image));
+            characterPanel.add(imageLabel, BorderLayout.CENTER);
 
             JLabel nameLabel = new JLabel(character.getName(), JLabel.CENTER);
             characterPanel.add(nameLabel, BorderLayout.SOUTH);

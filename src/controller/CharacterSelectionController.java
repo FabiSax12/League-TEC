@@ -1,6 +1,7 @@
 package controller;
 
 import database.DB;
+import models.ASkill;
 import models.Character;
 import models.Team;
 
@@ -37,7 +38,22 @@ public class CharacterSelectionController {
      */
     public void populateAvailableCharacters() {
         availableListModel.clear();
-        DB.getCharacters().forEach(availableListModel::addElement);
+        DB.getCharacters().forEach(character -> {
+            Character newCharacter = new Character(
+                    character.getName(),
+                    character.getMaxHealth(),
+                    character.getMaxMana(),
+                    character.getDamage(),
+                    character.getDefense(),
+                    character.getMovements(),
+                    character.getElement(),
+                    character.getSpritePath()
+            );
+
+            for (ASkill skill : character.getSkills()) newCharacter.addSkill(skill);
+
+            availableListModel.addElement(newCharacter);
+        });
     }
 
     /**

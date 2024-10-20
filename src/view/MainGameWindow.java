@@ -13,8 +13,8 @@ import java.io.IOException;
  * the main menu, character gallery, character creation, and game-related panels.
  */
 public class MainGameWindow extends JFrame {
-    private final CardLayout cardLayout;
-    private final JPanel mainPanel;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
     private JPanel menuPanel, createGamePanel, statisticsPanel, galleryPanel, createCharacterPanel;
 
     /**
@@ -26,8 +26,20 @@ public class MainGameWindow extends JFrame {
     public MainGameWindow() throws IOException {
         setTitle("League TEC - Menú Principal");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(1000, 800);
         setLocationRelativeTo(null);
+
+        showStartScreen();
+
+        setVisible(true);
+    }
+
+    public void showStartScreen() {
+        setTitle("League TEC - Menú Principal");
+        setSize(1000, 800);
+        setLocationRelativeTo(null);
+
+        getContentPane().removeAll();
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -45,7 +57,9 @@ public class MainGameWindow extends JFrame {
         mainPanel.add(createCharacterPanel, "CreateCharacter");
 
         add(mainPanel);
-        setVisible(true);
+
+        revalidate();
+        repaint();
     }
 
     /**
@@ -115,8 +129,8 @@ public class MainGameWindow extends JFrame {
      * @param team2 The second player's team.
      */
     public void startGame(Team team1, Team team2) {
-        new Match(ArenaFactory.create(), team1, team2);
-        mainPanel.add(new CharacterPlacementPanel(this, team1, team2), "CharacterPlacementPanel");
+        Match match = new Match(ArenaFactory.create(), team1, team2);
+        mainPanel.add(new CharacterPlacementPanel(this, match), "CharacterPlacementPanel");
         cardLayout.show(mainPanel, "CharacterPlacementPanel");
     }
 
@@ -127,7 +141,8 @@ public class MainGameWindow extends JFrame {
      * @param matrixButton The matrix of buttons representing the game grid.
      */
     public void startGameArena(Match match, MatrixButton[][] matrixButton) {
-        mainPanel.add(new MainGameArena(this, match,matrixButton), "MainGameArena");
+        mainPanel.add(new BattleArena(this, match,matrixButton), "MainGameArena");
         cardLayout.show(mainPanel, "MainGameArena");
     }
+
 }

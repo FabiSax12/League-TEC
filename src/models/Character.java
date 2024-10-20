@@ -54,10 +54,12 @@ public class Character extends Entity {
      * Increases the character's mana regeneration by 25%.
      */
     public void regenerateMana() {
-        int tempMana = this.mana;
-        this.mana += (int) (this.mana * 0.25);
-        if(this.mana>this.maxMana){
-            this.mana=tempMana;
+        int augment = (int) (this.mana * 0.25);
+
+        if(this.mana + augment > this.maxMana){
+            this.mana = this.maxMana;
+        } else {
+            this.mana += augment;
         }
     }
 
@@ -70,7 +72,7 @@ public class Character extends Entity {
      */
     public void statBuff(String stat, double boost, int rounds) {
         switch (stat) {
-            case "damage":
+            case "attack":
                 this.setDamage((int) (this.getDamage() + this.getDamage() * boost));
                 break;
             case "defense":
@@ -78,6 +80,10 @@ public class Character extends Entity {
                 break;
             case "movements":
                 this.setMovements((int) (this.getMovements() + this.getMovements() * boost));
+                break;
+            case "health":
+                this.setHealth((int) (this.getHealth() + this.getHealth() * boost));
+                break;
         }
     }
 
@@ -99,7 +105,10 @@ public class Character extends Entity {
      * based on their elemental affinity.
      */
     public void applyElementalBoost() {
-
+        this.damage += (int) (this.damage * 0.15);
+        this.defense += (int) (this.defense * 0.15);
+        this.maxHealth += (int) (this.maxHealth * 0.15);
+        this.health = this.maxHealth;
     }
 
     /**

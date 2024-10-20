@@ -95,19 +95,19 @@ public abstract class DB {
         JSONArray jsonGames = data.getJSONArray("games");
         for (int i = 0; i < jsonGames.length(); i++) {
             JSONObject jsonGame = jsonGames.getJSONObject(i);
-            Game game = new Game(UUID.randomUUID(), null, null, null, new Statistics(0,0,0,0,0));
-            game.setId(UUID.fromString(jsonGame.getString("id")));
+
+            UUID id = UUID.fromString(jsonGame.getString("id"));
             Player winner = getPlayerByName(jsonGame.getString("winner"));
-            game.setWinner(winner);
 
             ArrayList<Player> playersInGame = new ArrayList<>();
             JSONArray jsonPlayersInGame = jsonGame.getJSONArray("players");
             for (int j = 0; j < jsonPlayersInGame.length(); j++) {
                 Player playerInGame = getPlayerById(jsonPlayersInGame.getInt(j));
-                if (playerInGame != null) {
-                    playersInGame.add(playerInGame);
-                }
+                if (playerInGame != null) playersInGame.add(playerInGame);
             }
+
+            Game game = new Game(id, playersInGame.get(0), playersInGame.get(1), winner);
+
             game.setPlayers(playersInGame);
             games.add(game);
         }
@@ -185,7 +185,7 @@ public abstract class DB {
         }
     }
 
-    /**
+    /**\
      * Saves the current game data (players, games, and characters) into a JSON file.
      *
      * <p>This method collects the current state of players, games, and characters,
@@ -392,5 +392,13 @@ public abstract class DB {
      */
     public static List<Character> getCharacters() {
         return new ArrayList<>(characters);
+    }
+
+    public static void addGame(Game newGame) {
+        games.add(newGame);
+    }
+
+    public static void restoreCharacters() {
+
     }
 }

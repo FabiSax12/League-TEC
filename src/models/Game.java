@@ -12,7 +12,6 @@ public class Game {
     private Player player1;
     private Player player2;
     private Player winner;
-    private Statistics statistics;
 
     /**
      * Constructs a new Game with the specified players, winner, and statistics.
@@ -21,14 +20,12 @@ public class Game {
      * @param player1 the first player in the game.
      * @param player2 the second player in the game.
      * @param winner the player who won the game.
-     * @param statistics the statistics related to the game.
      */
-    public Game(UUID id, Player player1, Player player2, Player winner, Statistics statistics) {
+    public Game(UUID id, Player player1, Player player2, Player winner) {
         this.id = id;
         this.player1 = player1;
         this.player2 = player2;
         this.winner = winner;
-        this.statistics = statistics;
     }
 
     /**
@@ -126,23 +123,5 @@ public class Game {
      */
     public void setWinner(Player winner) {
         this.winner = winner;
-    }
-
-    /**
-     * Returns the statistics associated with the game.
-     *
-     * @return the game's statistics.
-     */
-    public Statistics getStatistics() {
-        return statistics;
-    }
-
-    /**
-     * Sets the statistics for the game.
-     *
-     * @param statistics the statistics to assign to the game.
-     */
-    public void setStatistics(Statistics statistics) {
-        this.statistics = statistics;
     }
 }

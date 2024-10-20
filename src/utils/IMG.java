@@ -3,6 +3,7 @@ package utils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.net.URL;
 
 /**
@@ -21,9 +22,36 @@ public abstract class IMG {
      * @return the scaled image.
      */
     public static Image toImage(String imgPath){
-        ImageIcon characterIcon = new ImageIcon(imgPath);
-        Image originalImage = characterIcon.getImage();
-        return getScaledImage(originalImage, 200, 200);
+        File imageFile = new File(System.getProperty("user.dir") + "\\src" + imgPath);
+
+        if (imageFile.exists()) {
+            ImageIcon characterIcon = new ImageIcon(imageFile.getAbsolutePath());
+            return characterIcon.getImage();
+        } else {
+            System.out.println("Imagen no encontrada: " + imgPath);
+            return null;
+        }
+    }
+
+    /**
+     * Converts an image from a file path to a scaled image.
+     *
+     * <p>This method loads an image from the specified file path and returns a version of it scaled to 200x200 pixels.</p>
+     *
+     * @param imgPath the file path to the image.
+     * @return the scaled image.
+     */
+    public static Image toImageAndScale(String imgPath, int width, int height){
+        File imageFile = new File(System.getProperty("user.dir") + "\\src" + imgPath);
+
+        if (imageFile.exists()) {
+            ImageIcon characterIcon = new ImageIcon(imageFile.getAbsolutePath());
+            Image originalImage = characterIcon.getImage();
+            return getScaledImage(originalImage, width, height);
+        } else {
+            System.out.println("Imagen no encontrada: " + imgPath);
+            return null;
+        }
     }
 
     /**

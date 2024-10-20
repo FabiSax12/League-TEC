@@ -1,11 +1,15 @@
 package view.components;
 
+import models.Entity;
 import models.Team;
 import models.Tower;
 import models.Character;
+import utils.IMG;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.Objects;
 
 /**
  * A custom JButton component used to display and manage matrix-style game elements such as characters and towers.
@@ -14,12 +18,10 @@ import java.awt.*;
  * for characters and towers. It also allows setting identifiers and managing entities (characters or towers).</p>
  */
 public class MatrixButton extends JButton {
-    private byte identifier = 0;
-    private String characterImagePath="";
-    private Color filter=null;
-    private Character character = null;
-    private Tower tower = null;
-    private ImageIcon icon=null;
+    private byte identifier;
+    private Color filter;
+    private Entity entity;
+    private ImageIcon icon;
 
     /**
      * Constructs a MatrixButton with default styles.
@@ -28,6 +30,9 @@ public class MatrixButton extends JButton {
         setFocusPainted(false);
         setBackground(new Color(220, 220, 220));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.filter = null;
+        this.identifier = 0;
+        this.icon = null;
     }
 
     /**
@@ -89,129 +94,90 @@ public class MatrixButton extends JButton {
         repaint();
     }
 
-    /**
-     * Sets the image path for the character and updates the icon.
-     *
-     * @param path the path of the image.
-     */
-    public void setImagepath(String path){
-        if ((path.isEmpty())||(path==null)){setIcon(null);this.characterImagePath="";}
-        else{
-            this.characterImagePath=path;
-            ImageIcon newIcon = new ImageIcon(path);
-            setIcon(newIcon);
-        }
-    }
-
-    /**
-     * Associates a character with the button and generates a tooltip for the character.
-     *
-     * @param character the character to associate with the button.
-     */
-    public void setCharacter(Character character){
-        if (character == null) {
-            this.character = null;
-            setToolTipText(null);
-        } else {
-            this.character = character;
-            setToolTipText(generaTooltipCharacter(character));
-            System.out.println("character agregado...");
-        }
-    }
-
-    /**
-     * Associates a tower with the button and generates a tooltip for the tower.
-     *
-     * @param tower the tower to associate with the button.
-     */
-    public void setTower(Tower tower){
-        if (tower == null) {
-            this.tower = null;
-            setToolTipText(null);
-        } else {
-            this.tower = tower;
-            setToolTipText(generaTooltipTower(tower));
-        }
-    }
-
-    /**
-     * Sets the entity (character or tower) based on the team and image path.
-     *
-     * @param team the team containing characters and towers.
-     * @param pathImageExpected the expected image path for the entity.
-     */
-    public void setEntity(Team team,String pathImageExpected) {
-        for (Character character:team.getCharacters()){
-            if (character.getSpritePath().equals(pathImageExpected)){
-                this.character = character;
-                setToolTipText(generaTooltipCharacter(character));
-                return;
-            }
-        }
-        for (Tower tower:team.getTowers()){
-            if (tower.getSpritePath().equals(pathImageExpected)){
-                this.tower = tower;
-                setToolTipText(generaTooltipTower(tower));
-                return;
-            }
-        }
-
-    }
-
     public ImageIcon getIcon(){return icon;}
 
     public byte getIdentifier() {return identifier;}
 
-    public String getImagepath(){return characterImagePath;}
-
-    public Character getCharacter() {return character;}
-
-    public Tower getTower() {return tower;}
-
-    /**
-     * Generates a tooltip for the given character.
-     *
-     * @param character the character to generate the tooltip for.
-     * @return the tooltip as a String.
-     */
-    private String generaTooltipCharacter(Character character) {
-        return "<html>"
-                + "<b><i>Nombre:</i></b> " + character.getName() + "<br>"
-                + "<b><i>Puntos de vida:</i></b> " + character.getHealth() + "<br>"
-                + "<b><i>Maná:</i></b> " + character.getMana() + "<br>"
-                + "<b><i>Daño:</i></b> " + character.getDamage() + "<br>"
-                + "<b><i>Elemento:</i></b> " + character.getElement() + "<br>"
-                + "<b><i>Defensa:</i></b> " + character.getDefense() + "<br>"
-                + "<b><i>Movimientos:</i></b> " + character.getMovements() + "<br>"
-                + "</html>";
+    public Color getFilter(){
+        return filter;
     }
 
-    /**
-     * Generates a tooltip for the given tower.
-     *
-     * @param tower the tower to generate the tooltip for.
-     * @return the tooltip as a String.
-     */
-    private String generaTooltipTower(Tower tower) {
-        return "<html>"
-                + "<b><i>Nombre:</i></b> Torre<br>"
-                + "<b><i>Puntos de vida:</i></b> " + tower.getHealth() + "<br>"
-                + "<b><i>Daño:</i></b> " + tower.getDamage() + "<br>"
-                + "</html>";
+    public Entity getEntity(){
+        return entity;
     }
 
-    public void updateEntityInfo(){
-        if (character!=null){setToolTipText(generaTooltipCharacter(character));}
-        else{setToolTipText(generaTooltipTower(tower));}
+    public void setEntity(Entity entity, Team t1, Team t2){
+        if (entity == null) {
+            removeEntity();
+        } else {
+            this.entity = entity;
+            setToolTipText(Tooltip.create(entity));
+            Image image = IMG.toImageAndScale(entity.getSpritePath(), this.getWidth(),this.getHeight());
+            setIcon(new ImageIcon(image));
+            resetFilter(t1, t2);
+        }
 
+        revalidate();
+        repaint();
     }
 
-    public Color getFilter(){return filter;}
+    public void removeEntity() {
+        this.entity = null;
+        setToolTipText(null);
+        setIcon(null);
+        this.removeFilter();
+        revalidate();
+        repaint();
+    }
 
-    public int getEntityDamage(){
-        if (character!=null){return character.getDamage();}
-        else{return tower.getDamage();}
+    public void resetFilter(Team t1, Team t2) {
+        if (this.entity == null) removeFilter();
+
+        else if (t1.getEntities().contains(this.entity)) {
+            this.setFilter(new Color(255,0,0,100));
+        } else if (t2.getEntities().contains(this.entity)) {
+            this.setFilter(new Color(0,0,255,100));
+        }
+    }
+
+    public void resetBackground() {
+        setBackground(new Color(220, 220, 220));
+    }
+
+    public void removeActionListeners() {
+        for (ActionListener listener : getActionListeners()) {
+            removeActionListener(listener);
+        }
+    }
+
+    public void refresh() {
+        setToolTipText(Tooltip.create(this.entity));
+        revalidate();
+        repaint();
     }
 }
 
+abstract class Tooltip {
+    public static String create(Entity entity) {
+        if (entity instanceof Character) {
+            return "<html>"
+                    + "<b><i>Nombre:</i></b> " + ((Character) entity).getName() + "<br>"
+                    + "<b><i>Puntos de vida:</i></b> " + entity.getHealth() + "<br>"
+                    + "<b><i>Maná:</i></b> " + ((Character) entity).getMana() + "<br>"
+                    + "<b><i>Daño:</i></b> " + entity.getDamage() + "<br>"
+                    + "<b><i>Elemento:</i></b> " + ((Character) entity).getElement() + "<br>"
+                    + "<b><i>Defensa:</i></b> " + entity.getDefense() + "<br>"
+                    + "<b><i>Movimientos:</i></b> " + ((Character) entity).getMovements() + "<br>"
+                    + "</html>";
+        } else if (entity instanceof Tower) {
+            return "<html>"
+                    + "<b><i>Nombre:</i></b> Torre<br>"
+                    + "<b><i>Puntos de vida:</i></b> " + entity.getHealth() + "<br>"
+                    + "<b><i>Daño:</i></b> " + entity.getDamage() + "<br>"
+                    + "</html>";
+        }
+
+        return null;
+    }
+}
 

@@ -10,6 +10,7 @@ public class Team {
     private final String name;
     private Player player;
     private final ArrayList<Character> characters;
+    private final ArrayList<Character> deadCharacters;
     private final ArrayList<Tower> towers;
     private boolean turn = false;
     private byte moves = 0;
@@ -24,6 +25,7 @@ public class Team {
         this.name = player.getName();
         this.player = player;
         this.characters = new ArrayList<>();
+        this.deadCharacters = new ArrayList<>();
         this.towers = new ArrayList<>();
     }
 
@@ -34,13 +36,16 @@ public class Team {
      */
     public void addCharacter(Character character) {
         this.characters.add(character);
+        character.setTeam(this);
     }
 
     /**
      * Adds a tower to the team's list of towers.
      */
     public void addTower() {
-        this.towers.add(new Tower());
+        Tower tower = new Tower();
+        tower.setTeam(this);
+        this.towers.add(tower);
     }
 
     /**
@@ -112,28 +117,24 @@ public class Team {
      */
     public Player getPlayer(){return player;}
 
-    /**
-     * Resets the number of moves the team has made to 0.
-     */
-    public void resetMoves(){this.moves=0;}
-
-    /**
-     * Set towers to a team
-     *
-     * @param teamNumber The number of the team (1, 2)
-     */
-    public void setTowers(int teamNumber){
-        for(Tower tower:this.getTowers()){
-            tower.setTeam(teamNumber);
-        }
+    public ArrayList<Entity> getEntities() {
+        ArrayList<Entity> entities = new ArrayList<>();
+        entities.addAll(this.characters);
+        entities.addAll(this.towers);
+        return entities;
     }
 
-    /**
-     * Gets the team number (1, 2) of a towers
-     *
-     * @return The team number of the tower
-     */
-    public int getTowersTeamNumber(){
-        return towers.getFirst().getTeam();
+    public ArrayList<Character> getDeadCharacters() {
+        return deadCharacters;
+    }
+
+    public void addDeadCharacter(Character deadCharacter) {
+        this.deadCharacters.add(deadCharacter);
+        this.characters.remove(deadCharacter);
+    }
+
+    public void reviveCharacter(Character character) {
+        this.deadCharacters.remove(character);
+        this.characters.add(character);
     }
 }

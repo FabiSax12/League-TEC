@@ -163,7 +163,7 @@
             "name": "Asesino del Aire",
             "sprite": "/assets/asesino_del_aire.jpg",
             "health": 850,
-            "movements": 1,
+            "movements": 3,
             "element": "AIR"
         },
         {
@@ -400,8 +400,8 @@
             "name": "David",
             "id": 3,
             "statistics": {
-                "wins": 0,
-                "playedGames": 0,
+                "wins": 1,
+                "playedGames": 1,
                 "loses": 0,
                 "deadCharacters": 0,
                 "destroyedTowers": 0

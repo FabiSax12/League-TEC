@@ -24,7 +24,13 @@ public class HealSkill extends ASkill {
 
     @Override
     public void use(Character user, Entity target) {
-        target.setHealth(target.getHealth() + healAmount);
+        System.out.println("Usando " + getName() + " de " + user.getName() + " a " + target.toString());
+
+        if (target.getHealth() + healAmount > target.getMaxHealth()) {
+            target.setHealth(target.getMaxHealth());
+        } else {
+            target.setHealth(target.getHealth() + healAmount);
+        }
     }
 
     public int getHealAmount() {

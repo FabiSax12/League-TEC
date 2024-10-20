@@ -25,7 +25,7 @@ public class Statistics {
         this.playedGames = playedGames;
         this.wins = wins;
         this.losses = losses;
-        this.winPercentage = playedGames > 0 ? (double) wins / playedGames * 100 : 0;
+        this.winPercentage = playedGames > 0 ? (double) ((wins / playedGames ) * 100) : 0;
         this.deadCharacters = deadCharacters;
         this.destroyedTowers = destroyedTowers;
     }
@@ -136,5 +136,21 @@ public class Statistics {
      */
     public void setDestroyedTowers(int destroyedTowers) {
         this.destroyedTowers = destroyedTowers;
+    }
+
+    public void incrementDeadCharacters() {
+        this.deadCharacters++;
+    }
+
+    public void incrementDestroyedTowers() {
+        this.destroyedTowers++;
+    }
+
+    public void incrementWins() {
+        this.wins++;
+    }
+
+    public void incrementLosses() {
+        this.losses++;
     }
 }

@@ -24,6 +24,7 @@ public class AttackSkill extends ASkill {
 
     @Override
     public void use(Character user, Entity target) {
+        System.out.println("Usando " + getName() + " de " + user.getName() + " a " + target.toString());
         target.takeDamage(user.getDamage() + this.damage);
     }
 

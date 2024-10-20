@@ -25,6 +25,7 @@ public class BuffSkill extends ASkill {
 
     @Override
     public void use(Character user, Entity target) {
+        System.out.println("Usando " + getName() + " de " + user.getName() + " a " + target.toString());
         if (target instanceof Tower) {
             System.out.println("No se puede aplicar un buff a una torre");
         }

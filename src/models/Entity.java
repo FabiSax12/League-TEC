@@ -12,6 +12,7 @@ public abstract class Entity {
     protected float health;
     protected int damage;
     protected int defense;
+    protected Team team;
 
     /**
      * Attacks a target entity, applying damage to it.
@@ -114,5 +115,13 @@ public abstract class Entity {
      */
     public void setDefense(int defense) {
         this.defense = defense;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public Team getTeam() {
+        return team;
     }
 }

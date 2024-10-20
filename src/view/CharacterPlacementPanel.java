@@ -34,9 +34,9 @@ public class CharacterPlacementPanel extends JPanel {
      * @param team1      First team participating in the match.
      * @param team2      Second team participating in the match.
      */
-    public CharacterPlacementPanel(MainGameWindow mainWindow,Team team1,Team team2) {
-        this.team1 = team1;
-        this.team2 = team2;
+    public CharacterPlacementPanel(MainGameWindow mainWindow, Match match) {
+        this.team1 = match.getTeam1();
+        this.team2 = match.getTeam2();
         this.team1Characters = new DefaultListModel<>();
         this.team2Characters = new DefaultListModel<>();
         ArrayList<Character> tempList = team1.getCharacters();
@@ -120,7 +120,7 @@ public class CharacterPlacementPanel extends JPanel {
 
         confirmButton = new ButtonComponent("Confirmar");
         confirmButton.setEnabled(false);
-        confirmButton.addActionListener(e -> mainWindow.startGameArena(new Match(ArenaFactory.create(), team1, team2),gridButtons));
+        confirmButton.addActionListener(e -> mainWindow.startGameArena(match, gridButtons));
 
         JPanel controlPanel = new JPanel();
         controlPanel.add(confirmButton);
@@ -146,14 +146,14 @@ public class CharacterPlacementPanel extends JPanel {
         }else{
             if (firstPlayerTime && validatePlayerArea(button)) {
                 button.setEnabled(false);
-                button.setImagepath(selectionList.getSelectedValue().getSpritePath());
+                button.setEntity(selectionList.getSelectedValue(), team1, team2);
                 int selection = selectionList.getSelectedIndex();
                 team1Characters.remove(selection);
-                if (team1Characters.isEmpty()){changePlayer();}
+                if (team1Characters.isEmpty()) changePlayer();
                 ConfForEachButton(button);
             }else if (validatePlayerArea(button)){
                 button.setEnabled(false);
-                button.setImagepath(selectionList.getSelectedValue().getSpritePath());
+                button.setEntity(selectionList.getSelectedValue(), team1, team2);
                 int selection = selectionList.getSelectedIndex();
                 team2Characters.remove(selection);
                 if (team2Characters.isEmpty()){
@@ -204,19 +204,15 @@ public class CharacterPlacementPanel extends JPanel {
      * @param btn The button to configure.
      */
     private void ConfForEachButton (MatrixButton btn){
-        Image image = IMG.toImage(Objects.requireNonNull(getClass().getResource(btn.getImagepath())));
-        // Escalar la imagen al tamaño del botón
-        Image scaledImage = image.getScaledInstance(btn.getWidth()-20,btn.getHeight()-20, Image.SCALE_AREA_AVERAGING);
-        btn.setIcon(new ImageIcon(scaledImage));
-        if (btn.getIdentifier()<50){
-            btn.setEntity(team1,btn.getImagepath());
-            btn.setFilter(new Color(255,0,0,100));
-        }
-        else{
-            btn.setEntity(team2,btn.getImagepath());
-            btn.setFilter(new Color(0,0,255,100));
-        }
-        btn.revalidate();
-        btn.repaint();
+//        if (btn.getIdentifier()<50){
+//            btn.setEntity(btn);
+//            btn.setFilter(new Color(255,0,0,100));
+//        }
+//        else{
+//            btn.setEntity(team2,btn.getImagepath());
+//            btn.setFilter(new Color(0,0,255,100));
+//        }
+//        btn.revalidate();
+//        btn.repaint();
     }
 }

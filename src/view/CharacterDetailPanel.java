@@ -2,6 +2,7 @@ package view;
 
 import models.Character;
 import models.ASkill;
+import utils.IMG;
 import view.components.ButtonComponent;
 import view.components.CustomColors;
 
@@ -37,23 +38,15 @@ public class CharacterDetailPanel extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
+        Image image = IMG.toImage(character.getSpritePath());
+        Image scaledImage = getScaledImage(image, 200, 200);
+        JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        detailsPanel.add(imageLabel, gbc);
 
-        File imageFile = new File(System.getProperty("user.dir") + "\\src" + character.getSpritePath());
-        if (imageFile.exists()) {
-            ImageIcon characterIcon = new ImageIcon(imageFile.getAbsolutePath());
-            Image originalImage = characterIcon.getImage();
-            Image scaledImage = getScaledImage(originalImage, 200, 200);
-            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-            gbc.gridwidth = 2;
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            detailsPanel.add(imageLabel, gbc);
-
-            gbc.gridwidth = 1;
-        } else {
-            // Maneja el caso de que la imagen no se encuentre
-            System.out.println("Imagen no encontrada: " + character.getSpritePath());
-        }
+        gbc.gridwidth = 1;
 
         addDetailRow(detailsPanel, "Salud:", String.valueOf(character.getHealth()), gbc, 1);
         addDetailRow(detailsPanel, "Mana:", String.valueOf(character.getMana()), gbc, 2);

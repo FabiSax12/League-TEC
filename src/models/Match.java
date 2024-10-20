@@ -40,7 +40,6 @@ public class Match {
     public void startMatch(){
         arena.applyBoosts(team1.getCharacters(), team2.getCharacters());
         System.out.println("Match started");
-        //new BattlefieldSetupController(team1, team2, arena.getElement());
     }
 
     /**
