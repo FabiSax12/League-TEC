@@ -89,8 +89,12 @@ public class SkillsPanel extends JPanel {
         ArrayList<MatrixButton> nearbyEnemies = new ArrayList<>();
 
         for (MatrixButton b : aroundButtons) {
-            if (b.getEntity() != null && !actionsPanel.getTurn().getEntities().contains(b.getEntity()))
-                nearbyEnemies.add(b);
+            try{
+                if (b.getEntity() != null && !actionsPanel.getTurn().getEntities().contains(b.getEntity()))
+                    nearbyEnemies.add(b);
+            }catch (NullPointerException ex){
+                System.out.println("NULL");
+            }
         }
 
         nearbyEnemies.forEach(enemy -> {

@@ -326,7 +326,7 @@
             "attack": 35,
             "name": "Monje de la Marea",
             "sprite": "/assets/monje_de_la_marea.jpg",
-            "health": 850,
+            "health": 250,
             "movements": 1,
             "element": "WATER"
         },
@@ -402,6 +402,17 @@
             "statistics": {
                 "wins": 1,
                 "playedGames": 1,
+                "loses": 0,
+                "deadCharacters": 0,
+                "destroyedTowers": 0
+            }
+        },
+        {
+            "name": "Joseph",
+            "id": 4,
+            "statistics": {
+                "wins": 0,
+                "playedGames": 0,
                 "loses": 0,
                 "deadCharacters": 0,
                 "destroyedTowers": 0

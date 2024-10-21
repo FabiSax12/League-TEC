@@ -73,14 +73,16 @@ public class ActionsPanel extends JPanel {
             MatrixButton[] aroundButtons = getAroundButtons(btn);
             ArrayList<MatrixButton> nearbyEnemies = new ArrayList<>();
 
-            for (MatrixButton b : aroundButtons) {
-                if (b.getEntity() != null
-                        && b.getEntity() instanceof Character
-                        && !turn.getEntities().contains(b.getEntity())
-                ) {
-                    nearbyEnemies.add(b);
+            try {
+                for (MatrixButton b : aroundButtons) {
+                    if (b.getEntity() != null
+                            && b.getEntity() instanceof Character
+                            && !turn.getEntities().contains(b.getEntity())
+                    ) {
+                        nearbyEnemies.add(b);
+                    }
                 }
-            }
+            }catch(NullPointerException ex){System.out.println("NULL en addTowerActions");}
 
             for (MatrixButton adjBtn : nearbyEnemies) {
                 adjBtn.setFilter(new Color(255, 102, 102, 100));
