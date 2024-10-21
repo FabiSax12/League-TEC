@@ -400,8 +400,8 @@
             "name": "David",
             "id": 3,
             "statistics": {
-                "wins": 1,
-                "playedGames": 1,
+                "wins": 0,
+                "playedGames": 0,
                 "loses": 0,
                 "deadCharacters": 0,
                 "destroyedTowers": 0

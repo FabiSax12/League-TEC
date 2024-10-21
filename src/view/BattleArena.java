@@ -41,6 +41,7 @@ public class BattleArena extends JPanel {
 
         add(sidebar, BorderLayout.EAST);
         add(gridCharactersPanel, BorderLayout.CENTER);
+        match.startMatch();
     }
 
     private JPanel createGridPanel() {
@@ -115,6 +116,10 @@ public class BattleArena extends JPanel {
     public void entityActed(Entity entity) {
         actedEntities.add(entity);
 
+        for (MatrixButton[] row : matrixButtons) {
+            for (MatrixButton b : row) b.refresh();
+        }
+
         Set<Entity> activeEntities = getActiveEntities(turn);
 
         if (actedEntities.containsAll(activeEntities)) {
@@ -144,8 +149,10 @@ public class BattleArena extends JPanel {
 
     private void toggleTurn() {
         turn = turn.equals(match.getTeam1()) ? match.getTeam2() : match.getTeam1();
+
         match.getTeam1().getCharacters().forEach(Character::regenerateMana);
         match.getTeam2().getCharacters().forEach(Character::regenerateMana);
+
         for (MatrixButton[] row : matrixButtons) {
             for (MatrixButton b : row) {
                 b.refresh();

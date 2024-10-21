@@ -66,6 +66,7 @@ public class SkillsPanel extends JPanel {
 
         for (ASkill skill : character.getSkills()) {
             SkillCard skillCard = new SkillCard(skill);
+            if (character.getMana() - skill.getManaCost() < 0) skillCard.setEnabled(false);
             skillCard.addActionListener(e -> handleSkillAction(skill));
             add(skillCard);
         }
@@ -103,7 +104,8 @@ public class SkillsPanel extends JPanel {
                 enemy.addActionListener(e -> {
                     Entity entity = enemy.getEntity();
 
-                    skill.use(character, entity);
+//                    skill.use(character, entity);
+                    character.useSkill(skill, entity);
                     if (entity.getHealth() <= 0) {
                         enemy.removeEntity();
 
@@ -111,6 +113,7 @@ public class SkillsPanel extends JPanel {
                             actionsPanel.getTurn().addDeadCharacter((Character) entity);
                             actionsPanel.getArena().addToPendingRevive((Character) entity);
                             entity.getTeam().getPlayer().getStatistics().incrementDeadCharacters();
+                            character.levelUp();
                         } else if (entity instanceof Tower) {
                             actionsPanel.getTurn().getTowers().remove((Tower) entity);
                             entity.getTeam().getPlayer().getStatistics().incrementDestroyedTowers();
@@ -154,7 +157,8 @@ public class SkillsPanel extends JPanel {
             btn.setFilter(new Color(102, 204, 255, 100));
 
             btn.addActionListener(e -> {
-                skill.use(character, btn.getEntity());
+//                skill.use(character, btn.getEntity());
+                character.useSkill(skill, btn.getEntity());
 
                 aliesButtons.forEach(aly -> {
                     aly.resetFilter(
@@ -174,7 +178,8 @@ public class SkillsPanel extends JPanel {
     }
 
     private void handleBuffSkill(BuffSkill skill) {
-        skill.use(character, character);
+//        skill.use(character, character);
+        character.useSkill(skill, character);
         arena.entityActed(character);
         arena.repaint();
         button.removeActionListeners();

@@ -73,6 +73,8 @@ public abstract class CharacterFormPanel extends JPanel {
         defenseField = createTextField("Defense:", character != null ? String.valueOf(character.getDefense()) : "", inputPanel, gbc);
         movementsField = createTextField("Movements:", character != null ? String.valueOf(character.getMovements()) : "", inputPanel, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
         JLabel elementLabel = new JLabel("Element:");
         inputPanel.add(elementLabel, gbc);
         gbc.gridx = 1;

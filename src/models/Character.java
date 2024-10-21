@@ -54,7 +54,7 @@ public class Character extends Entity {
      * Increases the character's mana regeneration by 25%.
      */
     public void regenerateMana() {
-        int augment = (int) (this.mana * 0.25);
+        int augment = (int) (this.maxMana * 0.25);
 
         if(this.mana + augment > this.maxMana){
             this.mana = this.maxMana;

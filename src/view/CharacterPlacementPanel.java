@@ -31,8 +31,6 @@ public class CharacterPlacementPanel extends JPanel {
      * Constructor to initialize the character placement panel.
      *
      * @param mainWindow Reference to the main game window.
-     * @param team1      First team participating in the match.
-     * @param team2      Second team participating in the match.
      */
     public CharacterPlacementPanel(MainGameWindow mainWindow, Match match) {
         this.team1 = match.getTeam1();
